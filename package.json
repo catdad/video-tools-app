@@ -1,0 +1,54 @@
+{
+  "name": "app-name",
+  "productName": "App Name",
+  "appId": "com.your-name.app-name",
+  "version": "1.0.0",
+  "description": "Describe you application here, if you want",
+  "author": "Kiril Vatev <vatev.1@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catdad/electron-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/catdad/electron-template/issues"
+  },
+  "homepage": "https://github.com/catdad/electron-template#readme",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron-background .",
+    "dev": "electronmon .",
+    "test": "mocha --timeout 30000 --slow 0 \"test/**/*.test.js\"",
+    "postinstall": "npm run -s prep:icons",
+    "prep": "npm run -s prep:icons",
+    "prep:icons": "svg-app-icon --destination icons < assets/icon.svg",
+    "package": "run-script-os",
+    "package:win32": "electron-builder --config .electron-builder.js --publish never --win",
+    "package:darwin": "electron-builder --config .electron-builder.js --publish never --mac",
+    "package:linux": "electron-builder --config .electron-builder.js --publish never --linux",
+    "package:default": "echo \"Error: this OS is not supported\" && exit 1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chalk": "^4.1.0",
+    "electron": "^10.1.1",
+    "electron-background": "^1.0.0",
+    "electron-builder": "^22.7.0",
+    "electronmon": "^1.1.2",
+    "eslint": "^5.16.0",
+    "mocha": "^8.1.1",
+    "puptron": "0.0.3",
+    "run-script-os": "^1.1.1",
+    "svg-app-icon": "^1.1.0",
+    "tempy": "^0.5.0",
+    "wait-for-throwable": "^1.0.1"
+  },
+  "dependencies": {
+    "callsites": "^3.1.0",
+    "fs-extra": "^9.0.1",
+    "htm": "^3.0.4",
+    "lodash": "^4.17.19",
+    "preact": "^10.4.6",
+    "toastify-js": "^1.8.0"
+  }
+}
