@@ -1,19 +1,19 @@
 {
-  "name": "app-name",
-  "productName": "App Name",
-  "appId": "com.your-name.app-name",
+  "name": "video-tools-app",
+  "productName": "Video Tools App",
+  "appId": "com.catdad.video-tools-app",
   "version": "1.0.0",
-  "description": "Describe you application here, if you want",
+  "description": "GUI application for various video editing utilities",
   "author": "Kiril Vatev <vatev.1@gmail.com>",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/catdad/electron-template.git"
+    "url": "git+https://github.com/catdad/video-tools-app.git"
   },
   "bugs": {
-    "url": "https://github.com/catdad/electron-template/issues"
+    "url": "https://github.com/catdad/video-tools-app/issues"
   },
-  "homepage": "https://github.com/catdad/electron-template#readme",
+  "homepage": "https://github.com/catdad/video-tools-app#readme",
   "main": "main.js",
   "scripts": {
     "start": "electron-background .",
