@@ -1,4 +1,4 @@
-const { html, css, useContext, useState } = require('../tools/ui.js');
+const { Button, html, css, useContext, useState } = require('../tools/ui.js');
 const { withConfig, Config } = require('../tools/config.js');
 
 css('./App.css');
@@ -15,7 +15,9 @@ function App() {
   return html`
     <div class=app>
       <p>This is your app</p>
-      <div><button onclick=${count}>I count how many times you click me, ever</button> : <span>${value}</span></div>
+      <div>
+        <${Button} ripple raised onclick=${count}>I count how many times you click me, ever<//> : <span>${value}</span>
+      </div>
     </div>
   `;
 }

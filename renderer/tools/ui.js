@@ -7,6 +7,8 @@ const hooks = require('preact/hooks');
 const htm = require('htm');
 const html = htm.bind(h);
 
+const components = require('preact-material-components');
+
 const getVar = (elem, name) => getComputedStyle(elem).getPropertyValue(`--${name}`);
 const setVar = (elem, name, value) => elem.style.setProperty(`--${name}`, value);
 const getRootVar = (name) => getVar(document.documentElement, name);
@@ -27,8 +29,12 @@ const css = (csspath, dirname) => {
   document.head.appendChild(link);
 };
 
+css(require.resolve('preact-material-components/style.css'));
+css(require.resolve('preact-material-components/Theme/style.css'));
+
 module.exports = {
   getVar, getRootVar, setVar, setRootVar,
   html, render, css, createContext,
-  ...hooks
+  ...hooks,
+  ...components
 };
