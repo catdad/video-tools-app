@@ -1,0 +1,11 @@
+.videocontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.videocontainer > * {
+  margin: 10px 0;
+}

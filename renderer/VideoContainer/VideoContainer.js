@@ -23,25 +23,23 @@ function VideoContainer() {
     setFile({ name, path, type, size });
   };
 
-  const fileInput = html`
+  const children = [html`
     <div>
       <${FileInput} onchange=${onFile} />
     </div>
-  `;
+  `];
 
-  if (!file.name || !file.path) {
-    return fileInput;
+  if (file.path) {
+    children.push(
+      html`<div>${file.path}</div>`,
+      html`<${NamingFields} ...${{ prefix, setPrefix, suffix, setSuffix, output, setOutput }}/>`
+    );
   }
 
   return html`
-    <div>
-      <p>${file.name}</p>
-      <p>${file.path}</p>
-      <p>${file.type}</p>
-      <p>${file.size}</p>
+    <div class=videocontainer>
+      ${children}
     </div>
-    ${fileInput}
-    <${NamingFields} ...${{ prefix, setPrefix, suffix, setSuffix, output, setOutput }}/>
   `;
 }
 
