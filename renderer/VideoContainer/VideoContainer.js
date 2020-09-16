@@ -1,22 +1,34 @@
 const { Button, TextField, html, css, useContext, useRef, useState } = require('../tools/ui.js');
+const { Config, withConfig } = require('../tools/config.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
 
+const FILE = 'videocontainer.file';
+
 function VideoContainer() {
-  const [file, setFile] = useState(null);
+  const config = useContext(Config);
+
+  const [file, setFile] = useState(config.get(FILE) || {});
   const [output, setOutput] = useState('');
   const [prefix, setPrefix] = useState('');
   const [suffix, setSuffix] = useState('');
 
-  const onFile = newFile => setFile(newFile);
+  const onFile = newFile => {
+    const { name, path, type, size } = newFile;
 
-  if (file === null) {
-    return html`
-      <div>
-        <${FileInput} onchange=${onFile} />
-      </div>
-    `;
+    config.set(FILE, { name, path, type, size });
+    setFile({ name, path, type, size });
+  };
+
+  const fileInput = html`
+    <div>
+      <${FileInput} onchange=${onFile} />
+    </div>
+  `;
+
+  if (!file.name || !file.path) {
+    return fileInput;
   }
 
   return html`
@@ -26,8 +38,9 @@ function VideoContainer() {
       <p>${file.type}</p>
       <p>${file.size}</p>
     </div>
+    ${fileInput}
     <${NamingFields} ...${{ prefix, setPrefix, suffix, setSuffix, output, setOutput }}/>
   `;
 }
 
-module.exports = VideoContainer;
+module.exports = withConfig(VideoContainer);
