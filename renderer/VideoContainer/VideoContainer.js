@@ -1,8 +1,10 @@
-const { Button, TextField, html, css, useContext, useRef, useState } = require('../tools/ui.js');
+const { html, css, useContext, useState } = require('../tools/ui.js');
 const { Config, withConfig } = require('../tools/config.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
+
+css('./VideoContainer.css');
 
 const FILE = 'videocontainer.file';
 
