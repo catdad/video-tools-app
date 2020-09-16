@@ -1,31 +1,16 @@
 const { Button, TextField, html, css, useContext, useRef, useState } = require('../tools/ui.js');
 
+const FileInput = require('../FileInput/FileInput.js');
+
 function VideoContainer() {
-  const inputRef = useRef();
   const [file, setFile] = useState(null);
 
-  const onInput = () => {
-    const { files } = inputRef.current;
-
-    if (files.length === 0) {
-      return;
-    }
-
-    setFile(files[0]);
-  };
-
-  const onInputButton = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
-  };
+  const onFile = newFile => setFile(newFile);
 
   if (file === null) {
     return html`
       <div>
-        <label>Pick a file:</label>
-        <${Button} onclick=${onInputButton} raised>select file<//>
-        <input type=file class=hidden onchange=${onInput} ref=${inputRef} />
+        <${FileInput} onchange=${onFile} />
       </div>
     `;
   }
