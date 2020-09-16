@@ -1,3 +1,5 @@
+require('./tools/require-alias.js');
+
 const { render, html, css } = require('./tools/ui.js');
 const App = require('./App/App.js');
 
