@@ -44,12 +44,12 @@
     "wait-for-throwable": "^1.0.1"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
     "callsites": "^3.1.0",
     "fs-extra": "^9.0.1",
     "htm": "^3.0.4",
     "lodash": "^4.17.19",
     "preact": "^10.4.8",
-    "preact-material-components": "^1.6.1",
     "toastify-js": "^1.8.0"
   }
 }
