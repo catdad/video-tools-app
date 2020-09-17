@@ -1,4 +1,4 @@
-const { Button, html, useRef, useState } = require('../tools/ui.js');
+const { PrimaryButton, html, useRef, useState } = require('../tools/ui.js');
 
 function FileInput({ onchange = () => {} }) {
   const inputRef = useRef();
@@ -23,7 +23,7 @@ function FileInput({ onchange = () => {} }) {
   return html`
     <div>
       <label>Pick a file:</label>
-      <${Button} onclick=${onInputButton} raised>select file<//>
+      <${PrimaryButton} onclick=${onInputButton}>select file<//>
       <input type=file class=hidden onchange=${onInput} ref=${inputRef} />
     </div>
   `;

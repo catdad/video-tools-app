@@ -7,7 +7,7 @@ const hooks = require('preact/hooks');
 const htm = require('htm');
 const html = htm.bind(h);
 
-const components = require('@material-ui/core');
+const components = require('./ui-components.js')(html);
 
 const getVar = (elem, name) => getComputedStyle(elem).getPropertyValue(`--${name}`);
 const setVar = (elem, name, value) => elem.style.setProperty(`--${name}`, value);
