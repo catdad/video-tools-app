@@ -30,12 +30,17 @@
   --lvl6: var(--96dp);
   --lvl7: var(--256dp);
 
-  --color-background: var(--lvl2);
   --color-border: var(--lvl5);
 
-  --color-text: #dfdfdf;
   --tab-height: 2rem;
   --font-size: 16px;
+
+  /* MUI theme variables */
+  --primary: #c93d7e;
+  --secondary: #ffaaaa;
+  --color-text: #dfdfdf;
+  --color-background: var(--lvl2);
+  --font-family: sans-serif;
 }
 
 html, body {
@@ -45,7 +50,7 @@ html, body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-size: var(--font-size);
-  font-family: sans-serif;
+  font-family: var(--font-family);
   min-height: 100%;
 }
 
