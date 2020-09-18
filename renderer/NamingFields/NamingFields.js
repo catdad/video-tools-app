@@ -13,7 +13,7 @@ function NamingFields({
   const onFormatInput = ev => setFormat(ev.target.value);
 
   return html`
-    <div>Naming</div>
+    <h3>Naming</h3>
     ${noformat ? '' : html`<${TextField} label=format value=${format} onInput=${onFormatInput} />`}
     ${nooutput ? '' : html`<${TextField} label=name value=${output} onInput=${onOutputInput} />`}
     <${TextField} label=prefix value=${prefix} onInput=${onPrefixInput} />
