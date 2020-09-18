@@ -47,6 +47,9 @@ function createWindow () {
   Promise.all([
     config.read()
   ]).then(() => {
+    // TODO provide a toggle in the ui for this
+    config.setProp('ui-mode', 'dark');
+
     const windowOptions = {
       width: config.getProp('window.width') || 1000,
       height: config.getProp('window.height') || 800,
