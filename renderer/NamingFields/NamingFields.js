@@ -1,7 +1,7 @@
 const { PrimaryTextField: TextField, html } = require('../tools/ui.js');
 
 function NamingFields({
-  output = '', setOutput = () => {},
+  output = '', setOutput = () => {}, nooutput = false,
   prefix = '', setPrefix = () => {},
   suffix = '', setSuffix = () => {},
   format = '', setFormat = () => {}, noformat = false
@@ -15,7 +15,7 @@ function NamingFields({
   return html`
     <div>Naming</div>
     ${noformat ? '' : html`<${TextField} label=format value=${format} onInput=${onFormatInput} />`}
-    <${TextField} label=name value=${output} onInput=${onOutputInput} />
+    ${nooutput ? '' : html`<${TextField} label=name value=${output} onInput=${onOutputInput} />`}
     <${TextField} label=prefix value=${prefix} onInput=${onPrefixInput} />
     <${TextField} label=suffix value=${suffix} onInput=${onSuffixInput} />
   `;

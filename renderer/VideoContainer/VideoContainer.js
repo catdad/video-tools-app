@@ -1,7 +1,7 @@
 const path = require('path');
 
-const { PrimaryButton, html, css, useContext, useState } = require('../tools/ui.js');
-const { Config, withConfig } = require('../tools/config.js');
+const { html, css, useState } = require('../tools/ui.js');
+const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 
 const FileInput = require('../FileInput/FileInput.js');
@@ -9,65 +9,51 @@ const NamingFields = require('../NamingFields/NamingFields.js');
 
 css('./VideoContainer.css');
 
-const FILE = 'videocontainer.file';
-
 function VideoContainer() {
-  const config = useContext(Config);
-
-  const [file, setFile] = useState(config.get(FILE) || {});
-  const [output, setOutput] = useState('');
   const [prefix, setPrefix] = useState('');
   const [suffix, setSuffix] = useState('');
   const [format, setFormat] = useState('mp4');
 
-  const onFile = newFile => {
-    const { name, path, type, size } = newFile;
+  const onQueue = (files) => {
+    for (let file of files) {
+      if (!/^video/.test(file.type || '')) {
+        toast.error(`cannot convert "${file.name}" of type "${file.type}"`);
+        continue;
+      }
 
-    config.set(FILE, { name, path, type, size });
-    setFile({ name, path, type, size });
+      const _suffix = suffix ? suffix :
+        path.parse(file.path).ext === `.${format}` ? '.container' : '';
+
+      videoTools.queue('container', [{
+        input: file.path,
+        format,
+        prefix,
+        suffix: _suffix
+      }]).then(() => {
+        toast.success(`"${file.name}" is complete`);
+      }).catch(err => {
+        toast.error(`"${file.name}" failed:\n${err.message}`);
+      });
+    }
   };
 
-  const onConvert = () => {
-    const _suffix = suffix ? suffix :
-      path.parse(file.path).ext === `.${format}` ? '.container' : '';
+  const children = [];
 
-    videoTools.exec('container', [{
-      input: file.path,
-      format,
-      output,
-      prefix,
-      suffix: _suffix
-    }]).then(() => {
-      console.log('done');
-    }).catch(err => {
-      console.error(err);
-    });
-  };
-
-  const children = [html`
-    <div>
-      <${FileInput} onchange=${onFile} />
-    </div>
-  `];
-
-  if (file.path) {
-    children.push(
-      html`<div>${file.path}</div>`,
-      html`<${NamingFields} ...${{
-        prefix, setPrefix,
-        suffix, setSuffix,
-        output, setOutput,
-        format, setFormat
-      }}/>`
-    );
-  }
+  children.push(
+    html`<${NamingFields} nooutput ...${{
+      prefix, setPrefix,
+      suffix, setSuffix,
+      format, setFormat
+    }}/>`
+  );
 
   return html`
     <div class=videocontainer>
+      <p>Drag files here to change the video container</p>
+      <${FileInput} nobutton onchange=${onQueue} />
       ${children}
-      <${PrimaryButton} onclick=${onConvert}>convert<//>
     </div>
   `;
 }
 
-module.exports = withConfig(VideoContainer);
+module.exports = VideoContainer;
