@@ -4,7 +4,7 @@ function NamingFields({
   output = '', setOutput = () => {},
   prefix = '', setPrefix = () => {},
   suffix = '', setSuffix = () => {},
-  format = '', setFormat = () => {}
+  format = '', setFormat = () => {}, noformat = false
 }) {
 
   const onOutputInput = ev => setOutput(ev.target.value);
@@ -14,7 +14,7 @@ function NamingFields({
 
   return html`
     <div>Naming</div>
-    <${TextField} label=format value=${format} onInput=${onFormatInput} />
+    ${noformat ? '' : html`<${TextField} label=format value=${format} onInput=${onFormatInput} />`}
     <${TextField} label=name value=${output} onInput=${onOutputInput} />
     <${TextField} label=prefix value=${prefix} onInput=${onPrefixInput} />
     <${TextField} label=suffix value=${suffix} onInput=${onSuffixInput} />
