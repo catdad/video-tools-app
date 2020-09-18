@@ -15,11 +15,16 @@ css('./App.css');
 const TABS = [
   ['video container', VideoContainer],
   ['transcode to x264', VideoX264]
-].reduce((obj, [name, Component], idx) => {
-  obj[idx] = obj[name] = { idx, name, Component };
-
-  return obj;
-}, {});
+].reduce((obj, [name, Component], idx) => Object.defineProperties(obj, {
+  [idx]: {
+    enumerable: false,
+    value: { idx, name, Component }
+  },
+  [name]: {
+    enumerable: true,
+    value: { idx, name, Component }
+  }
+}), {});
 
 const NAME = 'default-tab';
 
@@ -46,7 +51,7 @@ function App() {
     setTab(newTabName);
   };
 
-  const tabDom = Object.keys(TABS).filter(k => isNaN(Number(k))).map(name => {
+  const tabDom = Object.keys(TABS).map(name => {
     return html`<${Tab} label=${name} />`;
   });
 
