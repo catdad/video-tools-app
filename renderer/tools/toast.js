@@ -24,11 +24,11 @@ const SnackbarConainer = () => {
   render(html`<${SnackbarConainer} />`, container);
 })();
 
-const toast = variant => str => enqueueSnackbar(str, { variant, className: 'multiline' });
+const toast = opts => str => enqueueSnackbar(str, { ...opts, className: 'multiline' });
 
 module.exports = {
-  success: toast('success'),
-  error: toast('error'),
-  warning: toast('warning'),
-  info: toast('info'),
+  success: toast({ variant: 'success' }),
+  error: toast({ variant: 'error' }),
+  warning: toast({ variant: 'warning' }),
+  info: toast({ variant: 'info' }),
 };
