@@ -1,4 +1,4 @@
-const { PrimaryButton, html, useRef, useState } = require('../tools/ui.js');
+const { PrimaryButton, html, useEffect, useRef, useState } = require('../tools/ui.js');
 
 function FileInput({ onchange = () => {} }) {
   const inputRef = useRef();
@@ -19,6 +19,34 @@ function FileInput({ onchange = () => {} }) {
       inputRef.current.click();
     }
   };
+
+  useEffect(() => {
+    const onDrop = ev => {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      const { files } = ev.dataTransfer;
+      const currentFile = files[0];
+
+      if (currentFile) {
+        setFile(currentFile);
+        onchange(currentFile);
+      }
+    };
+
+    const onDrag = (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+    };
+
+    window.addEventListener('drop', onDrop);
+    window.addEventListener('dragover', onDrag);
+
+    return () => {
+      window.removeEventListener('drop', onDrop);
+      window.removeEventListener('dragover', onDrag);
+    };
+  }, [onchange]);
 
   return html`
     <div>
