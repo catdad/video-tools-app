@@ -1,8 +1,9 @@
 const path = require('path');
 const cs = require('callsites');
 
-const { h, render, createContext } = require('preact');
+const { h, render, createContext, createRef } = require('preact');
 const hooks = require('preact/hooks');
+const { forwardRef } = require('preact/compat');
 
 const htm = require('htm');
 const html = htm.bind(h);
@@ -31,7 +32,8 @@ const components = require('./ui-components.js')({ html });
 
 module.exports = {
   getVar, getRootVar, setVar, setRootVar,
-  html, render, css, createContext,
+  html, render, css, createContext, createRef,
+  forwardRef,
   ...hooks,
   ...components
 };

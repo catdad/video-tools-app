@@ -1,12 +1,13 @@
 const {
-  AppBar, Tabs, Tab,
-  html, css,
+  Tab,
+  html, css, createRef,
   useContext, useEffect, useState,
   setVar
 } = require('../tools/ui.js');
 const { Config, withConfig } = require('../tools/config.js');
 const { withTheme } = require('../tools/theme.js');
 
+const TabBar = require('../TabBar/TabBar.js');
 const VideoContainer = require('../VideoContainer/VideoContainer.js');
 const VideoX264 = require('../VideoX264/VideoX264.js');
 
@@ -14,7 +15,9 @@ css('./App.css');
 
 const TABS = [
   ['video container', VideoContainer],
-  ['transcode to x264', VideoX264]
+  ['transcode to x264', VideoX264],
+  ['create gif', VideoX264],
+  ['extrant image', VideoX264],
 ].reduce((obj, [name, Component], idx) => Object.defineProperties(obj, {
   [idx]: {
     enumerable: false,
@@ -32,8 +35,8 @@ function App() {
   const config = useContext(Config);
   const configTab = config.get(NAME);
   const [tab, setTab] = useState(TABS[configTab] ? configTab : TABS[0].name);
-  const app = {};
-  const tabBar = {};
+  const app = createRef();
+  const tabBar = createRef();
 
   useEffect(() => {
     const { height } = tabBar.current.getBoundingClientRect();
@@ -56,13 +59,9 @@ function App() {
   });
 
   return html`
-    <div ref=${tabBar}>
-      <${AppBar} position=static>
-        <${Tabs} ref=${tabBar} value=${TABS[tab].idx} onChange=${onTabChange}>
-          ${tabDom}
-        <//>
-      <//>
-    </div>
+    <${TabBar} selected=${TABS[tab].idx} onChange=${onTabChange} ref=${tabBar}>
+      ${tabDom}
+    <//>
     <div class=app ref=${app}>
       <${TABS[tab].Component} />
     </div>
