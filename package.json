@@ -51,6 +51,6 @@
     "lodash": "^4.17.19",
     "preact": "^10.4.8",
     "toastify-js": "^1.8.0",
-    "video-tools": "https://github.com/catdad/video-tools/tarball/b341e77f3d44471bb8c951dd7d22ccd66e37c75e"
+    "video-tools": "https://github.com/catdad/video-tools/tarball/f56e469f37f24956a1d15d576c7be6f1e4d44540"
   }
 }
