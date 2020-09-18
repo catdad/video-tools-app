@@ -62,9 +62,6 @@ html, body {
   display: none;
 }
 
-.toastify.toastify.toastify {
-  width: 33%;
-  max-width: 400px;
-  text-align: center;
-  line-height: 1.2;
+.toast .multiline {
+  white-space: pre-line;
 }

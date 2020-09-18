@@ -1,36 +1,34 @@
-const path = require('path');
+const { html, render } = require('./ui.js');
+const { SnackbarProvider, useSnackbar } = require('notistack');
 
-const toastifyPath = require.resolve('toastify-js');
-const Toastify = require(toastifyPath);
+let enqueueSnackbar;
 
-const { css } = require('./ui.js');
+const SnackbarComponent = () => {
+  ({ enqueueSnackbar  } = useSnackbar());
 
-css(path.resolve(toastifyPath, '../toastify.css'));
-
-const colors = {
-  green: 'linear-gradient(to right, #00b09b, #96c93d)',
-  red: 'linear-gradient(to right, #b00000, #c93d7e)',
-  yellow: 'linear-gradient(to right, #ffa35f, #ffc371)',
-  blue: 'linear-gradient(to right, #5477f5, #73a5ff)'
+  return null;
 };
 
-const toast = (color) => {
-  return (text, opts = {}) => {
-    Toastify(Object.assign({
-      text: text.split('\n').join('<br/>'),
-      gravity: 'top',
-      position: 'right',
-      backgroundColor: color,
-      duration: 4000
-    }, opts)).showToast();
-  };
+const SnackbarConainer = () => {
+  return html`
+    <${SnackbarProvider} maxSnack=5><${SnackbarComponent} /><//>
+  `;
 };
 
-const api = {
-  log: toast(colors.green),
-  error: toast(colors.red),
-  warn: toast(colors.yellow),
-  info: toast(colors.blue)
-};
+(() => {
+  const container = document.createElement('div');
+  container.className = 'toast';
 
-module.exports = api;
+  document.body.appendChild(container);
+
+  render(html`<${SnackbarConainer} />`, container);
+})();
+
+const toast = variant => str => enqueueSnackbar(str, { variant, className: 'multiline' });
+
+module.exports = {
+  success: toast('success'),
+  error: toast('error'),
+  warning: toast('warning'),
+  info: toast('info'),
+};
