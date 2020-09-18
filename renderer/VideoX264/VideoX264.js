@@ -9,7 +9,7 @@ const videoTools = require('../../lib/video-tools.js');
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
 
-css('./VideoX264.css');
+css('../styles/tab-panel.css');
 
 function VideoX264() {
   const [prefix, setPrefix] = useState('');
@@ -76,7 +76,7 @@ function VideoX264() {
   }}/>`;
 
   return html`
-    <div class=video-x264>
+    <div class=tab-panel>
       <h2>Drag files here to encode to x264</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}

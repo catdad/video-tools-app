@@ -7,7 +7,7 @@ const videoTools = require('../../lib/video-tools.js');
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
 
-css('./VideoContainer.css');
+css('../styles/tab-panel.css');
 
 function VideoContainer() {
   const [prefix, setPrefix] = useState('');
@@ -48,7 +48,7 @@ function VideoContainer() {
   );
 
   return html`
-    <div class=videocontainer>
+    <div class=tab-panel>
       <h2>Drag files here to change the video container</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${children}
