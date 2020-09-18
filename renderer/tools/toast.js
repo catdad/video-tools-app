@@ -5,15 +5,9 @@ let enqueueSnackbar;
 
 const SnackbarComponent = () => {
   ({ enqueueSnackbar  } = useSnackbar());
-
-  return null;
 };
 
-const SnackbarConainer = () => {
-  return html`
-    <${SnackbarProvider} maxSnack=5><${SnackbarComponent} /><//>
-  `;
-};
+const SnackbarConainer = () => html`<${SnackbarProvider} maxSnack=5><${SnackbarComponent} /><//>`;
 
 (() => {
   const container = document.createElement('div');
