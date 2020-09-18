@@ -15,6 +15,7 @@ function VideoContainer() {
   const [output, setOutput] = useState('');
   const [prefix, setPrefix] = useState('');
   const [suffix, setSuffix] = useState('');
+  const [format, setFormat] = useState('mp4');
 
   const onFile = newFile => {
     const { name, path, type, size } = newFile;
@@ -32,7 +33,12 @@ function VideoContainer() {
   if (file.path) {
     children.push(
       html`<div>${file.path}</div>`,
-      html`<${NamingFields} ...${{ prefix, setPrefix, suffix, setSuffix, output, setOutput }}/>`
+      html`<${NamingFields} ...${{
+        prefix, setPrefix,
+        suffix, setSuffix,
+        output, setOutput,
+        format, setFormat
+      }}/>`
     );
   }
 
