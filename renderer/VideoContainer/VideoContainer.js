@@ -49,7 +49,7 @@ function VideoContainer() {
 
   return html`
     <div class=videocontainer>
-      <p>Drag files here to change the video container</p>
+      <h2>Drag files here to change the video container</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${children}
     </div>
