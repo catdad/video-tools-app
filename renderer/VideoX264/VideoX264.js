@@ -1,6 +1,8 @@
 const path = require('path');
+const os = require('os');
+const cpus = os.cpus().length;
 
-const { FormControlLabel, Switch, html, css, useState } = require('../tools/ui.js');
+const { FormControlLabel, Slider, Switch, html, css, useState } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 
@@ -15,6 +17,7 @@ function VideoX264() {
   const [format, setFormat] = useState('mp4');
   const [audio, setAudio] = useState(true);
   const [video, setVideo] = useState(true);
+  const [threads, setThreads] = useState(Math.floor(cpus / 2));
 
   const onQueue = (files) => {
     for (let file of files) {
@@ -32,7 +35,8 @@ function VideoX264() {
         audio,
         format,
         prefix,
-        suffix: _suffix
+        suffix: _suffix,
+        threads
       }]).then(() => {
         toast.success(`"${file.name}" is complete`);
       }).catch(err => {
@@ -54,6 +58,15 @@ function VideoX264() {
         label="Transcode Video"
       />
     </div>
+    <div style=${{ width: 'clamp(100px, 80vw, 300px)' }} >
+      <p>Threads</p>
+      <${Slider}
+        value=${threads}
+        step=${1} min=${1} max=${cpus} marks
+        valueLabelDisplay=on
+        onChange=${(e, v) => v === threads ? void 0 : setThreads(v)}
+      />
+    </div>
   `;
 
   const namingDom = html`<${NamingFields} nooutput ...${{
@@ -64,7 +77,7 @@ function VideoX264() {
 
   return html`
     <div class=video-x264>
-      <p>Drag files here to encode to x264</p>
+      <h2>Drag files here to encode to x264</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}
       ${namingDom}
