@@ -36,8 +36,10 @@ describe('[smoke tests]', () => {
     await app.utils.waitForVisible('#app');
 
     await waitForThrowable(async () => {
-      const buttons = await app.page.$$('button');
+      const buttons = await app.page.$$('p');
       expect(buttons).to.have.length.above(0);
+
+      expect(await app.utils.getText('p')).to.equal('Drag files here to change the video container');
     });
   });
 });
