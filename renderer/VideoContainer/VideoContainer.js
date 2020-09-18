@@ -1,5 +1,8 @@
-const { html, css, useContext, useState } = require('../tools/ui.js');
+const path = require('path');
+
+const { PrimaryButton, html, css, useContext, useState } = require('../tools/ui.js');
 const { Config, withConfig } = require('../tools/config.js');
+const videoTools = require('../../lib/video-tools.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
@@ -24,6 +27,23 @@ function VideoContainer() {
     setFile({ name, path, type, size });
   };
 
+  const onConvert = () => {
+    const _suffix = suffix ? suffix :
+      file.path.slice(-1 * format.length) === format ? '.container' : '';
+
+    videoTools.exec('container', [{
+      input: file.path,
+      format,
+      output,
+      prefix,
+      suffix: _suffix
+    }]).then(() => {
+      console.log('done');
+    }).catch(err => {
+      console.error(err);
+    });
+  };
+
   const children = [html`
     <div>
       <${FileInput} onchange=${onFile} />
@@ -45,6 +65,7 @@ function VideoContainer() {
   return html`
     <div class=videocontainer>
       ${children}
+      <${PrimaryButton} onclick=${onConvert}>convert<//>
     </div>
   `;
 }
