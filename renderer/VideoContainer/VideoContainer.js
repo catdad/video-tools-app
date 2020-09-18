@@ -29,7 +29,7 @@ function VideoContainer() {
 
   const onConvert = () => {
     const _suffix = suffix ? suffix :
-      file.path.slice(-1 * format.length) === format ? '.container' : '';
+      path.parse(file.path).ext === `.${format}` ? '.container' : '';
 
     videoTools.exec('container', [{
       input: file.path,
