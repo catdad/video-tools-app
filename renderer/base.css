@@ -40,7 +40,7 @@
   --secondary: #f46ea2;
   --color-text: #dfdfdf;
   --color-background: var(--lvl2);
-  --font-family: sans-serif;
+  --font-family: 'Noto Sans', sans-serif;
 }
 
 html, body {
