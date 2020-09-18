@@ -1,0 +1,10 @@
+.video-x264 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-x264 > * {
+  margin: 10px 0;
+}
