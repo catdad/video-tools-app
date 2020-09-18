@@ -6,7 +6,7 @@ const components = require('@material-ui/core');
 module.exports = ({ html }) => {
 
   const PrimaryButton = ({ ...props }) => html`
-    <${components.Button} size=small ...${props} style=${{ fontWeight: 'bold' }} color=primary variant=contained />
+    <${components.Button} size=small ...${props} style=${{ fontWeight: 700 }} color=primary variant=contained />
   `;
 
   const SecondaryButton = ({ ...props }) => html`

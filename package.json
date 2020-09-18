@@ -22,7 +22,7 @@
     "postinstall": "npm run -s prep",
     "prep": "npm-run-all --silent prep:*",
     "prep:icons": "svg-app-icon --destination icons < assets/icon.svg",
-    "prep:fonts": "mkdirp fonts && css-font-local-cache \"https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700\" > fonts/fonts.css",
+    "prep:fonts": "mkdirp fonts && css-font-local-cache \"https://fonts.googleapis.com/css2?family=Roboto:wght@400;700\" > fonts/fonts.css",
     "package": "run-script-os",
     "package:win32": "electron-builder --config .electron-builder.js --publish never --win",
     "package:darwin": "electron-builder --config .electron-builder.js --publish never --mac",
