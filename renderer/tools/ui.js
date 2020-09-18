@@ -7,8 +7,6 @@ const hooks = require('preact/hooks');
 const htm = require('htm');
 const html = htm.bind(h);
 
-const components = require('./ui-components.js')(html);
-
 const getVar = (elem, name) => getComputedStyle(elem).getPropertyValue(`--${name}`);
 const setVar = (elem, name, value) => elem.style.setProperty(`--${name}`, value);
 const getRootVar = (name) => getVar(document.documentElement, name);
@@ -28,6 +26,8 @@ const css = (csspath, dirname) => {
 
   document.head.appendChild(link);
 };
+
+const components = require('./ui-components.js')({ html });
 
 module.exports = {
   getVar, getRootVar, setVar, setRootVar,

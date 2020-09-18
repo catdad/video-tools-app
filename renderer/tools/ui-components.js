@@ -1,6 +1,6 @@
 const components = require('@material-ui/core');
 
-module.exports = html => {
+module.exports = ({ html }) => {
 
   const PrimaryButton = ({ ...props }) => html`
     <${components.Button} ...${props} color=primary variant=contained />
