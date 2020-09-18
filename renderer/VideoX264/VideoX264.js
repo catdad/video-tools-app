@@ -43,7 +43,7 @@ function VideoX264() {
 
   const controlsDom = html`
     <h3>Transcode</h3>
-    <p><i>Channels that are not transcoded will be copied directory.</i></p>
+    <p><i>Channels that are not transcoded will be copied directly.</i></p>
     <div>
       <${FormControlLabel}
         control=${html`<${Switch} checked=${audio} onChange=${(e, v) => setAudio(v)} />`}
