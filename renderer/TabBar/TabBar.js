@@ -4,7 +4,7 @@ module.exports = forwardRef(({ children, selected, onChange }, ref) => {
   return html`
     <div ref=${ref}>
       <${AppBar} position=static>
-        <${Tabs} value=${selected} onChange=${onChange}>
+        <${Tabs} value=${selected} onChange=${onChange} variant=scrollable scrollButtons=auto>
           ${children}
         <//>
       <//>

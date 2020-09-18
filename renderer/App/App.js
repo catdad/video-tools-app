@@ -16,8 +16,6 @@ css('./App.css');
 const TABS = [
   ['video container', VideoContainer],
   ['transcode to x264', VideoX264],
-  ['create gif', VideoX264],
-  ['extrant image', VideoX264],
 ].reduce((obj, [name, Component], idx) => Object.defineProperties(obj, {
   [idx]: {
     enumerable: false,
