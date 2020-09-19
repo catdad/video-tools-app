@@ -50,12 +50,14 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "callsites": "^3.1.0",
+    "ffmpeg-progress-stream": "^1.2.1",
     "fs-extra": "^9.0.1",
     "htm": "^3.0.4",
     "lodash": "^4.17.19",
     "notistack": "^1.0.0",
     "p-queue": "^6.6.1",
     "preact": "^10.4.8",
-    "video-tools": "https://github.com/catdad/video-tools/tarball/571e22cc98fa4b8add2b8de5ac298a9e9eb0d7b1"
+    "through2": "^4.0.2",
+    "video-tools": "https://github.com/catdad/video-tools/tarball/c59f07e75c226896b3cda7fef7411cf7b29eea67"
   }
 }
