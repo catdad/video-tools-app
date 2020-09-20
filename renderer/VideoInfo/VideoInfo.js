@@ -11,6 +11,7 @@ const FileInput = require('../FileInput/FileInput.js');
 //const ExpandMore = require('@material-ui/icons/ExpandMore');
 
 css('../styles/tab-panel.css');
+css('./VideoInfo.css');
 
 const getMeta = async files => {
   const results = [];
@@ -43,7 +44,7 @@ const ObjectListItem = ({ name = '', value = {} }) => {
         <${ListItemText} primary=${`${name} ${ open ? '⯅' : '⯆'}`} />
       <//>
       <${Collapse} in=${open} timeout=auto unmountOnExit >
-        <${ObjectList} value=${value} />
+        <${ObjectList} value=${value} className="nested" />
       <//>
     `;
   }
@@ -55,9 +56,9 @@ const ObjectListItem = ({ name = '', value = {} }) => {
   `;
 };
 
-const ObjectList = ({ value = {} }) => {
+const ObjectList = ({ value = {}, ...props }) => {
   return html`
-    <${List}>
+    <${List} ...${props}>
       ${Object.keys(value).map(key => html`
         <${ObjectListItem} name=${key} value=${value[key]} />
       `)}
