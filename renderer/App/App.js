@@ -10,12 +10,14 @@ const { withTheme } = require('../tools/theme.js');
 const TabBar = require('../TabBar/TabBar.js');
 const VideoContainer = require('../VideoContainer/VideoContainer.js');
 const VideoX264 = require('../VideoX264/VideoX264.js');
+const VideoInfo = require('../VideoInfo/VideoInfo.js');
 
 css('./App.css');
 
 const TABS = [
   ['video container', VideoContainer],
   ['transcode to x264', VideoX264],
+  ['info', VideoInfo],
 ].reduce((obj, [name, Component], idx) => Object.defineProperties(obj, {
   [idx]: {
     enumerable: false,
