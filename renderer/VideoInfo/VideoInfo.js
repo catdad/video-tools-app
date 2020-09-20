@@ -78,11 +78,9 @@ function VideoInfo() {
     });
   };
 
-  console.log(files);
-
   const elems = files.map(file => {
     return html`
-      <${Card}>
+      <${Card} raised className=card >
         <${CardContent}>
           <h3>${file.name}</h3>
           <${ObjectList} value=${file} />
