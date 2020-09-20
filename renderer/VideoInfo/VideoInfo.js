@@ -7,8 +7,8 @@ const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 const FileInput = require('../FileInput/FileInput.js');
 
-//const ExpandLess = require('@material-ui/icons/ExpandLess');
-//const ExpandMore = require('@material-ui/icons/ExpandMore');
+const ExpandLess = require('@material-ui/icons/ExpandLess').default;
+const ExpandMore = require('@material-ui/icons/ExpandMore').default;
 
 css('../styles/tab-panel.css');
 css('./VideoInfo.css');
@@ -41,7 +41,8 @@ const ObjectListItem = ({ name = '', value = {} }) => {
   if (typeof value === 'object') {
     return html`
       <${ListItem} button onClick=${() => setOpen(!open)} >
-        <${ListItemText} primary=${`${name} ${ open ? '⯅' : '⯆'}`} />
+        <${ListItemText} primary=${name} />
+        ${ open ? html`<${ExpandLess} />` : html`<${ExpandMore} />`}
       <//>
       <${Collapse} in=${open} timeout=auto unmountOnExit >
         <${ObjectList} value=${value} className="nested" />

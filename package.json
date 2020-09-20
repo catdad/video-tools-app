@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "callsites": "^3.1.0",
     "ffmpeg-progress-stream": "^1.2.1",
     "fs-extra": "^9.0.1",
