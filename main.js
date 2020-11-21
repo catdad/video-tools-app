@@ -3,7 +3,7 @@ const url = require('url');
 const EventEmitter = require('events');
 const events = new EventEmitter();
 
-const { app, BrowserWindow, ipcMain, screen, systemPreferences } = require('electron');
+const { app, BrowserWindow, screen, systemPreferences } = require('electron');
 
 require('./lib/app-id.js')(app);
 require('./lib/video-tools.js');
@@ -32,17 +32,6 @@ const setMacOSTheme = () => {
 if (systemPreferences.subscribeNotification) {
   systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', setMacOSTheme);
   setMacOSTheme();
-}
-
-// TODO remove?
-function onIpc(ev, data) {
-  switch (true) {
-    case data.type === 'dragstart':
-      ev.sender.startDrag({
-        file: data.filepath,
-        icon: '' // icon is required :(
-      });
-  }
 }
 
 function getLocationOnExistingScreen() {
@@ -130,8 +119,6 @@ function createWindow () {
     mainWindow.on('unmaximize', () => {
       config.setProp('window.maximized', false);
     });
-
-    ipcMain.on('message', onIpc);
 
     mainWindow.webContents.on('devtools-opened', () => {
       config.setProp('devToolsOpen', true);
