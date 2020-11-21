@@ -1,7 +1,5 @@
 const path = require('path');
 const url = require('url');
-const EventEmitter = require('events');
-const events = new EventEmitter();
 
 const { app, BrowserWindow, screen, systemPreferences } = require('electron');
 
@@ -13,9 +11,6 @@ const debounce = require('./lib/debounce.js');
 const icon = require('./lib/icon.js')();
 
 log.info(`electron node version: ${process.version}`);
-
-let mainWindow;
-let stayAlive;
 
 // macOS Mojave light/dark mode changed
 const setMacOSTheme = () => {
@@ -52,105 +47,91 @@ function getLocationOnExistingScreen() {
   return { width, height };
 }
 
-function createWindow () {
-  Promise.all([
+(async () => {
+  await Promise.all([
+    app.whenReady(),
     config.read()
-  ]).then(() => {
-    // TODO provide a toggle in the ui for this
-    config.setProp('ui-mode', 'dark');
+  ]);
 
-    const windowOptions = {
-      ...getLocationOnExistingScreen(),
-      backgroundColor: '#121212',
-      darkTheme: true,
-      webPreferences: {
-        nodeIntegration: true,
-        nodeIntegrationInWorker: true,
-        webviewTag: true,
-        enableRemoteModule: true
-      },
-      frame: process.platform === 'darwin' ? true : !config.getProp('experiments.framelessWindow'),
-      icon
-    };
+  // TODO provide a toggle in the ui for this
+  config.setProp('ui-mode', 'dark');
 
-    if (process.platform === 'darwin' && config.getProp('experiments.framelessWindow')) {
-      windowOptions.titleBarStyle = 'hidden';
-    }
+  const windowOptions = {
+    ...getLocationOnExistingScreen(),
+    backgroundColor: '#121212',
+    darkTheme: true,
+    webPreferences: {
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      webviewTag: true,
+      enableRemoteModule: true
+    },
+    frame: process.platform === 'darwin' ? true : !config.getProp('experiments.framelessWindow'),
+    icon
+  };
 
-    // Create the browser window.
-    mainWindow = new BrowserWindow(windowOptions);
+  if (process.platform === 'darwin' && config.getProp('experiments.framelessWindow')) {
+    windowOptions.titleBarStyle = 'hidden';
+  }
 
-    stayAlive = false;
+  // Create the browser window.
+  const mainWindow = new BrowserWindow(windowOptions);
 
-    if (config.getProp('window.maximized')) {
-      mainWindow.maximize();
-    }
+  if (config.getProp('window.maximized')) {
+    mainWindow.maximize();
+  }
 
-    mainWindow.loadURL(url.format({
-      pathname: path.join(__dirname, 'public', 'index.html'),
-      protocol: 'file:',
-      slashes: true
-    }));
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'public', 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
 
-    mainWindow.on('closed', () => {
-      mainWindow = null;
-    });
-
-    const onBoundsChange = debounce(() => {
-      if (mainWindow.isMaximized() || mainWindow.isMinimized()) {
-        return;
-      }
-
-      const bounds = mainWindow.getBounds();
-
-      config.setProp('window.x', bounds.x);
-      config.setProp('window.y', bounds.y);
-      config.setProp('window.width', bounds.width);
-      config.setProp('window.height', bounds.height);
-    }, 500);
-
-    mainWindow.on('resize', onBoundsChange);
-    mainWindow.on('move', onBoundsChange);
-
-    mainWindow.on('maximize', () => {
-      config.setProp('window.maximized', true);
-    });
-
-    mainWindow.on('unmaximize', () => {
-      config.setProp('window.maximized', false);
-    });
-
-    mainWindow.webContents.on('devtools-opened', () => {
-      config.setProp('devToolsOpen', true);
-    });
-
-    mainWindow.webContents.on('devtools-closed', () => {
-      config.setProp('devToolsOpen', false);
-    });
-
-    if (config.getProp('devToolsOpen')) {
-      mainWindow.webContents.openDevTools();
-    }
-
-    events.on('reload', () => {
-      mainWindow.reload();
-    });
-
-    events.on('reset', () => {
-      stayAlive = true;
-
-      log.info('reopening main window');
-      mainWindow.once('close', () => {
-        createWindow();
-      });
-
-      mainWindow.close();
-      mainWindow = null;
-    });
-  }).catch((err) => {
-    throw err;
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
-}
+
+  const onBoundsChange = debounce(() => {
+    if (mainWindow.isMaximized() || mainWindow.isMinimized()) {
+      return;
+    }
+
+    const bounds = mainWindow.getBounds();
+
+    config.setProp('window.x', bounds.x);
+    config.setProp('window.y', bounds.y);
+    config.setProp('window.width', bounds.width);
+    config.setProp('window.height', bounds.height);
+  }, 500);
+
+  mainWindow.on('resize', onBoundsChange);
+  mainWindow.on('move', onBoundsChange);
+
+  mainWindow.on('maximize', () => {
+    config.setProp('window.maximized', true);
+  });
+
+  mainWindow.on('unmaximize', () => {
+    config.setProp('window.maximized', false);
+  });
+
+  mainWindow.webContents.on('devtools-opened', () => {
+    config.setProp('devToolsOpen', true);
+  });
+
+  mainWindow.webContents.on('devtools-closed', () => {
+    config.setProp('devToolsOpen', false);
+  });
+
+  if (config.getProp('devToolsOpen')) {
+    mainWindow.webContents.openDevTools();
+  }
+})().then(() => {
+  log.info('application is running');
+}).catch(err => {
+  log.error('application has failed to start', err);
+  process.exitCode = 1;
+});
 
 // It's common to need to do some cleanup before closing, so if
 // you do, do it here
@@ -158,26 +139,6 @@ app.once('before-quit', () => {
   log.info(`${app.getName()} is closing, cleaning up`);
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform === 'darwin' || stayAlive) {
-    events.removeAllListeners();
-  } else {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
+  app.quit();
 });
