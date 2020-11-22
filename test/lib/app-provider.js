@@ -18,21 +18,22 @@ function isInView(containerBB, elBB) {
 }
 
 const utils = page => ({
+  exists: async selector => await page.evaluate(s => !!document.querySelector(s), selector),
   click: async selector => await page.click(selector),
   getRect: async selector => await page.evaluate(s => document.querySelector(s).getBoundingClientRect(), selector),
-  getText: async selector => {
-    return await page.evaluate(s => document.querySelector(s).innerText, selector);
-  },
+  getText: async selector => await page.evaluate(s => document.querySelector(s).innerText, selector),
   waitForVisible: async selector => {
-    const { getRect } = utils(page);
-    const pageRect = await getRect('body');
+    const { exists, getRect } = utils(page);
 
     await waitForThrowable(async () => {
+      expect(await exists(selector))
+        .to.equal(true, `"${selector}" does not exist`);
+
+      const pageRect = await getRect('body');
       const elemRect = await getRect(selector);
 
-      if (!isInView(pageRect, elemRect)) {
-        throw new Error(`element "${selector}" is still not visible`);
-      }
+      expect(isInView(pageRect, elemRect))
+        .to.equal(true, `element "${selector}" is still not visible`);
     });
   },
   waitForElementCount: async (selector, count = 1) => {
