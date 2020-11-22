@@ -36,10 +36,10 @@
   --font-size: 16px;
 
   /* MUI theme variables */
-  --primary: #c93d7e;
-  --secondary: #f46ea2;
-  --color-text: #dfdfdf;
-  --color-background: var(--lvl2);
+  --primary: #9d0200;
+  --secondary: #e87575;
+  --color-text: #e7ecef;
+  --color-background: var(--lvl1);
   --font-family: 'Roboto', sans-serif;
 }
 
