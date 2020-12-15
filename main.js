@@ -10,6 +10,7 @@ require('./lib/video-tools.js');
 const log = require('./lib/log.js')('main');
 const config = require('./lib/config.js');
 const debounce = require('./lib/debounce.js');
+const icon = require('./lib/icon.js')();
 
 log.info(`electron node version: ${process.version}`);
 
@@ -62,7 +63,8 @@ function createWindow () {
         webviewTag: true,
         enableRemoteModule: true
       },
-      frame: process.platform === 'darwin' ? true : !config.getProp('experiments.framelessWindow')
+      frame: process.platform === 'darwin' ? true : !config.getProp('experiments.framelessWindow'),
+      icon
     };
 
     if (process.platform === 'darwin' && config.getProp('experiments.framelessWindow')) {
