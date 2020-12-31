@@ -87,10 +87,6 @@ function getLocationOnExistingScreen() {
     slashes: true
   }));
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
   const onBoundsChange = debounce(() => {
     if (mainWindow.isMaximized() || mainWindow.isMinimized()) {
       return;
