@@ -33,7 +33,7 @@
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "css-font-local-cache": "https://github.com/catdad-experiments/css-font-local-cache/tarball/b95ef5270b7a0916bcf4dc0b9978df500492221a",
-    "electron": "^10.1.1",
+    "electron": "^10.2.0",
     "electron-background": "^1.0.0",
     "electron-builder": "^22.7.0",
     "electronmon": "^1.1.2",
