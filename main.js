@@ -61,6 +61,7 @@ function getLocationOnExistingScreen() {
     backgroundColor: '#121212',
     darkTheme: true,
     webPreferences: {
+      contextIsolation: false,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       webviewTag: true,
