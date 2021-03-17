@@ -55,8 +55,6 @@ function VideoLUTs() {
     return memo;
   }, {});
 
-  console.log('displaying', lutsMap);
-
   return html`
     <div class=tab-panel>
       <h2>LUTs</h2>
