@@ -58,11 +58,7 @@ module.exports = ({ html, hooks }) => {
         <${ObjectListItem} name=${key} value=${value[key]} />
       `);
 
-    return html`
-      <${List} ...${props}>
-        ${listChildren}
-      <//>
-    `;
+    return html`<${List} ...${props}>${listChildren}<//>`;
   };
 
   return {
