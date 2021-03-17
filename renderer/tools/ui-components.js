@@ -38,6 +38,14 @@ module.exports = ({ html, hooks }) => {
       `;
     }
 
+    if (typeof value === 'function') {
+      return html`
+        <${ListItem}>
+          <${ListItemText} primary=${`${name}`} onclick=${value} />
+        <//>
+      `;
+    }
+
     if (name) {
       name += ': ';
     }
