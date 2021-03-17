@@ -1,0 +1,16 @@
+.video-luts .card {
+  --spacing: 16px;
+  width: calc(100% - var(--spacing) - var(--spacing));
+  margin-top: 0;
+  margin-bottom: var(--spacing);
+  background: var(--lvl3);
+}
+
+.video-luts .nested {
+  padding-left: 1rem;
+}
+
+.video-luts img {
+  max-width: 100%;
+  max-height: 50vh;
+}

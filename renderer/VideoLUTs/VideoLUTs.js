@@ -15,12 +15,14 @@ const FileInput = require('../FileInput/FileInput.js');
 const { Config, withConfig } = require('../tools/config.js');
 
 css('../styles/tab-panel.css');
+css('./VideoLUTs.css');
 
 const LUTS_DIR = 'videoluts.luts-dir';
 
 const exists = async file => {
   try {
-    await fs.promises.stat(file);
+    // TODO seems like the promise-based version hangs?
+    fs.statSync(file);
     return true;
   } catch (e) {
     return false;
@@ -30,6 +32,7 @@ const exists = async file => {
 function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
+  const [image, setImage] = useState(null);
 
   const onLUTs = ([dir]) => {
     if (!dir) return;
@@ -81,15 +84,29 @@ function VideoLUTs() {
     `;
   }
 
-  return html`
-    <div class=tab-panel>
-      <h2>LUTs</h2>
-
-      <${Card} raised className=card >
-        <${CardContent}>
-          <${ObjectList} value=${luts.map} />
-        <//>
+  const renderedLuts = html`
+    <h2>LUTs</h2>
+    <${Card} raised className=card >
+      <${CardContent}>
+        <${ObjectList} value=${luts.map} />
       <//>
+    <//>
+  `;
+
+  const renderedImage = image ?
+    html`
+      <img src="${image}" />
+      <${FileInput} nobutton onchange=${([img]) => setImage(img.path)} />
+    ` :
+    html`
+      <h2>Drag an image to render</h2>
+      <${FileInput} nobutton onchange=${([img]) => setImage(img.path)} />
+    `;
+
+  return html`
+    <div class="tab-panel video-luts">
+      ${renderedImage}
+      ${renderedLuts}
     </div>`;
 }
 
