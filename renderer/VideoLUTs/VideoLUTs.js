@@ -46,10 +46,20 @@ function VideoLUTs() {
       // TODO seems like the promise-based version hangs?
       const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
 
+      const lutsMap = cubes.reduce((memo, item) => {
+        const name = path.basename(item);
+        const dir = path.dirname(item);
+
+        memo[dir] = memo[dir] || [];
+        memo[dir].push(name);
+
+        return memo;
+      }, {});
+
       config.set(LUTS_DIR, dirPath);
       setLuts({
         cwd: dirPath,
-        luts: cubes
+        map: lutsMap
       });
     })().catch(err => {
       /* eslint-disable-next-line no-console */
@@ -71,23 +81,13 @@ function VideoLUTs() {
     `;
   }
 
-  const lutsMap = luts.luts.reduce((memo, item) => {
-    const name = path.basename(item);
-    const dir = path.dirname(item);
-
-    memo[dir] = memo[dir] || [];
-    memo[dir].push(name);
-
-    return memo;
-  }, {});
-
   return html`
     <div class=tab-panel>
       <h2>LUTs</h2>
 
       <${Card} raised className=card >
         <${CardContent}>
-          <${ObjectList} value=${lutsMap} />
+          <${ObjectList} value=${luts.map} />
         <//>
       <//>
     </div>`;
