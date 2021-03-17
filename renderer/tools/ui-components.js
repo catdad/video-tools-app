@@ -38,19 +38,29 @@ module.exports = ({ html, hooks }) => {
       `;
     }
 
+    if (name) {
+      name += ': ';
+    }
+
     return html`
       <${ListItem}>
-        <${ListItemText} primary=${`${name}: ${value}`} />
+        <${ListItemText} primary=${`${name}${value}`} />
       <//>
     `;
   };
 
   const ObjectList = ({ value = {}, ...props }) => {
+    const listChildren = Array.isArray(value) ?
+      value.map(val => html`
+        <${ObjectListItem} value=${val} />
+      `) :
+      Object.keys(value).map(key => html`
+        <${ObjectListItem} name=${key} value=${value[key]} />
+      `);
+
     return html`
       <${List} ...${props}>
-        ${Object.keys(value).map(key => html`
-          <${ObjectListItem} name=${key} value=${value[key]} />
-        `)}
+        ${listChildren}
       <//>
     `;
   };
