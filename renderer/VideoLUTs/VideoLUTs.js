@@ -1,5 +1,6 @@
 const path = require('path');
 const glob = require('fast-glob');
+const fs = require('fs');
 
 const {
   Card, CardContent, ObjectList,
@@ -17,6 +18,15 @@ css('../styles/tab-panel.css');
 
 const LUTS_DIR = 'videoluts.luts-dir';
 
+const exists = async file => {
+  try {
+    await fs.promises.stat(file);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
@@ -24,8 +34,14 @@ function VideoLUTs() {
   const onLUTs = ([dir]) => {
     if (!dir) return;
 
+    const { path: dirPath } = dir;
+
     (async () => {
-      const dirPath = dir.path;
+      const real = await exists(dirPath);
+
+      if (!real) {
+        return;
+      }
 
       // TODO seems like the promise-based version hangs?
       const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
