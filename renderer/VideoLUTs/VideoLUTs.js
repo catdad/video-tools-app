@@ -10,7 +10,6 @@ const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 
 const FileInput = require('../FileInput/FileInput.js');
-//const NamingFields = require('../NamingFields/NamingFields.js');
 
 const { Config, withConfig } = require('../tools/config.js');
 
@@ -94,9 +93,9 @@ function VideoLUTs() {
 
     videoTools.exec('lut', [args]).then(() => {
       setEditedImage(output);
-    }).catch(err => {
+    }).catch(() => {
       setEditedImage(null);
-      console.log('ERROR APPLYING LUT', err);
+      toast.error(`Failed to apply "${which}" LUT`);
     });
   };
 
@@ -121,6 +120,7 @@ function VideoLUTs() {
 
   const renderedImage = image ?
     html`
+      <h2>${editedImage ? 'Edited Image' : 'Original Image'}</h2>
       <img src="${editedImage || image}" />
       <${FileInput} nobutton onchange=${onImage} />
     ` :
