@@ -7,7 +7,7 @@ const {
   html, css, useContext, useState
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
-//const videoTools = require('../../lib/video-tools.js');
+const videoTools = require('../../lib/video-tools.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 //const NamingFields = require('../NamingFields/NamingFields.js');
@@ -33,8 +33,9 @@ function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
   const [image, setImage] = useState(null);
+  const [editedImage, setEditedImage] = useState(null);
 
-  const onLUTs = ([dir]) => {
+  const onLUTs = ([dir] = []) => {
     if (!dir) return;
 
     const { path: dirPath } = dir;
@@ -49,26 +50,23 @@ function VideoLUTs() {
       // TODO seems like the promise-based version hangs?
       const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
 
-      const lutsMap = cubes.reduce((memo, item) => {
-        const name = path.basename(item);
-        const dir = path.dirname(item);
-
-        memo[dir] = memo[dir] || [];
-        memo[dir].push(name);
-
-        return memo;
-      }, {});
-
       config.set(LUTS_DIR, dirPath);
       setLuts({
         cwd: dirPath,
-        map: lutsMap
+        list: cubes
       });
     })().catch(err => {
       /* eslint-disable-next-line no-console */
       console.error('could not load LUTs:', err);
       toast.error(`could not load LUTs:\n${err.message}`);
     });
+  };
+
+  const onImage = ([img] = []) => {
+    if (!img) return;
+
+    setEditedImage(null);
+    setImage(img.path);
   };
 
   if (luts === null && config.get(LUTS_DIR)) {
@@ -84,23 +82,51 @@ function VideoLUTs() {
     `;
   }
 
+  const onLut = which => () => {
+    if (!image) return;
+
+    const outdir = path.dirname(image);
+    const lutname = path.basename(which);
+    const imgname = path.basename(image);
+    const output = path.resolve(outdir, `${imgname}.${lutname}.${Math.random()}.jpg`);
+
+    const args = { input: image, output, lut: which };
+
+    videoTools.exec('lut', [args]).then(() => {
+      setEditedImage(output);
+    }).catch(err => {
+      setEditedImage(null);
+      console.log('ERROR APPLYING LUT', err);
+    });
+  };
+
+  const lutsMap = luts.list.reduce((memo, item) => {
+    const name = path.basename(item);
+    const dir = path.dirname(item);
+
+    memo[dir] = memo[dir] || {};
+    memo[dir][name] = onLut(path.resolve(luts.cwd, item));
+
+    return memo;
+  }, {});
+
   const renderedLuts = html`
     <h2>LUTs</h2>
     <${Card} raised className=card >
       <${CardContent}>
-        <${ObjectList} value=${luts.map} />
+        <${ObjectList} value=${lutsMap} />
       <//>
     <//>
   `;
 
   const renderedImage = image ?
     html`
-      <img src="${image}" />
-      <${FileInput} nobutton onchange=${([img]) => setImage(img.path)} />
+      <img src="${editedImage || image}" />
+      <${FileInput} nobutton onchange=${onImage} />
     ` :
     html`
       <h2>Drag an image to render</h2>
-      <${FileInput} nobutton onchange=${([img]) => setImage(img.path)} />
+      <${FileInput} nobutton onchange=${onImage} />
     `;
 
   return html`
