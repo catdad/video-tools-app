@@ -3,7 +3,7 @@ const glob = require('fast-glob');
 
 const {
   Card, CardContent, ObjectList,
-  html, css, useState
+  html, css, useContext, useState
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 //const videoTools = require('../../lib/video-tools.js');
@@ -11,32 +11,42 @@ const toast = require('../tools/toast.js');
 const FileInput = require('../FileInput/FileInput.js');
 //const NamingFields = require('../NamingFields/NamingFields.js');
 
+const { Config, withConfig } = require('../tools/config.js');
+
 css('../styles/tab-panel.css');
 
+const LUTS_DIR = 'videoluts.luts-dir';
+
 function VideoLUTs() {
+  const config = useContext(Config);
   const [luts, setLuts] = useState(null);
 
-  if (!luts) {
-    const onLUTs = ([dir]) => {
-      if (!dir) return;
+  const onLUTs = ([dir]) => {
+    if (!dir) return;
 
-      (async () => {
-        const dirPath = dir.path;
+    (async () => {
+      const dirPath = dir.path;
 
-        // TODO seems like the promise-based version hangs?
-        const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
+      // TODO seems like the promise-based version hangs?
+      const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
 
-        setLuts({
-          cwd: dirPath,
-          luts: cubes
-        });
-      })().catch(err => {
-        /* eslint-disable-next-line no-console */
-        console.error('could not load LUTs:', err);
-        toast.error(`could not load LUTs:\n${err.message}`);
+      config.set(LUTS_DIR, dirPath);
+      setLuts({
+        cwd: dirPath,
+        luts: cubes
       });
-    };
+    })().catch(err => {
+      /* eslint-disable-next-line no-console */
+      console.error('could not load LUTs:', err);
+      toast.error(`could not load LUTs:\n${err.message}`);
+    });
+  };
 
+  if (luts === null && config.get(LUTS_DIR)) {
+    onLUTs([{ path: config.get(LUTS_DIR) }]);
+  }
+
+  if (luts === null) {
     return html`
       <div class=tab-panel>
         <h2>Drag a LUTs folder</h2>
@@ -67,4 +77,4 @@ function VideoLUTs() {
     </div>`;
 }
 
-module.exports = VideoLUTs;
+module.exports = withConfig(VideoLUTs);
