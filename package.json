@@ -61,6 +61,6 @@
     "p-queue": "^6.6.2",
     "preact": "^10.5.12",
     "through2": "^4.0.2",
-    "video-tools": "https://github.com/catdad/video-tools/tarball/3edae4abed5ffb4d30364729e1ed4bfee3b4a435"
+    "video-tools": "https://github.com/catdad/video-tools/tarball/1c3caee74734650ad7b446434d05a7f730acd37b"
   }
 }
