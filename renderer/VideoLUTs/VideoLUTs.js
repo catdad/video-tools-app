@@ -132,9 +132,7 @@ function VideoLUTs() {
     <//>
   `;
 
-  const onCopy = () => {
-    clipboard.writeImage(nativeImage.createFromBuffer(editedImageBuffer));
-  };
+  const onCopy = () => void clipboard.writeImage(nativeImage.createFromBuffer(editedImageBuffer));
 
   const renderedImage = image ?
     html`
