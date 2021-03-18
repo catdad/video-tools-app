@@ -1,6 +1,10 @@
 const path = require('path');
+const { pipeline } = require('stream');
+const { promisify } = require('util');
 const fs = require('fs-extra');
 const glob = require('fast-glob');
+const byline = require('byline');
+const through = require('through2');
 const { clipboard, nativeImage } = require('electron');
 
 const {
@@ -77,31 +81,60 @@ function VideoLUTs() {
     `;
   }
 
+  const copyLut = async lut => {
+    // TODO use temp directory
+    const out = path.resolve(__dirname, '../../assets', `${Math.random()}.cube`);
+
+    await promisify(pipeline)(
+      fs.createReadStream(lut, { encoding: 'utf8' }),
+      byline.createStream(),
+      through((line, _, cb) => {
+        if (/^[0-9]/.test(line)) {
+          return cb(null, `${line}\n`);
+        }
+
+        if (/^LUT_3D_SIZE/.test(line)) {
+          return cb(null, `${line}\n`);
+        }
+
+        cb(null, `# ${line}\n`);
+      }),
+      fs.createWriteStream(out)
+    );
+
+    return out;
+  };
+
   const onLut = lut => () => {
     if (!image) return;
 
-    const args = { input: image, output: '-', lib: true, lut };
-    const name = `${path.parse(image).name}.${path.parse(lut).name}.jpg`;
+    (async () => {
+      console.time('copy');
+      // TODO this is slower than I would line
+      const lutCopy = await copyLut(lut);
+      console.timeEnd('copy');
 
-    videoTools.exec('lut', [args])
-      .then((img) => {
-        const buff = Buffer.from(img);
-        const url = `data:image/jpeg;base64,${buff.toString('base64')}`;
-        setData({
-          ...data,
-          editedImageUrl: url,
-          editedImageBuffer: buff,
-          downloadName: name
-        });
-      })
-      .catch(() => {
-        setData({
-          ...data,
-          editedImageUrl: null,
-          editedImageBuffer: null
-        });
-        toast.error(`Failed to apply "${lut}" LUT`);
+      const args = { input: image, output: '-', lib: true, lut: lutCopy };
+      const name = `${path.parse(image).name}.${path.parse(lut).name}.jpg`;
+
+      const img = await videoTools.exec('lut', [args]);
+      const buff = Buffer.from(img);
+      const url = `data:image/jpeg;base64,${buff.toString('base64')}`;
+
+      setData({
+        ...data,
+        editedImageUrl: url,
+        editedImageBuffer: buff,
+        downloadName: name
       });
+    })().catch(() => {
+      setData({
+        ...data,
+        editedImageUrl: null,
+        editedImageBuffer: null
+      });
+      toast.error(`Failed to apply "${lut}" LUT`);
+    });
   };
 
   const lutsMap = luts.list.reduce((memo, item) => {

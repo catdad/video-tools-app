@@ -51,6 +51,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
+    "byline": "^5.0.0",
     "callsites": "^3.1.0",
     "fast-glob": "^3.2.5",
     "ffmpeg-progress-stream": "^1.2.1",
@@ -62,5 +63,11 @@
     "preact": "^10.5.12",
     "through2": "^4.0.2",
     "video-tools": "https://github.com/catdad/video-tools/tarball/1c3caee74734650ad7b446434d05a7f730acd37b"
+  },
+  "electronmon": {
+    "patterns": [
+      "!assets/**",
+      "!test/**"
+    ]
   }
 }
