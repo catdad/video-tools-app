@@ -40,7 +40,7 @@ function VideoLUTs() {
 
       // TODO seems like the promise-based version hangs?
       // actually, promises in general hang the elecrtron process?
-      const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
+      const cubes = glob.sync(['**/*.cube', '**/*.CUBE'], { cwd: dirPath });
 
       config.set(LUTS_DIR, dirPath);
       setLuts({
