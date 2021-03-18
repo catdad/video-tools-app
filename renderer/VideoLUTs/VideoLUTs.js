@@ -81,22 +81,26 @@ function VideoLUTs() {
     `;
   }
 
-  const onLut = which => () => {
+  const onLut = lut => () => {
     if (!image) return;
 
-    const outdir = path.dirname(image);
-    const lutname = path.basename(which);
-    const imgname = path.basename(image);
-    const output = path.resolve(outdir, `${imgname}.${lutname}.${Math.random()}.jpg`);
+    // TODO these will be used later for save functionality
+    //    const outdir = path.dirname(image);
+    //    const lutname = path.basename(lut);
+    //    const imgname = path.basename(image);
+    //    const output = path.resolve(outdir, `${imgname}.${lutname}.${Math.random()}.jpg`);
 
-    const args = { input: image, output, lut: which };
+    const args = { input: image, output: '-', lib: true, lut };
 
-    videoTools.exec('lut', [args]).then(() => {
-      setEditedImage(output);
-    }).catch(() => {
-      setEditedImage(null);
-      toast.error(`Failed to apply "${which}" LUT`);
-    });
+    videoTools.exec('lut', [args])
+      .then((img) => {
+        const url = `data:image/jpeg;base64,${Buffer.from(img).toString('base64')}`;
+        setEditedImage(url);
+      })
+      .catch(() => {
+        setEditedImage(null);
+        toast.error(`Failed to apply "${lut}" LUT`);
+      });
   };
 
   const lutsMap = luts.list.reduce((memo, item) => {
