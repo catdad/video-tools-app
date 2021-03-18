@@ -1,6 +1,7 @@
 const path = require('path');
-const glob = require('fast-glob');
 const fs = require('fs');
+const glob = require('fast-glob');
+const { clipboard, nativeImage } = require('electron');
 
 const {
   Card, CardContent, ObjectList,
@@ -131,10 +132,17 @@ function VideoLUTs() {
     <//>
   `;
 
+  const onCopy = () => {
+    clipboard.writeImage(nativeImage.createFromBuffer(editedImageBuffer));
+  };
+
   const renderedImage = image ?
     html`
       <h2>${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}</h2>
       <img src="${editedImageUrl || image}" />
+      <div>
+        <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
+      </div>
       <${FileInput} nobutton onchange=${onImage} />
     ` :
     html`
