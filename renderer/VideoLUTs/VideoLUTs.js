@@ -31,8 +31,9 @@ const exists = async file => {
 function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
-  const [image, setImage] = useState(null);
-  const [editedImage, setEditedImage] = useState(null);
+  const [data, setData] = useState({});
+
+  const { image, editedImageUrl, editedImageBuffer, downloadName } = data;
 
   const onLUTs = ([dir] = []) => {
     if (!dir) return;
@@ -64,8 +65,11 @@ function VideoLUTs() {
   const onImage = ([img] = []) => {
     if (!img) return;
 
-    setEditedImage(null);
-    setImage(img.path);
+    setData({
+      image: img.path,
+      editedImageUrl: null,
+      editedImageBuffer: null
+    });
   };
 
   if (luts === null && config.get(LUTS_DIR)) {
@@ -84,21 +88,26 @@ function VideoLUTs() {
   const onLut = lut => () => {
     if (!image) return;
 
-    // TODO these will be used later for save functionality
-    //    const outdir = path.dirname(image);
-    //    const lutname = path.basename(lut);
-    //    const imgname = path.basename(image);
-    //    const output = path.resolve(outdir, `${imgname}.${lutname}.${Math.random()}.jpg`);
-
     const args = { input: image, output: '-', lib: true, lut };
+    const name = `${path.parse(image).name}.${path.parse(lut).name}.jpg`;
 
     videoTools.exec('lut', [args])
       .then((img) => {
-        const url = `data:image/jpeg;base64,${Buffer.from(img).toString('base64')}`;
-        setEditedImage(url);
+        const buff = Buffer.from(img);
+        const url = `data:image/jpeg;base64,${buff.toString('base64')}`;
+        setData({
+          ...data,
+          editedImageUrl: url,
+          editedImageBuffer: buff,
+          downloadName: name
+        });
       })
       .catch(() => {
-        setEditedImage(null);
+        setData({
+          ...data,
+          editedImageUrl: null,
+          editedImageBuffer: null
+        });
         toast.error(`Failed to apply "${lut}" LUT`);
       });
   };
@@ -124,8 +133,8 @@ function VideoLUTs() {
 
   const renderedImage = image ?
     html`
-      <h2>${editedImage ? 'Edited Image' : 'Original Image'}</h2>
-      <img src="${editedImage || image}" />
+      <h2>${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}</h2>
+      <img src="${editedImageUrl || image}" />
       <${FileInput} nobutton onchange=${onImage} />
     ` :
     html`
