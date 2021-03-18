@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const glob = require('fast-glob');
 const { clipboard, nativeImage } = require('electron');
 
@@ -19,16 +19,6 @@ css('./VideoLUTs.css');
 
 const LUTS_DIR = 'videoluts.luts-dir';
 
-const exists = async file => {
-  try {
-    // TODO seems like the promise-based version hangs?
-    fs.statSync(file);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
@@ -41,14 +31,15 @@ function VideoLUTs() {
 
     const { path: dirPath } = dir;
 
-    (async () => {
-      const real = await exists(dirPath);
+    Promise.resolve().then(async () => {
+      const real = await fs.pathExists(dirPath);
 
       if (!real) {
         return;
       }
 
       // TODO seems like the promise-based version hangs?
+      // actually, promises in general hang the elecrtron process?
       const cubes = glob.sync(['**/*.cube'], { cwd: dirPath });
 
       config.set(LUTS_DIR, dirPath);
@@ -56,7 +47,7 @@ function VideoLUTs() {
         cwd: dirPath,
         list: cubes
       });
-    })().catch(err => {
+    }).catch(err => {
       /* eslint-disable-next-line no-console */
       console.error('could not load LUTs:', err);
       toast.error(`could not load LUTs:\n${err.message}`);
