@@ -30,6 +30,15 @@ const findCubes = async (cwd) => {
   return cubes.sort((a, b) => a.localeCompare(b));
 };
 
+const Panel = ({ class: className, title, children }) => html`
+  <div class="panel ${className}">
+    <h2>${title}</h2>
+    <div class="panel-body">
+      ${children}
+    </div>
+  </div>
+`;
+
 function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
@@ -151,10 +160,11 @@ function VideoLUTs() {
   }, {});
 
   const renderedLuts = html`
-    <h2>LUTs</h2>
-    <${Card} raised className=card >
-      <${CardContent}>
-        <${ObjectList} value=${lutsMap} />
+    <${Panel} class="luts" title="LUTs">
+      <${Card} raised className=card >
+        <${CardContent}>
+          <${ObjectList} value=${lutsMap} />
+        <//>
       <//>
     <//>
   `;
@@ -163,16 +173,18 @@ function VideoLUTs() {
 
   const renderedImage = image ?
     html`
-      <h2>${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}</h2>
-      <img src="${editedImageUrl || image}" />
-      <div>
-        <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
-      </div>
-      <${FileInput} nobutton onchange=${onImage} />
+      <${Panel} class="img" title="${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}">
+        <div><img src="${editedImageUrl || image}" /></div>
+        <div class="buttons">
+          <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
+        </div>
+        <${FileInput} nobutton onchange=${onImage} />
+      <//>
     ` :
     html`
-      <h2>Drag an image to render</h2>
-      <${FileInput} nobutton onchange=${onImage} />
+      <${Panel} class="img" title="Drag an image to render">
+        <${FileInput} nobutton onchange=${onImage} />
+      <//>
     `;
 
   return html`
