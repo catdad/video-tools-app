@@ -158,7 +158,6 @@ function VideoLUTs() {
       const name = `${path.parse(image).name}.${path.parse(lut).name}.jpg`;
 
       const { url, buffer } = await usingFile({ prefix: 'lut-', extension: 'cube' }, async (lutCopy) => {
-        // TODO this is slower than I would like
         await copyLut(lut, lutCopy);
 
         const args = { input: image, output: '-', lib: true, lut: lutCopy };
