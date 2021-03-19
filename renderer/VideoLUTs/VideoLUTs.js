@@ -3,7 +3,6 @@ const { pipeline } = require('stream');
 const { promisify } = require('util');
 const fs = require('fs-extra');
 const glob = require('fast-glob');
-const byline = require('byline');
 const through = require('through2');
 const { clipboard, nativeImage } = require('electron');
 
@@ -103,20 +102,50 @@ function VideoLUTs() {
     `;
   }
 
+  const readLine = text => {
+    const linefeed = text.indexOf('\n');
+    return {
+      line: text.slice(0, linefeed),
+      remainder: text.slice(linefeed + 1)
+    };
+  };
+
   const copyLut = async (from, to) => {
+    let numLines = 0;
+    const controlNumLines = 5;
+
     await promisify(pipeline)(
-      fs.createReadStream(from, { encoding: 'utf8' }),
-      byline.createStream(),
-      through((line, _, cb) => {
-        if (/^[0-9]/.test(line)) {
-          return cb(null, `${line}\n`);
+      fs.createReadStream(from),
+      // most luts will contain the DOMAIN parameters at the top
+      // so once we get to the lookup table we have parsed the entire
+      // header and there is no need to continue parsing lines
+      through((chunk, _, cb) => {
+        if (numLines > controlNumLines) {
+          return cb(null, chunk);
         }
 
-        if (/^LUT_3D_SIZE/.test(line)) {
-          return cb(null, `${line}\n`);
+        let result = '';
+        let remainder = chunk.toString();
+        let line;
+
+        while (remainder.indexOf('\n') >= 0) {
+          ({ line, remainder } = readLine(remainder));
+
+          line = line.trim();
+
+          if (/^[0-9]/.test(line)) {
+            numLines += 1;
+            result += `${line}\n`;
+          } else if (/^LUT_3D_SIZE/.test(line)) {
+            result += `${line}\n`;
+          }
+
+          if (numLines > controlNumLines) {
+            return cb(null, `${result}${remainder}`);
+          }
         }
 
-        return cb();
+        return cb(null, result);
       }),
       fs.createWriteStream(to)
     );
