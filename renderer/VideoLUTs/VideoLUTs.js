@@ -170,6 +170,7 @@ function VideoLUTs() {
   `;
 
   const onCopy = () => void clipboard.writeImage(nativeImage.createFromBuffer(editedImageBuffer));
+  const onReset = () => void setData({ ...data, editedImageUrl: null, editedImageBuffer: null });
 
   const renderedImage = image ?
     html`
@@ -177,6 +178,7 @@ function VideoLUTs() {
         <img src="${editedImageUrl || image}" />
         <div class="buttons">
           <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
+          <button onclick=${onReset} disabled=${!editedImageBuffer}>Reset</button>
         </div>
         <${FileInput} nobutton onchange=${onImage} />
       <//>
