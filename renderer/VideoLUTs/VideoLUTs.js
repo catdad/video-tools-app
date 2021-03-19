@@ -30,6 +30,55 @@ const findCubes = async (cwd) => {
   return cubes.sort((a, b) => a.localeCompare(b));
 };
 
+const readLine = text => {
+  const linefeed = text.indexOf('\n');
+  return {
+    line: text.slice(0, linefeed),
+    remainder: text.slice(linefeed + 1)
+  };
+};
+
+const copyLut = async (from, to) => {
+  let numLines = 0;
+  const controlNumLines = 5;
+
+  await promisify(pipeline)(
+    fs.createReadStream(from),
+    // most luts will contain the DOMAIN parameters at the top
+    // so once we get to the lookup table we have parsed the entire
+    // header and there is no need to continue parsing lines
+    through((chunk, _, cb) => {
+      if (numLines > controlNumLines) {
+        return cb(null, chunk);
+      }
+
+      let result = '';
+      let remainder = chunk.toString();
+      let line;
+
+      while (remainder.indexOf('\n') >= 0) {
+        ({ line, remainder } = readLine(remainder));
+
+        line = line.trim();
+
+        if (/^[0-9]/.test(line)) {
+          numLines += 1;
+          result += `${line}\n`;
+        } else if (/^LUT_3D_SIZE/.test(line)) {
+          result += `${line}\n`;
+        }
+
+        if (numLines > controlNumLines) {
+          return cb(null, `${result}${remainder}`);
+        }
+      }
+
+      return cb(null, result);
+    }),
+    fs.createWriteStream(to)
+  );
+};
+
 const Panel = ({ class: className, title, children }) => html`
   <div class="panel ${className}">
     <h2>${title}</h2>
@@ -101,55 +150,6 @@ function VideoLUTs() {
       </div>
     `;
   }
-
-  const readLine = text => {
-    const linefeed = text.indexOf('\n');
-    return {
-      line: text.slice(0, linefeed),
-      remainder: text.slice(linefeed + 1)
-    };
-  };
-
-  const copyLut = async (from, to) => {
-    let numLines = 0;
-    const controlNumLines = 5;
-
-    await promisify(pipeline)(
-      fs.createReadStream(from),
-      // most luts will contain the DOMAIN parameters at the top
-      // so once we get to the lookup table we have parsed the entire
-      // header and there is no need to continue parsing lines
-      through((chunk, _, cb) => {
-        if (numLines > controlNumLines) {
-          return cb(null, chunk);
-        }
-
-        let result = '';
-        let remainder = chunk.toString();
-        let line;
-
-        while (remainder.indexOf('\n') >= 0) {
-          ({ line, remainder } = readLine(remainder));
-
-          line = line.trim();
-
-          if (/^[0-9]/.test(line)) {
-            numLines += 1;
-            result += `${line}\n`;
-          } else if (/^LUT_3D_SIZE/.test(line)) {
-            result += `${line}\n`;
-          }
-
-          if (numLines > controlNumLines) {
-            return cb(null, `${result}${remainder}`);
-          }
-        }
-
-        return cb(null, result);
-      }),
-      fs.createWriteStream(to)
-    );
-  };
 
   const onLut = lut => () => {
     if (!image) return;
