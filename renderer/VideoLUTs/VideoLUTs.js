@@ -24,6 +24,12 @@ css('./VideoLUTs.css');
 
 const LUTS_DIR = 'videoluts.luts-dir';
 
+const findCubes = async (cwd) => {
+  const cubes = await glob(['**/*.cube', '**/*.CUBE'], { cwd });
+
+  return cubes.sort((a, b) => a.localeCompare(b));
+};
+
 function VideoLUTs() {
   const config = useContext(Config);
   const [luts, setLuts] = useState(null);
@@ -43,7 +49,7 @@ function VideoLUTs() {
         return;
       }
 
-      const cubes = await glob(['**/*.cube', '**/*.CUBE'], { cwd: dirPath });
+      const cubes = await findCubes(dirPath);
 
       config.set(LUTS_DIR, dirPath);
       setLuts({
