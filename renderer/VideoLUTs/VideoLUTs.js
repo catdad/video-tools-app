@@ -53,11 +53,7 @@ function VideoLUTs() {
     const { path: dirPath } = dir;
 
     Promise.resolve().then(async () => {
-      const real = await fs.pathExists(dirPath);
-
-      if (!real) {
-        return;
-      }
+      if (!(await fs.pathExists(dirPath))) return;
 
       const cubes = await findCubes(dirPath);
 
@@ -67,8 +63,6 @@ function VideoLUTs() {
         list: cubes
       });
     }).catch(err => {
-      /* eslint-disable-next-line no-console */
-      console.error('could not load LUTs:', err);
       toast.error(`could not load LUTs:\n${err.message}`);
     });
   };
