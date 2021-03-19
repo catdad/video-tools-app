@@ -95,7 +95,7 @@ function VideoLUTs() {
           return cb(null, `${line}\n`);
         }
 
-        cb(null, `# ${line}\n`);
+        return cb();
       }),
       fs.createWriteStream(to)
     );
