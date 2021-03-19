@@ -54,12 +54,10 @@ const copyLut = async (from, to) => {
 
       let result = '';
       let remainder = chunk.toString();
-      let line;
+      let line = '';
 
       while (remainder.indexOf('\n') >= 0) {
         ({ line, remainder } = readLine(remainder));
-
-        line = line.trim();
 
         if (/^[0-9]/.test(line)) {
           numLines += 1;
