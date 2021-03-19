@@ -13,6 +13,7 @@ const {
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
+const { usingFile } = require('../../lib/temp.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 
@@ -81,12 +82,9 @@ function VideoLUTs() {
     `;
   }
 
-  const copyLut = async lut => {
-    // TODO use temp directory
-    const out = path.resolve(__dirname, '../../assets', `${Math.random()}.cube`);
-
+  const copyLut = async (from, to) => {
     await promisify(pipeline)(
-      fs.createReadStream(lut, { encoding: 'utf8' }),
+      fs.createReadStream(from, { encoding: 'utf8' }),
       byline.createStream(),
       through((line, _, cb) => {
         if (/^[0-9]/.test(line)) {
@@ -99,32 +97,33 @@ function VideoLUTs() {
 
         cb(null, `# ${line}\n`);
       }),
-      fs.createWriteStream(out)
+      fs.createWriteStream(to)
     );
-
-    return out;
   };
 
   const onLut = lut => () => {
     if (!image) return;
 
     (async () => {
-      console.time('copy');
-      // TODO this is slower than I would line
-      const lutCopy = await copyLut(lut);
-      console.timeEnd('copy');
-
-      const args = { input: image, output: '-', lib: true, lut: lutCopy };
       const name = `${path.parse(image).name}.${path.parse(lut).name}.jpg`;
 
-      const img = await videoTools.exec('lut', [args]);
-      const buff = Buffer.from(img);
-      const url = `data:image/jpeg;base64,${buff.toString('base64')}`;
+      const { url, buffer } = await usingFile({ prefix: 'lut-', extension: 'cube' }, async (lutCopy) => {
+        // TODO this is slower than I would line
+        await copyLut(lut, lutCopy);
+
+        const args = { input: image, output: '-', lib: true, lut: lutCopy };
+
+        const img = await videoTools.exec('lut', [args]);
+        const buffer = Buffer.from(img);
+        const url = `data:image/jpeg;base64,${buffer.toString('base64')}`;
+
+        return { url, buffer };
+      });
 
       setData({
         ...data,
         editedImageUrl: url,
-        editedImageBuffer: buff,
+        editedImageBuffer: buffer,
         downloadName: name
       });
     })().catch(() => {
