@@ -161,7 +161,7 @@ function VideoLUTs() {
 
   const renderedLuts = html`
     <${Panel} class="luts" title="LUTs">
-      <${Card} raised className=card >
+      <${Card} raised className="card" >
         <${CardContent}>
           <${ObjectList} value=${lutsMap} />
         <//>
