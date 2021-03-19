@@ -23,6 +23,7 @@ css('../styles/tab-panel.css');
 css('./VideoLUTs.css');
 
 const LUTS_DIR = 'videoluts.luts-dir';
+const LUTS_IMG = 'videoluts.luts-img';
 
 const findCubes = async (cwd) => {
   const cubes = await glob(['**/*.cube', '**/*.CUBE'], { cwd });
@@ -75,15 +76,28 @@ function VideoLUTs() {
   const onImage = ([img] = []) => {
     if (!img) return;
 
-    setData({
-      image: img.path,
-      editedImageUrl: null,
-      editedImageBuffer: null
+    const { path: image } = img;
+
+    Promise.resolve().then(async () => {
+      if (!(await fs.pathExists(image))) return;
+
+      setData({
+        image,
+        editedImageUrl: null,
+        editedImageBuffer: null
+      });
+      config.set(LUTS_IMG, img.path);
+    }).catch(err => {
+      toast.error(`could not load image:\n${err.message}`);
     });
   };
 
   if (luts === null && config.get(LUTS_DIR)) {
     onLUTs([{ path: config.get(LUTS_DIR) }]);
+  }
+
+  if (!data.image && config.get(LUTS_IMG)) {
+    onImage([{ path: config.get(LUTS_IMG) }]);
   }
 
   if (luts === null) {
