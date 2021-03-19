@@ -174,7 +174,7 @@ function VideoLUTs() {
   const renderedImage = image ?
     html`
       <${Panel} class="img" title="${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}">
-        <div><img src="${editedImageUrl || image}" /></div>
+        <img src="${editedImageUrl || image}" />
         <div class="buttons">
           <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
         </div>
