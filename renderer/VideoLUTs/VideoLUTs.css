@@ -101,3 +101,26 @@
     max-width: calc(100% - var(--spacing) - var(--spacing));
   }
 }
+
+/* SCROLLBAR */
+.video-luts {
+  --scroll-track: rgba(0, 0, 0, 0);
+  --scroll-thumb: var(--lvl1);
+}
+.video-luts ::-webkit-scrollbar {
+  width: 8px;
+}
+.video-luts ::-webkit-scrollbar:horizontal {
+  height: 8px;
+}
+.video-luts ::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+.video-luts ::-webkit-scrollbar-thumb {
+  background: var(--scroll-track);
+  box-shadow: 0 0 8px var(--scroll-thumb) inset;
+  border-radius: 8px;
+}
+.video-luts ::-webkit-scrollbar-corner {
+  background: var(--scroll-track);
+}
