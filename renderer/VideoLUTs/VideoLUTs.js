@@ -214,19 +214,16 @@ function VideoLUTs() {
           <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
           <button onclick=${onReset} disabled=${!editedImageBuffer}>Reset</button>
         </div>
-        <${FileInput} nobutton onchange=${onImage} />
       <//>
     ` :
     html`
-      <${Panel} class="img" title="Drag an image to render">
-        <${FileInput} nobutton onchange=${onImage} />
-      <//>
+      <${Panel} class="img" title="Drag an image to render" />
     `;
 
   return html`
     <div class="tab-panel video-luts">
-      ${renderedImage}
-      ${renderedLuts}
+      <${FileInput} nobutton onchange=${onImage}>${renderedImage}<//>
+      <${FileInput} nobutton onchange=${onLUTs}>${renderedLuts}<//>
     </div>`;
 }
 
