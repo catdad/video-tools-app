@@ -2,8 +2,10 @@ const { PrimaryButton, html, useEffect, useRef } = require('../tools/ui.js');
 
 function FileInput({
   onchange = () => {},
-  nobutton = false
+  nobutton = false,
+  children
 }) {
+  const parentRef = useRef(window);
   const inputRef = useRef();
 
   const onInput = () => {
@@ -31,14 +33,28 @@ function FileInput({
       ev.stopPropagation();
     };
 
-    window.addEventListener('drop', onDrop);
-    window.addEventListener('dragover', onDrag);
+    const parent = parentRef.current;
+
+    parent.addEventListener('drop', onDrop);
+    parent.addEventListener('dragover', onDrag);
 
     return () => {
-      window.removeEventListener('drop', onDrop);
-      window.removeEventListener('dragover', onDrag);
+      parent.removeEventListener('drop', onDrop);
+      parent.removeEventListener('dragover', onDrag);
     };
-  }, [onchange]);
+  }, [onchange, parentRef.current]);
+
+  if (children) {
+    // I think this is a hack?
+    children.ref = node => {
+      if (node && node.base) {
+        parentRef.current = node.base;
+      } else {
+        parentRef.current = window;
+      }
+    };
+    return children;
+  }
 
   if (nobutton) {
     return;
