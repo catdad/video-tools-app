@@ -7,7 +7,7 @@ const through = require('through2');
 const { clipboard, nativeImage } = require('electron');
 
 const {
-  Card, CardContent, ObjectList,
+  Card, CardContent, ObjectList, PrimaryButton,
   html, css, useContext, useState
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
@@ -211,8 +211,8 @@ function VideoLUTs() {
       <${Panel} class="img" title="${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}">
         <img src="${editedImageUrl || image}" />
         <div class="buttons">
-          <button onclick=${onCopy} disabled=${!editedImageBuffer}>Copy</button>
-          <button onclick=${onReset} disabled=${!editedImageBuffer}>Reset</button>
+          <${PrimaryButton} onclick=${onCopy} disabled=${!editedImageBuffer}>Copy<//>
+          <${PrimaryButton} onclick=${onReset} disabled=${!editedImageBuffer}>Reset<//>
         </div>
       <//>
     ` :
