@@ -35,7 +35,7 @@ const css = (cache => (csspath, dirname) => {
   document.head.appendChild(link);
 })({});
 
-const components = require('./ui-components.js')({ html });
+const components = require('./ui-components.js')({ html, hooks });
 
 module.exports = {
   getVar, getRootVar, setVar, setRootVar,

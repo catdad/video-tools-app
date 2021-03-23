@@ -1,14 +1,11 @@
 const {
-  Card, CardContent, Collapse, List, ListItem, ListItemText,
+  Card, CardContent, ObjectList,
   html, css, useState
 } = require('../tools/ui.js');
 
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 const FileInput = require('../FileInput/FileInput.js');
-
-const ExpandLess = require('@material-ui/icons/ExpandLess').default;
-const ExpandMore = require('@material-ui/icons/ExpandMore').default;
 
 css('../styles/tab-panel.css');
 css('./VideoInfo.css');
@@ -33,38 +30,6 @@ const getMeta = async files => {
   }
 
   return results;
-};
-
-const ObjectListItem = ({ name = '', value = {} }) => {
-  const [open, setOpen] = useState(false);
-
-  if (typeof value === 'object') {
-    return html`
-      <${ListItem} button onClick=${() => setOpen(!open)} >
-        <${ListItemText} primary=${name} />
-        ${ open ? html`<${ExpandLess} />` : html`<${ExpandMore} />`}
-      <//>
-      <${Collapse} in=${open} timeout=auto unmountOnExit >
-        <${ObjectList} value=${value} className="nested" />
-      <//>
-    `;
-  }
-
-  return html`
-    <${ListItem}>
-      <${ListItemText} primary=${`${name}: ${value}`} />
-    <//>
-  `;
-};
-
-const ObjectList = ({ value = {}, ...props }) => {
-  return html`
-    <${List} ...${props}>
-      ${Object.keys(value).map(key => html`
-        <${ObjectListItem} name=${key} value=${value[key]} />
-      `)}
-    <//>
-  `;
 };
 
 function VideoInfo() {
