@@ -1,3 +1,6 @@
+const prettyMs = require('pretty-ms');
+const { get } = require('lodash');
+
 const {
   Card, CardContent, ObjectList,
   html, css, useState
@@ -44,11 +47,20 @@ function VideoInfo() {
   };
 
   const elems = files.map(file => {
+    const { name, path, size, type, audio, video } = file;
+    const seconds = get(file, 'video.duration', 0);
+    const duration = prettyMs(Number(seconds) * 1000);
+
+    // this object sets the order of the UI
+    // yes, I know order is technically not guaranteed, but it works
+    // well enough and I am lazy
+    const data = { path, type, size, duration, audio, video };
+
     return html`
       <${Card} raised className=card >
         <${CardContent}>
-          <h3>${file.name}</h3>
-          <${ObjectList} value=${file} />
+          <h3>${name}</h3>
+          <${ObjectList} value=${data} />
         <//>
       <//>
     `;
