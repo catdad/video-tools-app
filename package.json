@@ -60,6 +60,7 @@
     "notistack": "^1.0.5",
     "p-queue": "^6.6.2",
     "preact": "^10.5.12",
+    "pretty-bytes": "^5.6.0",
     "pretty-ms": "^7.0.1",
     "tempy": "^0.5.0",
     "through2": "^4.0.2",

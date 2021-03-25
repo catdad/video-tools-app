@@ -1,4 +1,5 @@
 const prettyMs = require('pretty-ms');
+const prettyBytes = require('pretty-bytes');
 const { get } = require('lodash');
 
 const {
@@ -20,7 +21,7 @@ const getMeta = async files => {
     const data = {
       name: file.name,
       path: file.path,
-      size: file.size,
+      bytes: file.size,
       type: file.type,
     };
 
@@ -47,9 +48,10 @@ function VideoInfo() {
   };
 
   const elems = files.map(file => {
-    const { name, path, size, type, audio, video } = file;
+    const { name, path, bytes, type, audio, video } = file;
     const seconds = get(file, 'video.duration', 0);
     const duration = prettyMs(Number(seconds) * 1000);
+    const size = `${prettyBytes(bytes)}  (${bytes} bytes)`;
 
     // this object sets the order of the UI
     // yes, I know order is technically not guaranteed, but it works
