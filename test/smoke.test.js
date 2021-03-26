@@ -65,6 +65,36 @@ describe('[smoke tests]', () => {
     expect(await title.evaluate(e => e.tagName)).to.equal('H2');
   });
 
+  it('can switch to the info tab', async () => {
+    const configPath = await config.create({});
+    const app = await start(configPath);
+
+    await app.utils.waitForVisible('#app');
+
+    const $document = await getDocument(app.page);
+
+    const tab = await findByText($document, 'info');
+    await tab.click();
+
+    const title = await findByText($document, 'Drag files here to see metadata');
+    expect(await title.evaluate(e => e.tagName)).to.equal('H2');
+  });
+
+  it('can switch to the luts tab', async () => {
+    const configPath = await config.create({});
+    const app = await start(configPath);
+
+    await app.utils.waitForVisible('#app');
+
+    const $document = await getDocument(app.page);
+
+    const tab = await findByText($document, 'LUTs');
+    await tab.click();
+
+    const title = await findByText($document, 'Drag a LUTs folder');
+    expect(await title.evaluate(e => e.tagName)).to.equal('H2');
+  });
+
   it('opens the defined tab if one is present in config', async () => {
     const configPath = await config.create({ 'default-tab': 'transcode to x264' });
     const app = await start(configPath);
