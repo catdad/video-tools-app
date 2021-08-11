@@ -64,8 +64,7 @@ function getLocationOnExistingScreen() {
       contextIsolation: false,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      webviewTag: true,
-      enableRemoteModule: true
+      webviewTag: true
     },
     frame: process.platform === 'darwin' ? true : !config.getProp('experiments.framelessWindow'),
     icon
