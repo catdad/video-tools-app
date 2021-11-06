@@ -1,5 +1,5 @@
 const { html, useContext, useEffect, useState } = require('./ui.js');
-const { ThemeProvider, createMuiTheme } = require('@material-ui/core/styles');
+const { ThemeProvider, createTheme } = require('@material-ui/core/styles');
 const { Config } = require('./config.js');
 
 const noop = () => {};
@@ -34,7 +34,7 @@ function Theme({ children = []} = {}) {
 
   const style = getComputedStyle(document.documentElement);
 
-  const theme = createMuiTheme({
+  const theme = createTheme({
     palette: {
       type: isDarkMode ? 'dark' : 'light',
       primary: { main: getVar(style, '--primary') },
