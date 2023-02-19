@@ -2,7 +2,7 @@ const path = require('path');
 const os = require('os');
 const cpus = os.cpus().length;
 
-const { FormControlLabel, Slider, Switch, html, css, useState } = require('../tools/ui.js');
+const { FormControlLabel, Slider, Switch, html, css, useState, useEffect } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 
@@ -18,6 +18,33 @@ function VideoX264() {
   const [audio, setAudio] = useState(true);
   const [video, setVideo] = useState(true);
   const [threads, setThreads] = useState(Math.floor(cpus / 2));
+  const [progress, setProgress] = useState(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      videoTools.queueInspect().then(result => {
+        console.log(result);
+
+        if (result.progressTotal === 0) {
+          setProgress(null);
+          return;
+        }
+
+        setProgress({ ...result });
+      }).catch(err => {
+        // TODO umm?
+        console.error('failed to get progress:', err);
+
+        // set a value different from the current in order
+        // to trigger a refetch
+        setProgress(Math.random());
+      });
+    }, 1000);
+
+    return () => {
+      clearTimeout(t);
+    };
+  }, [progress]);
 
   const onQueue = (files) => {
     for (let file of files) {
@@ -43,6 +70,9 @@ function VideoX264() {
         toast.error(`"${file.name}" failed:\n${err.message}`);
       });
     }
+
+    // start tracking progress
+    setProgress(Math.random());
   };
 
   const controlsDom = html`
@@ -75,12 +105,20 @@ function VideoX264() {
     format, setFormat
   }}/>`;
 
+  const progressDom = (progress && progress.progressTotal) ? html`
+    <h3>Progress</h3>
+    <div>Overall: ${Math.round(progress.progressCurrent / progress.progressTotal * 100)}% - (${progress.progressCurrent}/${progress.progressTotal})<//>
+    <div>Current Task: ${Math.round(progress.taskCurrent / progress.taskTotal * 100)}% - (${progress.taskCurrent}/${progress.taskTotal})<//>
+    <div>Tasks: ${progress.remainingTasks} remaining of ${progress.totalTasks}<//>
+  ` : null;
+
   return html`
     <div class=tab-panel>
       <h2>Drag files here to encode to x264</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}
       ${namingDom}
+      ${progressDom}
     </div>
   `;
 }
