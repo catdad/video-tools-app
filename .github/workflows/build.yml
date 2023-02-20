@@ -21,7 +21,7 @@ jobs:
       - run: npm test
       - run: npm run package
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: windows-artifacts
           path: dist/*.exe
@@ -37,7 +37,7 @@ jobs:
       - run: npm test
       - run: npm run package
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: macos-artifacts
           path: dist/*.dmg
@@ -55,7 +55,7 @@ jobs:
         run: xvfb-run --auto-servernum npm test
       - run: npm run package
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-artifacts
           path: dist/*.AppImage
@@ -64,7 +64,7 @@ jobs:
     needs: [ windows, macos, linux ]
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: ./
       - name: Flatten artifacts
