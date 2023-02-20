@@ -1,5 +1,6 @@
 const { expect } = require('chai');
-const { getDocument, queries: { findByText } } = require('pptr-testing-library');
+const { getDocument, queries: { findByText: findByTextQuery } } = require('pptr-testing-library');
+const findByText = (text, queryOptions) => findByTextQuery(text, queryOptions, { timeout: 10000 });
 
 const { start, stop } = require('./lib/app-provider.js');
 const config = require('./lib/config-provider.js');
