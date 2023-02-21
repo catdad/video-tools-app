@@ -1,3 +1,4 @@
+const path = require('path');
 const { name, productName, appId, version } = require('./package.json');
 const icon = require('./lib/icon.js')('build');
 
@@ -34,7 +35,8 @@ module.exports = {
     artifactName: `${fileName}-v\${version}-Windows-setup.\${ext}`
   },
   portable: {
-    artifactName: `${fileName}-v\${version}-Windows-portable.\${ext}`
+    artifactName: `${fileName}-v\${version}-Windows-portable.\${ext}`,
+    splashImage: path.resolve(__dirname, 'icons/splash.bmp')
   },
   linux: {
     icon,
