@@ -24,7 +24,7 @@
     "prep:icons": "svg-app-icon --destination icons < assets/icon.svg",
     "prep:fonts": "mkdirp fonts && css-font-local-cache \"https://fonts.googleapis.com/css2?family=Roboto:wght@400;700\" > fonts/fonts.css",
     "prep:splash": "run-script-os",
-    "prep:splash:win32": "svg-render --width 600 < assets/icon.svg | npx @catdad/to-bmp > icons/splash.bmp",
+    "prep:splash:win32": "svg-render --width 800 < assets/splash.svg | npx @catdad/to-bmp > icons/splash.bmp",
     "prep:splash:default": "echo splash image is only for windows",
     "package": "run-script-os",
     "package:win32": "electron-builder --config .electron-builder.js --publish never --win",
