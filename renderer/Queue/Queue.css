@@ -10,4 +10,8 @@
   width: 100%;
   height: var(--queue-height);
   background: green;
+
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
 }
