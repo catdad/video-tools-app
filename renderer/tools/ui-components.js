@@ -8,9 +8,7 @@ const { Collapse, List, ListItem, ListItemText } = components;
 const ExpandLess = require('@material-ui/icons/ExpandLess').default;
 const ExpandMore = require('@material-ui/icons/ExpandMore').default;
 
-module.exports = ({ html, hooks }) => {
-  const { useState } = hooks;
-
+module.exports = ({ html, hooks: { useState } }) => {
   const PrimaryButton = ({ ...props }) => html`
     <${components.Button} size=small ...${props} style=${{ fontWeight: 700 }} color=primary variant=contained />
   `;
