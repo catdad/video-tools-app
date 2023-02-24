@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const cs = require('callsites');
 
 const { h, render, createContext, createRef } = require('preact');
@@ -19,10 +20,16 @@ const setVar = (elem, name, value) => elem.style.setProperty(`--${name}`, value)
 const getRootVar = (name) => getVar(document.documentElement, name);
 const setRootVar = (name, value) => setVar(document.documentElement, name, value);
 
-const css = (cache => (csspath, dirname) => {
-  const callerFile = cs()[1].getFileName();
+const resolveCssPath = (csspath, dirname) => {
+  const callerFile = cs()[2].getFileName();
   const callerDir = path.dirname(callerFile);
   const href = path.resolve(dirname || callerDir, csspath);
+
+  return href;
+};
+
+const css = (cache => (csspath, dirname) => {
+  const href = resolveCssPath(csspath, dirname);
 
   if (cache[href]) {
     return;
@@ -41,11 +48,20 @@ const css = (cache => (csspath, dirname) => {
   document.head.appendChild(link);
 })({});
 
+// use sparingly
+const cssInline = (csspath, dirname) => {
+  const filepath = resolveCssPath(csspath, dirname);
+  const file = fs.readFileSync(filepath, 'utf8');
+  const sheet = document.createElement('style');
+  sheet.innerHTML = file;
+  document.head.appendChild(sheet);
+};
+
 const components = require('./ui-components.js')({ html, hooks });
 
 module.exports = {
   getVar, getRootVar, setVar, setRootVar,
-  html, render, css, createContext, createRef,
+  html, render, css, cssInline, createContext, createRef,
   forwardRef,
   ...hooks,
   ...signals,
