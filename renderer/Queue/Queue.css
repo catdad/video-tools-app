@@ -10,6 +10,7 @@
   width: 100%;
   height: var(--queue-height);
   background: green;
+  font-size: 0.9rem;
 
   display: flex;
   align-items: center;

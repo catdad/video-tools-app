@@ -30,8 +30,6 @@ const withQueue = Component => ({ children, ...props }) => {
         }
       }
 
-      console.log('about to add', newItems);
-
       batch(() => {
         items.value = [...items.value, ...newItems];
         totalFrames.value += newFrames;
@@ -124,19 +122,10 @@ const Queue = () => {
 
     const t = setInterval(() => {
       videoTools.queueInspect().then(result => {
-        if (result.progressTotal === 0) {
-          progress.value = undefined;
-          return;
-        }
-
         progress.value = { ...result };
       }).catch(err => {
         // TODO umm?
         console.error('failed to get progress:', err);
-
-        // set a value different from the current in order
-        // to trigger a refetch
-        progress.value = Math.random();
       });
     }, 1000);
 
@@ -145,27 +134,32 @@ const Queue = () => {
     };
   }, [current.value]);
 
+  effect(() => {
+    if (items.value.length === 0 && !current.value) {
+      progress.value = null;
+    }
+  });
+
   // don't render this component if nothing is being processed
-  if (['undefined', 'number'].includes(typeof progress.value)) {
+  if (!progress.value) {
     return;
   }
 
+  // TODO update app progress from this module rather than in video-tools
   const {
-    progressCurrent, progressTotal,
-    taskCurrent, taskTotal,
-    remainingTasks, totalTasks
+    taskCurrent, taskTotal
   } = progress.value;
 
+  const progressFrames = completeFrames.value + taskCurrent;
+  const progressPercent = Math.round(progressFrames / totalFrames.value * 100);
+  const currentPercent = Math.round(taskCurrent / taskTotal * 100);
+
   return html`<div class=queue>
-    <span>Overall: ${Math.round(progressCurrent / progressTotal * 100)}% - (${progressCurrent}/${progressTotal})<//>
+    <span>Overall: ${progressPercent}% (${progressFrames}/${totalFrames.value})<//>
     <${Break} />
-    <span>Current: ${Math.round(taskCurrent / taskTotal * 100)}% - (${taskCurrent}/${taskTotal})<//>
+    <span>Current: ${currentPercent}% (${taskCurrent}/${taskTotal})<//>
     <${Break} />
-    <span>Tasks: ${remainingTasks} of ${totalTasks}<//>
-    <${Break} />
-    <span>Local items: ${items.value.length}<//>
-    <${Break} />
-    <span>Local frames: ${completeFrames.value} / ${totalFrames.value}<//>
+    <span>Tasks: ${items.value.length + 1}<//>
   <//>`;
 };
 
