@@ -4,7 +4,6 @@ const cpus = os.cpus().length;
 
 const { FormControlLabel, Slider, Switch, html, css, useState, useEffect } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
-const videoTools = require('../../lib/video-tools.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
@@ -20,7 +19,7 @@ function VideoX264() {
   const [video, setVideo] = useState(true);
   const [threads, setThreads] = useState(Math.floor(cpus / 2));
 
-  const { items: queueItems, add: addToQueue } = useQueue();
+  const { add: addToQueue } = useQueue();
 
   const onQueue = (files) => {
     const newItems = files.filter(file => {
