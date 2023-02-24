@@ -9,7 +9,7 @@
   bottom: 0;
   width: 100%;
   height: var(--queue-height);
-  background: green;
+  background: var(--lvl3);
   font-size: 0.9rem;
 
   display: flex;
