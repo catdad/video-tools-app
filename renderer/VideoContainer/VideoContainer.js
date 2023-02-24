@@ -2,10 +2,10 @@ const path = require('path');
 
 const { html, css, useState } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
-const videoTools = require('../../lib/video-tools.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
+const { useQueue } = require('../Queue/Queue.js');
 
 css('../styles/tab-panel.css');
 
@@ -14,26 +14,35 @@ function VideoContainer() {
   const [suffix, setSuffix] = useState('');
   const [format, setFormat] = useState('mp4');
 
+  const { add: addToQueue } = useQueue();
+
   const onQueue = (files) => {
-    for (let file of files) {
+    const newItems = files.filter(file => {
       if (!/^video/.test(file.type || '')) {
         toast.error(`cannot convert "${file.name}" of type "${file.type}"`);
-        continue;
+        return false;
       }
 
+      return true;
+    }).map(file => {
       const _suffix = suffix ? suffix :
-        path.parse(file.path).ext === `.${format}` ? '.container' : '';
+      path.parse(file.path).ext === `.${format}` ? '.container' : '';
 
-      videoTools.queue('container', [{
-        input: file.path,
-        format,
-        prefix,
-        suffix: _suffix
-      }]).then(() => {
-        toast.success(`"${file.name}" is complete`);
-      }).catch(err => {
-        toast.error(`"${file.name}" failed:\n${err.message}`);
-      });
+      return {
+        command: 'container',
+        filepath: file.path,
+        filename: file.name,
+        args: [{
+          input: file.path,
+          format,
+          prefix,
+          suffix: _suffix
+        }]
+      };
+    });
+
+    if (newItems.length) {
+      addToQueue(...newItems);
     }
   };
 

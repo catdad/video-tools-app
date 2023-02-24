@@ -1,0 +1,18 @@
+:root {
+  --queue-height: 2rem;
+}
+
+.queue {
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--queue-height);
+  background: var(--lvl3);
+  font-size: 0.9rem;
+
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}

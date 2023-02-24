@@ -2,11 +2,17 @@ const path = require('path');
 const cs = require('callsites');
 
 const { h, render, createContext, createRef } = require('preact');
-const hooks = require('preact/hooks');
-const { forwardRef } = require('preact/compat');
+const {
+  forwardRef,
+  useState, useReducer, useRef, useEffect, useImperativeHandle, useLayoutEffect, useCallback, useMemo, useContext, useDebugValue, useErrorBoundary, useId
+} = require('preact/compat');
+
+const hooks = { useState, useReducer, useRef, useEffect, useImperativeHandle, useLayoutEffect, useCallback, useMemo, useContext, useDebugValue, useErrorBoundary, useId };
 
 const htm = require('htm');
 const html = htm.bind(h);
+
+const signals = require('@preact/signals');
 
 const getVar = (elem, name) => getComputedStyle(elem).getPropertyValue(`--${name}`);
 const setVar = (elem, name, value) => elem.style.setProperty(`--${name}`, value);
@@ -42,5 +48,6 @@ module.exports = {
   html, render, css, createContext, createRef,
   forwardRef,
   ...hooks,
+  ...signals,
   ...components
 };
