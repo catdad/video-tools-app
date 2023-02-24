@@ -103,7 +103,7 @@
 /* SCROLLBAR */
 .video-luts {
   --scroll-track: var(--tertiary);
-  --scroll-thumb: var(--primary);
+  --scroll-thumb: var(--k);
 }
 .video-luts ::-webkit-scrollbar {
   width: 8px;
@@ -116,9 +116,6 @@
 }
 .video-luts ::-webkit-scrollbar-thumb {
   background: var(--scroll-track);
-  box-shadow: 0 0 8px var(--scroll-thumb) inset;
-  border-radius: 8px;
-}
-.video-luts ::-webkit-scrollbar-corner {
-  background: var(--scroll-track);
+  box-shadow: 0 0 8px -2px var(--scroll-thumb) inset;
+  border-radius: 4px;
 }
