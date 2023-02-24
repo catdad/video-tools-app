@@ -1,5 +1,5 @@
 const { get, set } = require('lodash');
-const { html, createContext, useEffect, useState, useContext } = require('../tools/ui.js');
+const { html, createContext, useEffect, useState, useContext, useSignal, effect } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const CONFIG = require('../../lib/config.js');
 
@@ -44,4 +44,16 @@ const withConfig = Component => ({ children, ...props }) => {
 
 const useConfig = () => useContext(Config);
 
-module.exports = { withConfig, useConfig };
+const useConfigSignal = (key, defaultValue) => {
+  const config = useConfig();
+  const configValue = config.get(key);
+  const signal = useSignal(configValue === undefined ? defaultValue : configValue);
+
+  effect(() => {
+    config.set(key, signal.value);
+  });
+
+  return signal;
+};
+
+module.exports = { withConfig, useConfig, useConfigSignal };
