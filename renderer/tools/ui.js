@@ -20,16 +20,17 @@ const setVar = (elem, name, value) => elem.style.setProperty(`--${name}`, value)
 const getRootVar = (name) => getVar(document.documentElement, name);
 const setRootVar = (name, value) => setVar(document.documentElement, name, value);
 
-const resolveCssPath = (csspath, dirname) => {
-  const callerFile = cs()[2].getFileName();
-  const callerDir = path.dirname(callerFile);
-  const href = path.resolve(dirname || callerDir, csspath);
-
-  return href;
+const embedCss = (filepath) => {
+  const file = fs.readFileSync(filepath, 'utf8');
+  const sheet = document.createElement('style');
+  sheet.innerHTML = file;
+  document.head.appendChild(sheet);
 };
 
-const css = (cache => (csspath, dirname) => {
-  const href = resolveCssPath(csspath, dirname);
+const css = (cache => (csspath, dirname, synchronous = false) => {
+  const callerFile = cs()[1].getFileName();
+  const callerDir = path.dirname(callerFile);
+  const href = path.resolve(dirname || callerDir, csspath);
 
   if (cache[href]) {
     return;
@@ -37,31 +38,22 @@ const css = (cache => (csspath, dirname) => {
 
   cache[href] = true;
 
-  const link = document.createElement('link');
+  if (synchronous) {
+    return void embedCss(href);
+  }
 
-  Object.assign(link, {
+  document.head.appendChild(Object.assign(document.createElement('link'), {
     type: 'text/css',
     rel: 'stylesheet',
     href
-  });
-
-  document.head.appendChild(link);
+  }));
 })({});
-
-// use sparingly
-const cssInline = (csspath, dirname) => {
-  const filepath = resolveCssPath(csspath, dirname);
-  const file = fs.readFileSync(filepath, 'utf8');
-  const sheet = document.createElement('style');
-  sheet.innerHTML = file;
-  document.head.appendChild(sheet);
-};
 
 const components = require('./ui-components.js')({ html, hooks });
 
 module.exports = {
   getVar, getRootVar, setVar, setRootVar,
-  html, render, css, cssInline, createContext, createRef,
+  html, render, css, createContext, createRef,
   forwardRef,
   ...hooks,
   ...signals,
