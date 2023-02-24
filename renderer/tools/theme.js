@@ -1,6 +1,6 @@
-const { html, useContext, useEffect, useState } = require('./ui.js');
+const { html, useEffect, useState } = require('./ui.js');
 const { ThemeProvider, createTheme } = require('@material-ui/core/styles');
-const { Config } = require('./config.js');
+const { useConfig } = require('./config.js');
 
 const noop = () => {};
 
@@ -13,7 +13,7 @@ const darkModeMedia = window.matchMedia ? window.matchMedia('(prefers-color-sche
 };
 
 function Theme({ children = []} = {}) {
-  const config = useContext(Config);
+  const config = useConfig();
   const mode = config.get('ui-mode');
   const defaultDark = mode === 'dark' ? true :
     mode === 'light' ? false :

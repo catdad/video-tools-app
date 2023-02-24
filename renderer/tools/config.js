@@ -1,5 +1,5 @@
 const { get, set } = require('lodash');
-const { html, createContext, useEffect, useState } = require('../tools/ui.js');
+const { html, createContext, useEffect, useState, useContext } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const CONFIG = require('../../lib/config.js');
 
@@ -42,4 +42,6 @@ const withConfig = Component => ({ children, ...props }) => {
   `;
 };
 
-module.exports = { Config, withConfig, CONFIG };
+const useConfig = () => useContext(Config);
+
+module.exports = { withConfig, useConfig };

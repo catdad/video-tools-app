@@ -1,10 +1,10 @@
 const {
   Tab,
   html, css, createRef,
-  useContext, useEffect, useState,
+  useEffect, useState,
   setVar
 } = require('../tools/ui.js');
-const { Config, withConfig } = require('../tools/config.js');
+const { useConfig, withConfig } = require('../tools/config.js');
 const { Queue, withQueue } = require('../Queue/Queue.js');
 const { withTheme } = require('../tools/theme.js');
 
@@ -35,7 +35,7 @@ const TABS = [
 const NAME = 'default-tab';
 
 function App() {
-  const config = useContext(Config);
+  const config = useConfig();
   const configTab = config.get(NAME);
   const [tab, setTab] = useState(TABS[configTab] ? configTab : TABS[0].name);
   const app = createRef();
