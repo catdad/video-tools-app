@@ -9,8 +9,10 @@
   bottom: 0;
   width: 100%;
   height: var(--queue-height);
-  background: var(--lvl3);
-  font-size: 0.9rem;
+  background: var(--tertiary);
+  color: var(--color-background);
+  font-size: 0.85rem;
+  font-weight: bold;
 
   display: flex;
   align-items: center;

@@ -8,7 +8,7 @@ const { clipboard, nativeImage } = require('electron');
 
 const {
   Card, CardContent, ObjectList, PrimaryButton,
-  html, css, useContext, useState
+  html, css, useState
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
@@ -16,7 +16,7 @@ const { usingFile } = require('../../lib/temp.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 
-const { Config, withConfig } = require('../tools/config.js');
+const { useConfig } = require('../tools/config.js');
 
 css('../styles/tab-panel.css');
 css('./VideoLUTs.css');
@@ -87,7 +87,7 @@ const Panel = ({ class: className, title, children }) => html`
 `;
 
 function VideoLUTs() {
-  const config = useContext(Config);
+  const config = useConfig();
   const [luts, setLuts] = useState(null);
   const [data, setData] = useState({});
 
@@ -227,4 +227,4 @@ function VideoLUTs() {
     </div>`;
 }
 
-module.exports = withConfig(VideoLUTs);
+module.exports = VideoLUTs;

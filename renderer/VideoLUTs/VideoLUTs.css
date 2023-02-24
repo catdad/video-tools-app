@@ -11,22 +11,26 @@
   margin-bottom: var(--spacing);
   margin-left: auto;
   margin-right: auto;
-  background: var(--lvl3);
+  background: var(--tertiary);
+  color: var(--color-background);
 }
 .video-luts .nested {
   padding-left: 1rem;
 }
 
-/* lAYOUT */
+/* LAYOUT */
 .video-luts {
+  --panel-max-height: calc(100vh - var(--tab-height) - var(--queue-height) - var(--spacing));
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
   flex-grow: 1;
   align-items: stretch;
+  height: var(--panel-max-height);
+  width: 100%;
 }
 
 .video-luts .panel {
-  --panel-height: var(--half-height);
+  --panel-height: var(--panel-max-height);
   --title-size: 1.5rem;
   --title-height: calc(var(--title-size) + var(--spacing) + var(--spacing));
   --buttons-size: 1rem;
@@ -36,6 +40,10 @@
   flex-direction: column;
   width: 100%;
   height: var(--panel-height);
+}
+
+.video-luts .luts {
+  max-width: clamp(200px, 40%, 400px);
 }
 
 .video-luts .panel h2 {
@@ -62,7 +70,7 @@
 
 .video-luts .img img {
   display: block;
-  max-width: 100%;
+  max-width: calc(100% - var(--spacing) - var(--spacing));
   max-height: calc(var(--panel-height) - var(--title-height) - var(--buttons-height));
 }
 
@@ -76,36 +84,26 @@
   margin: 0 4px;
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (orientation: portrait) {
   .video-luts {
-    flex-direction: row-reverse;
+    flex-direction: column;
     width: 100%;
   }
-
   .video-luts .panel {
-    --panel-height: var(--max-height);
+    width: 100%;
+    max-width: 100%;
+    --panel-height: calc(var(--panel-max-height) / 2);
   }
 
   .video-luts .luts {
-    height: var(--max-height);
-    flex-grow: 1;
-    flex-shrink: 0;
-    max-width: 400px;
-  }
-
-  .video-luts .img {
-    flex-grow: 3;
-  }
-
-  .video-luts .img img {
-    max-width: calc(100% - var(--spacing) - var(--spacing));
+    max-width: 100%;
   }
 }
 
 /* SCROLLBAR */
 .video-luts {
-  --scroll-track: rgba(0, 0, 0, 0);
-  --scroll-thumb: var(--lvl1);
+  --scroll-track: var(--tertiary);
+  --scroll-thumb: var(--primary);
 }
 .video-luts ::-webkit-scrollbar {
   width: 8px;

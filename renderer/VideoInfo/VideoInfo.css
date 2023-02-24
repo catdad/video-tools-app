@@ -3,7 +3,8 @@
   width: calc(100% - var(--spacing) - var(--spacing));
   margin-top: 0;
   margin-bottom: var(--spacing);
-  background: var(--lvl3);
+  background: var(--tertiary);
+  color: var(--color-background);
 }
 
 .video-info .nested {
