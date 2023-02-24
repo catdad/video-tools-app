@@ -3,6 +3,7 @@ const { html, css, createContext, useContext, useEffect,
 } = require('../tools/ui.js');
 
 const videoTools = require('../../lib/video-tools.js');
+const windowProgress = require('../../lib/progress.js');
 const toast = require('../tools/toast.js');
 
 css('./Queue.css');
@@ -79,6 +80,7 @@ const withQueue = Component => ({ children, ...props }) => {
           await videoTools.queue(command, args);
           toast.success(`"${filename}" is complete`);
         } catch (err) {
+          console.error('task failed', filename, err);
           toast.error(`"${filename}" failed:\n${err.message}`);
         } finally {
           batch(() => {
@@ -137,6 +139,7 @@ const Queue = () => {
   effect(() => {
     if (items.value.length === 0 && !current.value) {
       progress.value = null;
+      windowProgress.clear();
     }
   });
 
@@ -145,14 +148,16 @@ const Queue = () => {
     return;
   }
 
-  // TODO update app progress from this module rather than in video-tools
   const {
     taskCurrent, taskTotal
   } = progress.value;
 
   const progressFrames = completeFrames.value + taskCurrent;
-  const progressPercent = Math.round(progressFrames / totalFrames.value * 100);
+  const progressRatio = progressFrames / totalFrames.value;
+  const progressPercent = Math.round(progressRatio * 100);
   const currentPercent = Math.round(taskCurrent / taskTotal * 100);
+
+  windowProgress.set(progressRatio);
 
   return html`<div class=queue>
     <span>Overall: ${progressPercent}% (${progressFrames}/${totalFrames.value})<//>
