@@ -154,8 +154,8 @@ const Queue = () => {
 
   const progressFrames = completeFrames.value + taskCurrent;
   const progressRatio = progressFrames / totalFrames.value;
-  const progressPercent = Math.round(progressRatio * 100);
-  const currentPercent = Math.round(taskCurrent / taskTotal * 100);
+  const progressPercent = Math.floor(progressRatio * 100);
+  const currentPercent = Math.floor(taskCurrent / taskTotal * 100);
 
   windowProgress.set(progressRatio);
 
