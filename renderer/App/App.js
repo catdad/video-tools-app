@@ -5,6 +5,7 @@ const {
   setVar
 } = require('../tools/ui.js');
 const { Config, withConfig } = require('../tools/config.js');
+const { Queue, withQueue } = require('../Queue/Queue.js');
 const { withTheme } = require('../tools/theme.js');
 
 const TabBar = require('../TabBar/TabBar.js');
@@ -67,7 +68,8 @@ function App() {
     <div class=app ref=${app}>
       <${TABS[tab].Component} />
     </div>
+    <${Queue} />
   `;
 }
 
-module.exports = withConfig(withTheme(App));
+module.exports = withConfig(withTheme(withQueue(App)));

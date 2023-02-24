@@ -5,6 +5,7 @@ const { app, BrowserWindow, screen, systemPreferences } = require('electron');
 
 require('./lib/app-id.js')(app);
 require('./lib/video-tools.js');
+require('./lib/progress.js');
 const log = require('./lib/log.js')('main');
 const config = require('./lib/config.js');
 const debounce = require('./lib/debounce.js');
