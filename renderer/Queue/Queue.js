@@ -12,12 +12,47 @@ const QueueContext = createContext({});
 const withQueue = Component => ({ children, ...props }) => {
   const items = useSignal([]);
   const current = useSignal(null);
+  const totalFrames = useSignal(0);
+  const completeFrames = useSignal(0);
 
+  function add(...newItems) {
+    (async () => {
+      let newFrames = 0;
+
+      for (const item of newItems) {
+        try {
+          const frames = await videoTools.getFrames(item.args);
+          item.frames = frames;
+          newFrames += frames;
+        } catch (e) {
+          console.error('failed to get frames for', item.filename, e);
+          item.frames = 0;
+        }
+      }
+
+      console.log('about to add', newItems);
+
+      batch(() => {
+        items.value = [...items.value, ...newItems];
+        totalFrames.value += newFrames;
+      });
+    })();
+  }
+
+  // reset frame counters when all tasks are complete
+  effect(() => {
+    if (!current.value && items.value.length === 0) {
+      batch(() => {
+        totalFrames.value = 0;
+        completeFrames.value = 0;
+      });
+    }
+  });
+
+  // manage tasks inside the queue
   effect(() => {
     items.value;
     current.value;
-
-    console.log('QUEUE: something changed', items.value, current.value);
 
     if (current.value) {
       return;
@@ -27,32 +62,42 @@ const withQueue = Component => ({ children, ...props }) => {
       return;
     }
 
-    console.log('QUEUE: about to run a task');
-
     // we have queue items and the queue is not currently running,
     // so start something
 
     batch(() => {
-      const [{ command, args, filename }, ...rest] = items.value;
-      items.value = rest;
+      const [item, ...rest] = items.value;
+      const { command, args, filename, frames } = item;
 
       toast.info(`"${filename}" is starting...`);
 
-      current.value = filename;
+      batch(() => {
+        items.value = rest;
+        current.value = filename;
+      });
 
-      videoTools.queue(command, args).then(() => {
-        toast.success(`"${filename}" is complete`);
-      }).catch(err => {
-        toast.error(`"${filename}" failed:\n${err.message}`);
-      }).finally(() => {
-        current.value = null;
+      Promise.resolve().then(async () => {
+        try {
+          await videoTools.queue(command, args);
+          toast.success(`"${filename}" is complete`);
+        } catch (err) {
+          toast.error(`"${filename}" failed:\n${err.message}`);
+        } finally {
+          batch(() => {
+            current.value = null;
+            completeFrames.value += frames;
+          });
+        }
       });
     });
   });
 
   const api = {
+    add,
     items,
-    current
+    current,
+    completeFrames,
+    totalFrames
   };
 
   return html`
@@ -69,7 +114,7 @@ const useQueue = () => {
 const Break = () => html`<span>\u00A0|\u00A0<//>`;
 
 const Queue = () => {
-  const { items, current } = useQueue();
+  const { items, current, completeFrames, totalFrames } = useQueue();
   const progress = useSignal(undefined);
 
   useEffect(() => {
@@ -79,8 +124,6 @@ const Queue = () => {
 
     const t = setInterval(() => {
       videoTools.queueInspect().then(result => {
-        console.log(result);
-
         if (result.progressTotal === 0) {
           progress.value = undefined;
           return;
@@ -102,6 +145,7 @@ const Queue = () => {
     };
   }, [current.value]);
 
+  // don't render this component if nothing is being processed
   if (['undefined', 'number'].includes(typeof progress.value)) {
     return;
   }
@@ -120,6 +164,8 @@ const Queue = () => {
     <span>Tasks: ${remainingTasks} of ${totalTasks}<//>
     <${Break} />
     <span>Local items: ${items.value.length}<//>
+    <${Break} />
+    <span>Local frames: ${completeFrames.value} / ${totalFrames.value}<//>
   <//>`;
 };
 

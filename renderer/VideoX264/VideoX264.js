@@ -20,7 +20,7 @@ function VideoX264() {
   const [video, setVideo] = useState(true);
   const [threads, setThreads] = useState(Math.floor(cpus / 2));
 
-  const { items: queueItems } = useQueue();
+  const { items: queueItems, add: addToQueue } = useQueue();
 
   const onQueue = (files) => {
     const newItems = files.filter(file => {
@@ -51,7 +51,7 @@ function VideoX264() {
     });
 
     if (newItems.length) {
-      queueItems.value = [...queueItems.value, ...newItems];
+      addToQueue(...newItems);
     }
   };
 
