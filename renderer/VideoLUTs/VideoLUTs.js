@@ -140,11 +140,7 @@ function VideoLUTs() {
         const filepath = path.resolve(dirPath, item);
 
         memo[dir] = memo[dir] || {};
-        // memo[dir][name] = onLutSelected(path.resolve(dirPath, item));
-        memo[dir][name] = () => {
-          console.log('LUT CLICKED', { name, item, filepath });
-          onLutSelected(filepath);
-        };
+        memo[dir][name] = () => void onLutSelected(filepath);
 
         return memo;
       }, {});
