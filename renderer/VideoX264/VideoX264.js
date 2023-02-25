@@ -11,6 +11,7 @@ const NamingFields = require('../NamingFields/NamingFields.js');
 const { useQueue } = require('../Queue/Queue.js');
 
 css('../styles/tab-panel.css');
+css('./VideoX264.css');
 
 function VideoX264() {
   const prefix = useConfigSignal('videox264.prefix', '');
@@ -79,7 +80,7 @@ function VideoX264() {
   `;
 
   return html`
-    <div class=tab-panel>
+    <div class="tab-panel video-x264">
       <h2>Drag files here to encode to x264</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}

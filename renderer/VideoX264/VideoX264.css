@@ -1,0 +1,7 @@
+.video-x264 label {
+  margin: 0;
+  padding: 10px;
+}
+.video-x264 label > span {
+  padding: 0 8px;
+}
