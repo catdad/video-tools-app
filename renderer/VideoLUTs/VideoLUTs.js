@@ -16,7 +16,7 @@ const { usingFile } = require('../../lib/temp.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 
-const { useConfig, useConfigSignal } = require('../tools/config.js');
+const { useConfigSignal } = require('../tools/config.js');
 const { useEffect } = require('react');
 
 css('../styles/tab-panel.css');
