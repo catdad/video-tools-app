@@ -1,7 +1,7 @@
-.video-x264 label {
+.video-x264 .toggle {
   margin: 0;
   padding: 10px;
 }
-.video-x264 label > span {
+.video-x264 .toggle > span {
   padding: 0 8px;
 }

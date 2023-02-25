@@ -2,7 +2,7 @@ const path = require('path');
 const os = require('os');
 const cpus = os.cpus().length;
 
-const { FormControlLabel, Slider, Switch, Toggle, html, css } = require('../tools/ui.js');
+const { FormControlLabel, Slider, Toggle, html, css } = require('../tools/ui.js');
 const { useConfigSignal } = require('../tools/config.js');
 const toast = require('../tools/toast.js');
 
@@ -60,10 +60,12 @@ function VideoX264() {
     <h3>Transcode</h3>
     <div>
       <${FormControlLabel}
+        classes=${{ root: 'toggle' }}
         control=${html`<${Toggle} values=${['aac', 'mp3', 'copy']} value=${audio.value} onChange=${(v) => (audio.value = v)} />`}
         label="Audio" labelPlacement=start
       />
       <${FormControlLabel}
+        classes=${{ root: 'toggle' }}
         control=${html`<${Toggle} values=${['h264', 'copy']} value=${video.value} onChange=${(v) => (video.value = v)} />`}
         label="Video" labelPlacement=start
       />
