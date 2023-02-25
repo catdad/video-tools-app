@@ -26,8 +26,7 @@ function VideoContainer() {
 
       return true;
     }).map(file => {
-      const _suffix = suffix ? suffix :
-      path.parse(file.path).ext === `.${format}` ? '.container' : '';
+      const _suffix = suffix.value || path.parse(file.path).ext === `.${format.value}` ? '.container' : '';
 
       return {
         command: 'container',
@@ -35,8 +34,8 @@ function VideoContainer() {
         filename: file.name,
         args: [{
           input: file.path,
-          format,
-          prefix,
+          format: format.value,
+          prefix: prefix.value,
           suffix: _suffix
         }]
       };

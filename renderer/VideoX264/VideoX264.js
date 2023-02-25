@@ -31,8 +31,7 @@ function VideoX264() {
 
       return true;
     }).map(file => {
-      const _suffix = suffix ? suffix :
-        path.parse(file.path).ext === `.${format}` ? '.repack' : '';
+      const _suffix = suffix.value || path.parse(file.path).ext === `.${format}` ? '.repack' : '';
 
       return {
         command: 'x264',
@@ -40,12 +39,12 @@ function VideoX264() {
         filename: file.name,
         args: [{
           input: file.path,
-          video,
-          audio,
-          format,
-          prefix,
+          video: video.value,
+          audio: audio.value,
+          format: format.value,
+          prefix: prefix.value,
           suffix: _suffix,
-          threads
+          threads: threads.value
         }]
       };
     });
