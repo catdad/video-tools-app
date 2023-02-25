@@ -79,18 +79,12 @@ function VideoX264() {
     </div>
   `;
 
-  const namingDom = html`<${NamingFields} nooutput ...${{
-    prefix, setPrefix: val => { prefix.value = val; },
-    suffix, setSuffix: val => { suffix.value = val; },
-    format, setFormat: val => { format.value = val; }
-  }}/>`;
-
   return html`
     <div class=tab-panel>
       <h2>Drag files here to encode to x264</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}
-      ${namingDom}
+      <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
     </div>
   `;
 }
