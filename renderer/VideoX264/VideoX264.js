@@ -31,7 +31,8 @@ function VideoX264() {
 
       return true;
     }).map(file => {
-      const _suffix = suffix.value || path.parse(file.path).ext === `.${format}` ? '.repack' : '';
+      const expectSameFormat = path.parse(file.path).ext === `.${format}`;
+      const _suffix = suffix.value || (expectSameFormat ? '.repack' : '');
 
       return {
         command: 'x264',

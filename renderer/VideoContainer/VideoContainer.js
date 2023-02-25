@@ -26,7 +26,8 @@ function VideoContainer() {
 
       return true;
     }).map(file => {
-      const _suffix = suffix.value || path.parse(file.path).ext === `.${format.value}` ? '.container' : '';
+      const expectSameFormat = path.parse(file.path).ext === `.${format.value}`;
+      const _suffix = suffix.value || (expectSameFormat ? '.container' : '');
 
       return {
         command: 'container',
