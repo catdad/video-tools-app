@@ -2,7 +2,7 @@ const path = require('path');
 const os = require('os');
 const cpus = os.cpus().length;
 
-const { FormControlLabel, Slider, Switch, html, css } = require('../tools/ui.js');
+const { FormControlLabel, Slider, Switch, Toggle, html, css } = require('../tools/ui.js');
 const { useConfigSignal } = require('../tools/config.js');
 const toast = require('../tools/toast.js');
 
@@ -16,8 +16,8 @@ function VideoX264() {
   const prefix = useConfigSignal('videox264.prefix', '');
   const suffix = useConfigSignal('videox264.suffix', '');
   const format = useConfigSignal('videox264.format', 'mp4');
-  const audio = useConfigSignal('videox264.audio', true);
-  const video = useConfigSignal('videox264.video', true);
+  const audio = useConfigSignal('videox264.audio', 'aac');
+  const video = useConfigSignal('videox264.video', 'h264');
   const threads = useConfigSignal('videox264.threads', Math.floor(cpus / 2));
 
   const { add: addToQueue } = useQueue();
@@ -57,15 +57,14 @@ function VideoX264() {
 
   const controlsDom = html`
     <h3>Transcode</h3>
-    <p><i>Channels that are not transcoded will be copied directly.</i></p>
     <div>
       <${FormControlLabel}
-        control=${html`<${Switch} checked=${audio.value} onChange=${(e, v) => (audio.value = v)} />`}
-        label="Transcode Audio"
+        control=${html`<${Toggle} values=${['aac', 'mp3', 'copy']} value=${audio.value} onChange=${(v) => (audio.value = v)} />`}
+        label="Audio" labelPlacement=start
       />
       <${FormControlLabel}
-        control=${html`<${Switch} checked=${video.value} onChange=${(e, v) => (video.value = v)} />`}
-        label="Transcode Video"
+        control=${html`<${Toggle} values=${['h264', 'copy']} value=${video.value} onChange=${(v) => (video.value = v)} />`}
+        label="Video" labelPlacement=start
       />
     </div>
     <div style=${{ width: 'clamp(100px, 80vw, 300px)' }} >
