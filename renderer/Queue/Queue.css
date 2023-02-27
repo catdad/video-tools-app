@@ -31,6 +31,7 @@
   border-radius: 5px;
   padding: 10px;
   color: var(--color-background);
+  line-height: 1.5;
 }
 
 .queue .modal::after {
@@ -44,8 +45,4 @@
   position: absolute;
   bottom: calc(var(--triangle) * -1);
   left: calc(50% - var(--triangle));
-}
-
-.queue .modal li {
-  line-height: 1.5;
 }

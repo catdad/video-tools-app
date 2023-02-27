@@ -123,8 +123,8 @@ const QueueModal = () => {
   const { items, current } = useQueue();
 
   const currentText = html`<p>
-    Currently working on:<br/>
-    ${current.value}
+    <div>Currently working on:<//>
+    <div>${current.value}<//>
   </p>`;
 
   const queueText = items.value.length ?
