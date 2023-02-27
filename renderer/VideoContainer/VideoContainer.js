@@ -1,6 +1,7 @@
 const path = require('path');
 
-const { html, css, useState } = require('../tools/ui.js');
+const { html, css } = require('../tools/ui.js');
+const { useConfigSignal } = require('../tools/config.js');
 const toast = require('../tools/toast.js');
 
 const FileInput = require('../FileInput/FileInput.js');
@@ -10,9 +11,9 @@ const { useQueue } = require('../Queue/Queue.js');
 css('../styles/tab-panel.css');
 
 function VideoContainer() {
-  const [prefix, setPrefix] = useState('');
-  const [suffix, setSuffix] = useState('');
-  const [format, setFormat] = useState('mp4');
+  const prefix = useConfigSignal('videocontainer.prefix', '');
+  const suffix = useConfigSignal('videocontainer.suffix', '');
+  const format = useConfigSignal('videocontainer.format', 'mp4');
 
   const { add: addToQueue } = useQueue();
 
@@ -25,8 +26,8 @@ function VideoContainer() {
 
       return true;
     }).map(file => {
-      const _suffix = suffix ? suffix :
-      path.parse(file.path).ext === `.${format}` ? '.container' : '';
+      const expectSameFormat = path.parse(file.path).ext === `.${format.value}`;
+      const _suffix = suffix.value || (expectSameFormat ? '.container' : '');
 
       return {
         command: 'container',
@@ -34,8 +35,8 @@ function VideoContainer() {
         filename: file.name,
         args: [{
           input: file.path,
-          format,
-          prefix,
+          format: format.value,
+          prefix: prefix.value,
           suffix: _suffix
         }]
       };
@@ -46,21 +47,11 @@ function VideoContainer() {
     }
   };
 
-  const children = [];
-
-  children.push(
-    html`<${NamingFields} nooutput ...${{
-      prefix, setPrefix,
-      suffix, setSuffix,
-      format, setFormat
-    }}/>`
-  );
-
   return html`
     <div class=tab-panel>
       <h2>Drag files here to change the video container</h2>
       <${FileInput} nobutton onchange=${onQueue} />
-      ${children}
+      <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
     </div>
   `;
 }

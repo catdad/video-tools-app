@@ -8,7 +8,7 @@ const { clipboard, nativeImage } = require('electron');
 
 const {
   Card, CardContent, ObjectList, PrimaryButton,
-  html, css, useState
+  html, css, useSignal, batch
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
@@ -16,13 +16,11 @@ const { usingFile } = require('../../lib/temp.js');
 
 const FileInput = require('../FileInput/FileInput.js');
 
-const { useConfig } = require('../tools/config.js');
+const { useConfigSignal } = require('../tools/config.js');
+const { useEffect } = require('react');
 
 css('../styles/tab-panel.css');
 css('./VideoLUTs.css');
-
-const LUTS_DIR = 'videoluts.luts-dir';
-const LUTS_IMG = 'videoluts.luts-img';
 
 const findCubes = async (cwd) => {
   const cubes = await glob(['**/*.cube', '**/*.CUBE'], { cwd });
@@ -87,69 +85,17 @@ const Panel = ({ class: className, title, children }) => html`
 `;
 
 function VideoLUTs() {
-  const config = useConfig();
-  const [luts, setLuts] = useState(null);
-  const [data, setData] = useState({});
+  const lutsDir = useConfigSignal('videoluts.luts-dir');
+  const lutsImg = useConfigSignal('videoluts.luts-img');
 
-  const { image, editedImageUrl, editedImageBuffer, downloadName } = data;
+  const luts = useSignal();
+  const renderedUrl = useSignal();
+  const renderedBuffer = useSignal();
+  const renderedName = useSignal();
 
-  const onLUTs = ([dir] = []) => {
-    if (!dir) return;
+  const onLutSelected = lut => {
+    const image = lutsImg.value;
 
-    const { path: dirPath } = dir;
-
-    Promise.resolve().then(async () => {
-      if (!(await fs.pathExists(dirPath))) return;
-
-      const cubes = await findCubes(dirPath);
-
-      config.set(LUTS_DIR, dirPath);
-      setLuts({
-        cwd: dirPath,
-        list: cubes
-      });
-    }).catch(err => {
-      toast.error(`could not load LUTs:\n${err.message}`);
-    });
-  };
-
-  const onImage = ([img] = []) => {
-    if (!img) return;
-
-    const { path: image } = img;
-
-    Promise.resolve().then(async () => {
-      if (!(await fs.pathExists(image))) return;
-
-      setData({
-        image,
-        editedImageUrl: null,
-        editedImageBuffer: null
-      });
-      config.set(LUTS_IMG, img.path);
-    }).catch(err => {
-      toast.error(`could not load image:\n${err.message}`);
-    });
-  };
-
-  if (luts === null && config.get(LUTS_DIR)) {
-    onLUTs([{ path: config.get(LUTS_DIR) }]);
-  }
-
-  if (!data.image && config.get(LUTS_IMG)) {
-    onImage([{ path: config.get(LUTS_IMG) }]);
-  }
-
-  if (luts === null) {
-    return html`
-      <div class=tab-panel>
-        <h2>Drag a LUTs folder</h2>
-        <${FileInput} nobutton onchange=${onLUTs} />
-      </div>
-    `;
-  }
-
-  const onLut = lut => () => {
     if (!image) return;
 
     (async () => {
@@ -167,52 +113,115 @@ function VideoLUTs() {
         return { url, buffer };
       });
 
-      setData({
-        ...data,
-        editedImageUrl: url,
-        editedImageBuffer: buffer,
-        downloadName: name
+      batch(() => {
+        renderedUrl.value = url;
+        renderedBuffer.value = buffer;
+        renderedName.value = name;
       });
     })().catch(() => {
-      setData({
-        ...data,
-        editedImageUrl: null,
-        editedImageBuffer: null
-      });
       toast.error(`Failed to apply "${lut}" LUT`);
+
+      batch(() => {
+        renderedUrl.value = null;
+        renderedBuffer.value = null;
+        renderedName.value = null;
+      });
     });
   };
 
-  const lutsMap = luts.list.reduce((memo, item) => {
-    const name = path.basename(item);
-    const dir = path.dirname(item);
+  const openLuts = (dirPath) => {
+    Promise.resolve().then(async () => {
+      if (!(await fs.pathExists(dirPath))) return;
 
-    memo[dir] = memo[dir] || {};
-    memo[dir][name] = onLut(path.resolve(luts.cwd, item));
+      const list = await findCubes(dirPath);
+      const map = list.reduce((memo, item) => {
+        const name = path.basename(item);
+        const dir = path.dirname(item);
+        const filepath = path.resolve(dirPath, item);
 
-    return memo;
-  }, {});
+        memo[dir] = memo[dir] || {};
+        memo[dir][name] = () => void onLutSelected(filepath);
+
+        return memo;
+      }, {});
+
+      luts.value = {
+        cwd: dirPath,
+        list,
+        map
+      };
+    }).catch(err => {
+      toast.error(`could not load LUTs:\n${err.message}`);
+    });
+  };
+
+  const onLUTs = ([dir] = []) => {
+    if (!dir) return;
+    lutsDir.value = dir.path;
+  };
+
+  const openImage = (image) => {
+    Promise.resolve().then(async () => {
+      if (!(await fs.pathExists(image))) return;
+
+      batch(() => {
+        renderedUrl.value = null;
+        renderedBuffer.value = null;
+      });
+    }).catch(err => {
+      toast.error(`could not load image:\n${err.message}`);
+    });
+  };
+
+  const onImage = ([img] = []) => {
+    if (!img) return;
+    lutsImg.value = img.path;
+  };
+
+  // using signal's effect seems to make this an infinite loop 🤷‍♀️
+  useEffect(() => {
+    if (lutsDir.value) {
+      openLuts(lutsDir.value);
+    }
+
+    if (lutsImg.value) {
+      openImage(lutsImg.value);
+    }
+  }, [lutsDir.value, lutsImg.value]);
+
+  if (!luts.value) {
+    return html`
+      <div class=tab-panel>
+        <h2>Drag a LUTs folder</h2>
+        <${FileInput} nobutton onchange=${onLUTs} />
+      </div>
+    `;
+  }
 
   const renderedLuts = html`
     <${Panel} class="luts" title="LUTs">
       <${Card} raised className="card" >
         <${CardContent}>
-          <${ObjectList} value=${lutsMap} />
+          <${ObjectList} value=${luts.value.map} />
         <//>
       <//>
     <//>
   `;
 
-  const onCopy = () => void clipboard.writeImage(nativeImage.createFromBuffer(editedImageBuffer));
-  const onReset = () => void setData({ ...data, editedImageUrl: null, editedImageBuffer: null });
+  const onCopy = () => void clipboard.writeImage(nativeImage.createFromBuffer(renderedBuffer.value));
+  const onReset = () => void batch(() => {
+    renderedUrl.value = null;
+    renderedBuffer.value = null;
+    renderedName.value = null;
+  });
 
-  const renderedImage = image ?
+  const renderedImage = lutsImg.value ?
     html`
-      <${Panel} class="img" title="${editedImageUrl ? `Edited Image (${downloadName})` : 'Original Image'}">
-        <img src="${editedImageUrl || image}" />
+      <${Panel} class="img" title="${renderedUrl.value ? `Edited Image (${renderedName.value})` : 'Original Image'}">
+        <img src="${renderedUrl.value || lutsImg.value}" />
         <div class="buttons">
-          <${PrimaryButton} onclick=${onCopy} disabled=${!editedImageBuffer}>Copy<//>
-          <${PrimaryButton} onclick=${onReset} disabled=${!editedImageBuffer}>Reset<//>
+          <${PrimaryButton} onclick=${onCopy} disabled=${!renderedBuffer.value}>Copy<//>
+          <${PrimaryButton} onclick=${onReset} disabled=${!renderedBuffer.value}>Reset<//>
         </div>
       <//>
     ` :

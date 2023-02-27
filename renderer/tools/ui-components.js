@@ -1,24 +1,21 @@
 const components = require('@material-ui/core');
 
-//const { compose, palette, spacing, typography } = require('@material-ui/system');
-//const Box = components.styled('div')(compose(spacing, palette, typography));
-
-const { Collapse, List, ListItem, ListItemText } = components;
+const { Collapse, List, ListItem, ListItemText, Button, ButtonGroup, TextField } = components;
 
 const ExpandLess = require('@material-ui/icons/ExpandLess').default;
 const ExpandMore = require('@material-ui/icons/ExpandMore').default;
 
 module.exports = ({ html, hooks: { useState } }) => {
   const PrimaryButton = ({ ...props }) => html`
-    <${components.Button} size=small ...${props} style=${{ fontWeight: 700 }} color=primary variant=contained />
+    <${Button} size=small ...${props} style=${{ fontWeight: 700 }} color=primary variant=contained />
   `;
 
   const SecondaryButton = ({ ...props }) => html`
-    <${components.Button} size=small ...${props} color=primary variant=outlined />
+    <${Button} size=small ...${props} color=primary variant=outlined />
   `;
 
   const PrimaryTextField = ({ ...props }) => html`
-    <${components.TextField} ...${props} variant=outlined margin=dense />
+    <${TextField} ...${props} variant=outlined margin=dense />
   `;
 
   const ObjectListItem = ({ name = '', value = {} }) => {
@@ -67,9 +64,24 @@ module.exports = ({ html, hooks: { useState } }) => {
     return html`<${List} ...${props}>${listChildren}<//>`;
   };
 
+  const Toggle = ({ value, values = [], onChange = () => {} }) => {
+    const _value = value || values[0];
+
+    const click = (val) => () => {
+      if (val !== _value) {
+        onChange(val);
+      }
+    };
+
+    return html`<${ButtonGroup} color=primary>
+      ${values.map(val => html`<${val === _value ? PrimaryButton : Button} onClick=${click(val)}>${val}<//>`)}
+    <//>`;
+  };
+
   return {
     ...components,
     PrimaryButton, SecondaryButton,
-    PrimaryTextField, ObjectList
+    PrimaryTextField, ObjectList,
+    Toggle
   };
 };
