@@ -17,4 +17,35 @@
   display: flex;
   align-items: center;
   padding: 0 10px;
+  z-index: 1;
+}
+
+.queue .modal {
+  --width: 80%;
+  --triangle: 10px;
+  position: fixed;
+  left: calc(calc(100% - var(--width)) / 2);
+  width: var(--width);
+  bottom: calc(var(--queue-height) + var(--triangle) + 5px);
+  background-color: var(--secondary);
+  border-radius: 5px;
+  padding: 10px;
+  color: var(--color-background);
+}
+
+.queue .modal::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: var(--triangle) solid transparent;
+  border-right: var(--triangle) solid transparent;
+  border-top: var(--triangle) solid var(--secondary);
+
+  position: absolute;
+  bottom: calc(var(--triangle) * -1);
+  left: calc(50% - var(--triangle));
+}
+
+.queue .modal li {
+  line-height: 1.5;
 }
