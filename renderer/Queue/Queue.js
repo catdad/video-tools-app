@@ -70,8 +70,6 @@ const withQueue = Component => ({ children, ...props }) => {
       const [item, ...rest] = items.value;
       const { command, args, filename, frames } = item;
 
-      toast.info(`"${filename}" is starting...`);
-
       batch(() => {
         items.value = rest;
         current.value = filename;
@@ -80,7 +78,6 @@ const withQueue = Component => ({ children, ...props }) => {
       Promise.resolve().then(async () => {
         try {
           await videoTools.queue(command, args);
-          toast.success(`"${filename}" is complete`);
         } catch (err) {
           console.error('task failed', filename, err);
           toast.error(`"${filename}" failed:\n${err.message}`);
