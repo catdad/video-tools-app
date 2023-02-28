@@ -83,7 +83,7 @@ function VideoX264() {
 
   return html`
     <div class="tab-panel video-x264">
-      <h2>Drag files here to encode to x264</h2>
+      <h2>Drag files to convert here</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}
       <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
