@@ -62,7 +62,7 @@ describe('[smoke tests]', () => {
     const tab = await findByText($document, 'transcode to x264');
     await tab.click();
 
-    const title = await findByText($document, 'Drag files here to encode to x264');
+    const title = await findByText($document, 'Drag files to convert here');
     expect(await title.evaluate(e => e.tagName)).to.equal('H2');
   });
 
@@ -104,7 +104,7 @@ describe('[smoke tests]', () => {
 
     const $document = await getDocument(app.page);
 
-    const title = await findByText($document, 'Drag files here to encode to x264');
+    const title = await findByText($document, 'Drag files to convert here');
     expect(await title.evaluate(e => e.tagName)).to.equal('H2');
   });
 });

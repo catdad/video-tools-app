@@ -7,7 +7,10 @@ const SnackbarComponent = () => {
   ({ enqueueSnackbar  } = useSnackbar());
 };
 
-const SnackbarConainer = () => html`<${SnackbarProvider} maxSnack=5><${SnackbarComponent} /><//>`;
+const SnackbarConainer = () => html`<${SnackbarProvider}
+  anchorOrigin=${{ horizontal: 'left', vertical: 'bottom' }}
+  maxSnack=5
+><${SnackbarComponent} /><//>`;
 
 (() => {
   const container = document.createElement('div');

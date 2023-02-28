@@ -1,4 +1,6 @@
-const { html, css, createContext, useContext, useEffect,
+const {
+  html, css,
+  createContext, useContext, useEffect,
   useSignal, effect, batch
 } = require('../tools/ui.js');
 
@@ -68,8 +70,6 @@ const withQueue = Component => ({ children, ...props }) => {
       const [item, ...rest] = items.value;
       const { command, args, filename, frames } = item;
 
-      toast.info(`"${filename}" is starting...`);
-
       batch(() => {
         items.value = rest;
         current.value = filename;
@@ -78,7 +78,6 @@ const withQueue = Component => ({ children, ...props }) => {
       Promise.resolve().then(async () => {
         try {
           await videoTools.queue(command, args);
-          toast.success(`"${filename}" is complete`);
         } catch (err) {
           console.error('task failed', filename, err);
           toast.error(`"${filename}" failed:\n${err.message}`);
@@ -113,9 +112,35 @@ const useQueue = () => {
 
 const Break = () => html`<span>\u00A0|\u00A0<//>`;
 
+const Modal = ({ children }) => {
+  return html`<div class=modal>${children}<//>`;
+};
+
+const QueueModal = () => {
+  const { items, current } = useQueue();
+
+  const currentText = html`<p>
+    <div>Currently working on:<//>
+    <div>${current.value}<//>
+  </p>`;
+
+  const queueText = items.value.length ?
+    html`<p>Up next:</p>
+    <ol>
+      ${items.value.map(item => html`<li>${item.filename}<//>`)}
+    </ol>` :
+    html`<p>Nothing is queued up after that.<//>`;
+
+  return html`<div class=modal>
+    ${currentText}
+    ${queueText}
+  <//>`;
+};
+
 const Queue = () => {
   const { items, current, completeFrames, totalFrames } = useQueue();
   const progress = useSignal(undefined);
+  const showTasks = useSignal(false);
 
   useEffect(() => {
     if (!current.value) {
@@ -145,7 +170,12 @@ const Queue = () => {
 
   // don't render this component if nothing is being processed
   if (!progress.value) {
-    return;
+    return html`<div class=queue onclick=${() => (showTasks.value = !showTasks.value)}>
+      <span>You are doing such a good job</span>
+      ${showTasks.value ? html`<${Modal}>
+        <div>This is where queued videos will appear<//>
+      <//>` : null}
+    <//>`;
   }
 
   const {
@@ -159,12 +189,13 @@ const Queue = () => {
 
   windowProgress.set(progressRatio);
 
-  return html`<div class=queue>
+  return html`<div class=queue onclick=${() => (showTasks.value = !showTasks.value)}>
     <span>Overall: ${progressPercent}% (${progressFrames}/${totalFrames.value})<//>
     <${Break} />
     <span>Current: ${currentPercent}% (${taskCurrent}/${taskTotal})<//>
     <${Break} />
     <span>Tasks: ${items.value.length + 1}<//>
+    ${showTasks.value ? html`<${QueueModal} />` : null}
   <//>`;
 };
 
