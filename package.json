@@ -20,9 +20,12 @@
     "dev": "electronmon .",
     "test": "mocha --timeout 30000 --slow 0 \"test/**/*.test.js\"",
     "postinstall": "npm run -s prep",
-    "prep": "npm-run-all --silent prep:*",
+    "prep": "npm-run-all prep:*",
     "prep:icons": "svg-app-icon --destination icons < assets/icon.svg",
     "prep:fonts": "mkdirp fonts && css-font-local-cache \"https://fonts.googleapis.com/css2?family=Roboto:wght@400;700\" > fonts/fonts.css",
+    "prep:splash": "run-script-os",
+    "prep:splash:win32": "svg-render --width 800 < assets/splash.svg | npx @catdad/to-bmp > icons/splash.bmp",
+    "prep:splash:default": "echo splash image is only for windows",
     "package": "run-script-os",
     "package:win32": "electron-builder --config .electron-builder.js --publish never --win",
     "package:darwin": "electron-builder --config .electron-builder.js --publish never --mac",
@@ -30,6 +33,7 @@
     "package:default": "echo \"Error: this OS is not supported\" && exit 1"
   },
   "devDependencies": {
+    "@catdad/to-bmp": "^1.1.0",
     "chai": "^4.3.4",
     "chalk": "^4.1.2",
     "css-font-local-cache": "^1.0.1",
@@ -45,6 +49,7 @@
     "puptron": "0.0.5",
     "run-script-os": "^1.1.6",
     "svg-app-icon": "^1.1.0",
+    "svg-render": "^1.2.0",
     "wait-for-throwable": "^1.0.1"
   },
   "dependencies": {
