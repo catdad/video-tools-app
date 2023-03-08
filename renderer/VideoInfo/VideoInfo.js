@@ -22,7 +22,6 @@ const getMeta = async files => {
       name: file.name,
       path: file.path,
       bytes: file.size,
-      type: file.type,
     };
 
     try {
@@ -48,15 +47,17 @@ function VideoInfo() {
   };
 
   const elems = files.map(file => {
-    const { name, path, bytes, type, audio, video } = file;
+    const { name, path, bytes, audio, video } = file;
     const seconds = get(file, 'video.duration', 0);
     const duration = prettyMs(Number(seconds) * 1000);
     const size = `${prettyBytes(bytes)}  (${bytes} bytes)`;
+    const videoSummary = `${video.codec_name} (${video.width}x${video.height})`;
+    const audioSummary = `${audio.codec_name} (${audio.channels} channels)`;
 
     // this object sets the order of the UI
     // yes, I know order is technically not guaranteed, but it works
     // well enough and I am lazy
-    const data = { path, type, size, duration, audio, video };
+    const data = { path, size, duration, 'video summary': videoSummary, 'audio summary': audioSummary, audio, video };
 
     return html`
       <${Card} raised className=card >
