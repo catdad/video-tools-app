@@ -29,7 +29,7 @@ function VideoInfo() {
         const meta = await videoTools.exec('meta', [{ input: file.path }]);
         metadata.value = [...metadata.value, { ...data, ...meta }];
       } catch (e) {
-        metadata.value = [...metadata.value, { ...data, ...{ ok: false, error: e }}];
+        metadata.value = [...metadata.value, { ...data, ok: false, error: e }];
       }
     }
   };
@@ -43,18 +43,32 @@ function VideoInfo() {
   };
 
   const elems = metadata.value.map(file => {
-    const { name, path, bytes, audio, video } = file;
+    const { name, path, bytes, audio, video, error } = file;
+
+    console.log(file);
+
+    if (error) {
+      return { name, error: error.message };
+    }
+
+    const size = `${prettyBytes(bytes)}  (${bytes} bytes)`;
+
+    if (!audio && !video) {
+      return { name, path, size, error: 'The file does not appear to be a video' };
+    }
+
     const seconds = get(file, 'video.duration', 0);
     const duration = prettyMs(Number(seconds) * 1000);
-    const size = `${prettyBytes(bytes)}  (${bytes} bytes)`;
     const videoSummary = `${video.codec_name} (${video.width}x${video.height})`;
     const audioSummary = `${audio.codec_name} (${audio.channels} channels)`;
 
     // this object sets the order of the UI
     // yes, I know order is technically not guaranteed, but it works
     // well enough and I am lazy
-    const data = { path, size, duration, 'video summary': videoSummary, 'audio summary': audioSummary, audio, video };
+    const data = { name, path, size, duration, 'video summary': videoSummary, 'audio summary': audioSummary, audio, video };
 
+    return data;
+  }).map(({ name, ...data}) => {
     return html`
       <${Card} raised className=card >
         <${CardContent}>
