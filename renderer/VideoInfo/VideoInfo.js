@@ -45,8 +45,6 @@ function VideoInfo() {
   const elems = metadata.value.map(file => {
     const { name, path, bytes, audio, video, error } = file;
 
-    console.log(file);
-
     if (error) {
       return { name, error: error.message };
     }
@@ -65,9 +63,7 @@ function VideoInfo() {
     // this object sets the order of the UI
     // yes, I know order is technically not guaranteed, but it works
     // well enough and I am lazy
-    const data = { name, path, size, duration, 'video summary': videoSummary, 'audio summary': audioSummary, audio, video };
-
-    return data;
+    return { name, path, size, duration, 'video summary': videoSummary, 'audio summary': audioSummary, audio, video };
   }).map(({ name, ...data}) => {
     return html`
       <${Card} raised className=card >
