@@ -13,15 +13,15 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 14
       - run: npm install
       - run: npm test
       - run: npm run package
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-artifacts
           path: dist/*.exe
@@ -29,15 +29,15 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 14
       - run: npm install
       - run: npm test
       - run: npm run package
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-artifacts
           path: dist/*.dmg
@@ -45,8 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 14
       - run: sudo apt-get install xvfb
@@ -55,7 +55,7 @@ jobs:
         run: xvfb-run --auto-servernum npm test
       - run: npm run package
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linux-artifacts
           path: dist/*.AppImage
@@ -64,7 +64,7 @@ jobs:
     needs: [ windows, macos, linux ]
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ./
       - name: Flatten artifacts
@@ -103,5 +103,5 @@ jobs:
                 release_id: release.data.id,
                 name: file,
                 data: await fs.readFile(`./${file}`)
-              });            
-            }          
+              });
+            }
