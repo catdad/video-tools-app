@@ -39,7 +39,7 @@
     "css-font-local-cache": "^1.0.1",
     "electron": "^24.8.5",
     "electron-background": "^1.0.0",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^24.13.3",
     "electronmon": "^2.0.2",
     "eslint": "^5.16.0",
     "mkdirp": "^1.0.4",
