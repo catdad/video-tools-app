@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@catdad/to-bmp": "^1.1.0",
-    "chai": "^4.3.4",
+    "chai": "^4.4.1",
     "chalk": "^4.1.2",
     "css-font-local-cache": "^1.0.1",
     "electron": "^29.1.0",
