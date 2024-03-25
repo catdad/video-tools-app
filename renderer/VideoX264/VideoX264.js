@@ -2,7 +2,7 @@ const path = require('path');
 const os = require('os');
 const cpus = os.cpus().length;
 
-const { FormControlLabel, Slider, Toggle, html, css } = require('../tools/ui.js');
+const { FormControlLabel, Slider, Toggle, PrimaryTextField: TextField, html, css } = require('../tools/ui.js');
 const { useConfigSignal } = require('../tools/config.js');
 const toast = require('../tools/toast.js');
 
@@ -20,6 +20,7 @@ function VideoX264() {
   const audio = useConfigSignal('videox264.audio', 'aac');
   const video = useConfigSignal('videox264.video', 'h264');
   const threads = useConfigSignal('videox264.threads', Math.floor(cpus / 2));
+  const width = useConfigSignal('videox264.width', '');
 
   const { add: addToQueue } = useQueue();
 
@@ -35,19 +36,25 @@ function VideoX264() {
       const expectSameFormat = path.parse(file.path).ext === `.${format}`;
       const _suffix = suffix.value || (expectSameFormat ? '.repack' : '');
 
+      const args = {
+        input: file.path,
+        video: video.value,
+        audio: audio.value,
+        format: format.value,
+        prefix: prefix.value,
+        suffix: _suffix,
+        threads: threads.value
+      };
+
+      if (video.value !== 'copy' && !!width.value) {
+        args.width = width.value;
+      }
+
       return {
         command: 'x264',
         filepath: file.path,
         filename: file.name,
-        args: [{
-          input: file.path,
-          video: video.value,
-          audio: audio.value,
-          format: format.value,
-          prefix: prefix.value,
-          suffix: _suffix,
-          threads: threads.value
-        }]
+        args: [args]
       };
     });
 
@@ -55,6 +62,8 @@ function VideoX264() {
       addToQueue(...newItems);
     }
   };
+
+  const onWidthInput = ev => (width.value = ev.target.value);
 
   const controlsDom = html`
     <h3>Transcode</h3>
@@ -87,6 +96,7 @@ function VideoX264() {
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}
       <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
+      <${TextField} label="max width" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : width.value} onInput=${onWidthInput} />
     </div>
   `;
 }
