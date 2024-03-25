@@ -21,6 +21,7 @@ function VideoX264() {
   const video = useConfigSignal('videox264.video', 'h264');
   const threads = useConfigSignal('videox264.threads', Math.floor(cpus / 2));
   const width = useConfigSignal('videox264.width', '');
+  const height = useConfigSignal('videox264.height', '')
 
   const { add: addToQueue } = useQueue();
 
@@ -50,6 +51,10 @@ function VideoX264() {
         args.width = width.value;
       }
 
+      if (video.value !== 'copy' && !!height.value) {
+        args.height = height.value;
+      }
+
       return {
         command: 'x264',
         filepath: file.path,
@@ -64,6 +69,7 @@ function VideoX264() {
   };
 
   const onWidthInput = ev => (width.value = ev.target.value);
+  const onHeightInput = ev => (height.value = ev.target.value);
 
   const controlsDom = html`
     <h3>Transcode</h3>
@@ -97,6 +103,7 @@ function VideoX264() {
       ${controlsDom}
       <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
       <${TextField} label="max width" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : width.value} onInput=${onWidthInput} />
+      <${TextField} label="max height" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : height.value} onInput=${onHeightInput} />
     </div>
   `;
 }
