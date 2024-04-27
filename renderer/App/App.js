@@ -13,6 +13,7 @@ const VideoContainer = require('../VideoContainer/VideoContainer.js');
 const VideoX264 = require('../VideoX264/VideoX264.js');
 const VideoInfo = require('../VideoInfo/VideoInfo.js');
 const VideoLUTs = require('../VideoLUTs/VideoLUTs.js');
+const Frame = require('../Frame/Frame.js');
 
 css('./App.css');
 
@@ -62,6 +63,7 @@ function App() {
   });
 
   return html`
+    <${Frame} />
     <${TabBar} selected=${TABS[tab].idx} onChange=${onTabChange} ref=${tabBar}>
       ${tabDom}
     <//>

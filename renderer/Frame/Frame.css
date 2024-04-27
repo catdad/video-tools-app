@@ -1,0 +1,25 @@
+.frame {
+  -webkit-app-region: drag;
+  height: var(--frame-height);
+  display: flex;
+}
+
+.frame .frame-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame .frame-buttons {
+  -webkit-app-region: no-drag;
+  height: 100%;
+}
+
+.frame .frame-buttons button {
+  background: none;
+  color: var(--foreground);
+  border: none;
+  height: 100%;
+  display: inline-block;
+}
