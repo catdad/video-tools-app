@@ -48,8 +48,8 @@
     "pptr-testing-library": "^0.7.0",
     "puptron": "^0.0.7",
     "run-script-os": "^1.1.6",
-    "svg-app-icon": "^1.1.0",
-    "svg-render": "^1.2.0",
+    "svg-app-icon": "^2.0.0",
+    "svg-render": "^2.0.0",
     "wait-for-throwable": "^1.0.1"
   },
   "dependencies": {
