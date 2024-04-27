@@ -3,6 +3,8 @@
   height: var(--frame-height);
   display: flex;
   background-color: var(--color-background);
+  border: var(--frame-border) solid var(--m);
+  border-radius: var(--frame-border-radius) var(--frame-border-radius) 0 0;
 }
 
 .frame .frame-title {
