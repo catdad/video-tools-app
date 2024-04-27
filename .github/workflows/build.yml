@@ -33,6 +33,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+      - name: Run npm install canvas setup
+        run: |
+          brew update
+          brew install python3 || : # python doesn't need to be linked
+          brew install pkg-config cairo pango libpng jpeg giflib librsvg
+          pip install setuptools
       - run: npm install
       - run: npm test
       - run: npm run package
