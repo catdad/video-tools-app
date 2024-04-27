@@ -68,7 +68,8 @@ function getLocationOnExistingScreen() {
       nodeIntegrationInWorker: true,
       webviewTag: true
     },
-    frame: false,
+    frame: process.platform === 'darwin' ? true : false,
+    titleBarStyle: process.platform === 'darwin' ? 'hidden' : undefined,
     icon
   };
 
