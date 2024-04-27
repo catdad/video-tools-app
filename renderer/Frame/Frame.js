@@ -12,14 +12,22 @@ const Maximize = require('@material-ui/icons/WebAsset').default;
 
 css('./Frame.css');
 
+const Controls = () => {
+  if (process.platform === 'darwin') {
+    return;
+  }
+
+  return html`<div class="frame-buttons">
+    <button onClick=${() => browser.minimize()}><${Minimize} /></button>
+    <button onClick=${() => browser.maximizeToggle()}><${Maximize} /></button>
+    <button onClick=${() => browser.close()}><${Close} /></button>
+  </div>`;
+};
+
 const Frame = () => {
   return html`<div class="frame" style="height: 30px">
     <div class="frame-title">Video Tools</div>
-    <div class="frame-buttons">
-      <button onClick=${() => browser.minimize()}><${Minimize} /></button>
-      <button onClick=${() => browser.maximizeToggle()}><${Maximize} /></button>
-      <button onClick=${() => browser.close()}><${Close} /></button>
-    </div>
+    <${Controls} />
   </div>`;
 };
 
