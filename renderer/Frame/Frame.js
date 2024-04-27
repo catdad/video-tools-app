@@ -28,7 +28,7 @@ const Controls = () => {
 
 const Frame = () => {
   return html`<div class="frame" style="height: 30px">
-    <div class="frame-title">Video Tools</div>
+    <div class="frame-title">video tools</div>
     <${Controls} />
   </div>`;
 };
