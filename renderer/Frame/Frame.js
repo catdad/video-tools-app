@@ -17,10 +17,12 @@ const Controls = () => {
     return;
   }
 
+  const fontSize = 18;
+
   return html`<div class="frame-buttons">
-    <button onClick=${() => browser.minimize()}><${Minimize} /></button>
-    <button onClick=${() => browser.maximizeToggle()}><${Maximize} /></button>
-    <button onClick=${() => browser.close()}><${Close} /></button>
+    <button onClick=${() => browser.minimize()}><${Minimize} style=${{ fontSize }} /></button>
+    <button onClick=${() => browser.maximizeToggle()}><${Maximize} style=${{ fontSize }} /></button>
+    <button onClick=${() => browser.close()}><${Close} style=${{ fontSize }} /></button>
   </div>`;
 };
 
