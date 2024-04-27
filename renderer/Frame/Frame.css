@@ -2,6 +2,7 @@
   -webkit-app-region: drag;
   height: var(--frame-height);
   display: flex;
+  background-color: var(--color-background);
 }
 
 .frame .frame-title {

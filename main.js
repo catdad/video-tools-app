@@ -70,6 +70,8 @@ function getLocationOnExistingScreen() {
     },
     frame: process.platform === 'darwin' ? true : false,
     titleBarStyle: process.platform === 'darwin' ? 'hidden' : undefined,
+    transparent: true,
+    backgroundColor: '#000000ff',
     icon
   };
 
