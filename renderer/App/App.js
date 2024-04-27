@@ -39,13 +39,6 @@ function App() {
   const config = useConfig();
   const configTab = config.get(NAME);
   const [tab, setTab] = useState(TABS[configTab] ? configTab : TABS[0].name);
-  const app = createRef();
-  const tabBar = createRef();
-
-  useEffect(() => {
-    const { height } = tabBar.current.getBoundingClientRect();
-    setVar(app.current, 'tabs-height', `${height}px`);
-  }, []);
 
   const onTabChange = (ev, newValue) => {
     if (newValue === TABS[tab].idx) {
@@ -64,11 +57,13 @@ function App() {
 
   return html`
     <${Frame} />
-    <${TabBar} selected=${TABS[tab].idx} onChange=${onTabChange} ref=${tabBar}>
+    <${TabBar} selected=${TABS[tab].idx} onChange=${onTabChange}>
       ${tabDom}
     <//>
-    <div class=app ref=${app}>
-      <${TABS[tab].Component} />
+    <div class="wrapper">
+      <div class="app">
+        <${TABS[tab].Component} />
+      </div>
     </div>
     <${Queue} />
   `;
