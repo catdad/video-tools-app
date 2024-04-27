@@ -1,9 +1,9 @@
 .frame {
   -webkit-app-region: drag;
-  
+
   /* this order needs to go inside the frame border itself */
   --fbr: calc(var(--frame-border-radius) + var(--frame-border) + var(--frame-border));
-  
+
   height: var(--frame-height);
   display: flex;
   background-color: var(--color-background);

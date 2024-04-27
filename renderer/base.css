@@ -41,8 +41,7 @@ html, body {
   overflow: hidden;
   height: 100vh;
 
-  /* background-color: transparent; */
-  background-color: var(--color-background);
+  background-color: transparent;
 }
 #app::before {
   content: "";
