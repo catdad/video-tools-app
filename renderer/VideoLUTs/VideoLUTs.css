@@ -20,7 +20,7 @@
 
 /* LAYOUT */
 .video-luts {
-  --panel-max-height: calc(100vh - var(--tab-height) - var(--queue-height) - var(--spacing));
+  --panel-max-height: calc(100vh - var(--frame-height) - var(--tab-height) - var(--queue-height) - var(--spacing));
   display: flex;
   flex-direction: row-reverse;
   flex-grow: 1;
