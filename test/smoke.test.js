@@ -37,7 +37,7 @@ describe('[smoke tests]', () => {
     await app.utils.waitForVisible('#app');
   });
 
-  it('is on the container tab by default', async () => {
+  it('is on the transcode tab by default', async () => {
     const configPath = await config.create({});
     const app = await start(configPath);
 
@@ -45,24 +45,9 @@ describe('[smoke tests]', () => {
 
     const $document = await getDocument(app.page);
 
-    await findByText($document, 'video container');
-    const title = await findByText($document, 'Drag files here to change the video container');
-
-    expect(await title.evaluate(e => e.tagName)).to.equal('H2');
-  });
-
-  it('can switch to the x264 tab', async () => {
-    const configPath = await config.create({});
-    const app = await start(configPath);
-
-    await app.utils.waitForVisible('#app');
-
-    const $document = await getDocument(app.page);
-
-    const tab = await findByText($document, 'transcode to x264');
-    await tab.click();
-
+    await findByText($document, 'transcode');
     const title = await findByText($document, 'Drag files to convert here');
+
     expect(await title.evaluate(e => e.tagName)).to.equal('H2');
   });
 
@@ -97,14 +82,14 @@ describe('[smoke tests]', () => {
   });
 
   it('opens the defined tab if one is present in config', async () => {
-    const configPath = await config.create({ 'default-tab': 'transcode to x264' });
+    const configPath = await config.create({ 'default-tab': 'info' });
     const app = await start(configPath);
 
     await app.utils.waitForVisible('#app');
 
     const $document = await getDocument(app.page);
 
-    const title = await findByText($document, 'Drag files to convert here');
+    const title = await findByText($document, 'Drag files here to see metadata');
     expect(await title.evaluate(e => e.tagName)).to.equal('H2');
   });
 });
