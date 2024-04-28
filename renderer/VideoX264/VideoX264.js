@@ -102,9 +102,20 @@ function VideoX264() {
       <h2>Drag files to convert here</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}
-      <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
-      <${TextField} label="max width" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : width.value} onInput=${onWidthInput} />
-      <${TextField} label="max height" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : height.value} onInput=${onHeightInput} />
+      <h3>Options</h3>
+      <div style=${{
+        width: 'clamp(100px, 80vw, 300px)',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <${NamingFields} nooutput ...${{ prefix, suffix, format }}/>
+        <hr style=${{
+          width: '100%',
+          border: '1px dashed #ffffff22'
+        }} />
+        <${TextField} label="max width" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : width.value} onInput=${onWidthInput} />
+        <${TextField} label="max height" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : height.value} onInput=${onHeightInput} />
+      </div>
     </div>
   `;
 }
