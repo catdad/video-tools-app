@@ -3,8 +3,9 @@ const prettyBytes = require('pretty-bytes');
 const { get } = require('lodash');
 
 const {
-  Card, CardContent, ObjectList,
-  html, css, useSignal
+  ObjectList,
+  html, css, useSignal,
+  Material: M
 } = require('../tools/ui.js');
 
 const toast = require('../tools/toast.js');
@@ -66,8 +67,8 @@ function VideoInfo() {
     return { name, path, size, duration, 'video summary': videoSummary, 'audio summary': audioSummary, audio, video };
   }).map(({ name, ...data}) => {
     return html`
-      <${Card} raised className=card >
-        <${CardContent}>
+      <${M`Card`} raised className=card >
+        <${M`CardContent`}>
           <h3>${name}</h3>
           <${ObjectList} value=${data} />
         <//>

@@ -1,16 +1,16 @@
 const {
-  Tab,
-  html, css, createRef,
-  useEffect, useState,
-  setVar
+  html, css,
+  MaterialIcon: MI
 } = require('../tools/ui.js');
 const browser = require('../../lib/browser.js');
 const menu = require('../../lib/menu.js');
 
-const Close = require('@material-ui/icons/Close.js').default;
-const Minimize = require('@material-ui/icons/Minimize.js').default;
-const Maximize = require('@material-ui/icons/CropSquare.js').default;
-const Menu = require('@material-ui/icons/Menu.js').default;
+const Icons = {
+  Close: MI`Close`,
+  Minimize: MI`Minimize`,
+  Maximize: MI`CropSquare`,
+  Menu: MI`Menu`
+};
 
 css('./Frame.css');
 
@@ -22,7 +22,7 @@ const MenuControls = () => {
   }
 
   return html`<div class="frame-buttons">
-    <button onClick=${() => menu.toggleContext()}><${Icon(Menu)} /></button>
+    <button onClick=${() => menu.toggleContext()}><${Icon(Icons.Menu)} /></button>
   </div>`;
 };
 
@@ -32,9 +32,9 @@ const WindowControls = () => {
   }
 
   return html`<div class="frame-buttons">
-    <button onClick=${() => browser.minimize()}><${Icon(Minimize)} /></button>
-    <button onClick=${() => browser.maximizeToggle()}><${Icon(Maximize)} /></button>
-    <button onClick=${() => browser.close()}><${Icon(Close)} /></button>
+    <button onClick=${() => browser.minimize()}><${Icon(Icons.Minimize)} /></button>
+    <button onClick=${() => browser.maximizeToggle()}><${Icon(Icons.Maximize)} /></button>
+    <button onClick=${() => browser.close()}><${Icon(Icons.Close)} /></button>
   </div>`;
 };
 
