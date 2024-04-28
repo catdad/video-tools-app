@@ -7,9 +7,9 @@ const {
 const browser = require('../../lib/browser.js');
 const menu = require('../../lib/menu.js');
 
-const Close = require('@material-ui/icons/Close').default;
-const Minimize = require('@material-ui/icons/Minimize').default;
-const Maximize = require('@material-ui/icons/WebAsset').default;
+const Close = require('@material-ui/icons/Close.js').default;
+const Minimize = require('@material-ui/icons/Minimize.js').default;
+const Maximize = require('@material-ui/icons/CropSquare.js').default;
 const Menu = require('@material-ui/icons/Menu.js').default;
 
 css('./Frame.css');
