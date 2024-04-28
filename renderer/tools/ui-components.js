@@ -1,21 +1,37 @@
-const components = require('@material-ui/core');
+const M = ((cache) => {
+  return name => {
+    if (cache[name]) {
+      return cache[name];
+    }
 
-const { Collapse, List, ListItem, ListItemText, Button, ButtonGroup, TextField } = components;
+    // this is a silly naming convention
+    cache[name] = require(`@material-ui/core/${name}/${name}.js`).default;
+    return cache[name];
+  };
+})({});
 
-const ExpandLess = require('@material-ui/icons/ExpandLess').default;
-const ExpandMore = require('@material-ui/icons/ExpandMore').default;
+const MI = ((cache) => {
+  return name => {
+    if (cache[name]) {
+      return cache[name];
+    }
+
+    cache[name] = require(`@material-ui/icons/${name}.js`).default;
+    return cache[name];
+  };
+})({});
 
 module.exports = ({ html, hooks: { useState } }) => {
   const PrimaryButton = ({ ...props }) => html`
-    <${Button} size=small ...${props} style=${{ fontWeight: 700 }} color=primary variant=contained />
+    <${M`Button`} size=small ...${props} style=${{ fontWeight: 700 }} color=primary variant=contained />
   `;
 
   const SecondaryButton = ({ ...props }) => html`
-    <${Button} size=small ...${props} color=primary variant=outlined />
+    <${M`Button`} size=small ...${props} color=primary variant=outlined />
   `;
 
   const PrimaryTextField = ({ ...props }) => html`
-    <${TextField} ...${props} variant=outlined margin=dense />
+    <${M`TextField`} ...${props} variant=outlined margin=dense />
   `;
 
   const ObjectListItem = ({ name = '', value = {} }) => {
@@ -23,11 +39,11 @@ module.exports = ({ html, hooks: { useState } }) => {
 
     if (typeof value === 'object') {
       return html`
-        <${ListItem} button onClick=${() => setOpen(!open)} >
-          <${ListItemText} primary=${name} />
-          ${ open ? html`<${ExpandLess} />` : html`<${ExpandMore} />`}
+        <${M`ListItem`} button onClick=${() => setOpen(!open)} >
+          <${M`ListItemText`} primary=${name} />
+          ${ open ? html`<${MI`ExpandLess`} />` : html`<${MI`ExpandMore`} />`}
         <//>
-        <${Collapse} in=${open} timeout=auto unmountOnExit >
+        <${M`Collapse`} in=${open} timeout=auto unmountOnExit >
           <${ObjectList} value=${value} className="nested" />
         <//>
       `;
@@ -35,8 +51,8 @@ module.exports = ({ html, hooks: { useState } }) => {
 
     if (typeof value === 'function') {
       return html`
-        <${ListItem} button onclick=${value}>
-          <${ListItemText} primary=${`${name}`} />
+        <${M`ListItem`} button onclick=${value}>
+          <${M`ListItemText`} primary=${`${name}`} />
         <//>
       `;
     }
@@ -46,8 +62,8 @@ module.exports = ({ html, hooks: { useState } }) => {
     }
 
     return html`
-      <${ListItem}>
-        <${ListItemText} primary=${`${name}${value}`} />
+      <${M`ListItem`}>
+        <${M`ListItemText`} primary=${`${name}${value}`} />
       <//>
     `;
   };
@@ -61,7 +77,7 @@ module.exports = ({ html, hooks: { useState } }) => {
         <${ObjectListItem} name=${key} value=${value[key]} />
       `);
 
-    return html`<${List} ...${props}>${listChildren}<//>`;
+    return html`<${M`List`} ...${props}>${listChildren}<//>`;
   };
 
   const Toggle = ({ value, values = [], onChange = () => {} }) => {
@@ -73,15 +89,13 @@ module.exports = ({ html, hooks: { useState } }) => {
       }
     };
 
-    return html`<${ButtonGroup} color=primary>
-      ${values.map(val => html`<${val === _value ? PrimaryButton : Button} onClick=${click(val)}>${val}<//>`)}
+    return html`<${M`ButtonGroup`} color=primary>
+      ${values.map(val => html`<${val === _value ? PrimaryButton : M`Button`} onClick=${click(val)}>${val}<//>`)}
     <//>`;
   };
 
   return {
-    ...components,
-    PrimaryButton, SecondaryButton,
-    PrimaryTextField, ObjectList,
-    Toggle
+    PrimaryButton, SecondaryButton, PrimaryTextField, ObjectList, Toggle,
+    Material: M, MaterialIcon: MI
   };
 };

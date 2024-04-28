@@ -1,10 +1,10 @@
-const { AppBar, Tabs, html, forwardRef } = require('../tools/ui.js');
+const { html, forwardRef, Material: M } = require('../tools/ui.js');
 
 module.exports = forwardRef(({ children, selected, onChange }, ref) => {
   return html`
     <div ref=${ref}>
-      <${AppBar} position=static>
-        <${Tabs} value=${selected} onChange=${onChange} variant=scrollable scrollButtons=auto>
+      <${M`AppBar`} position=static>
+        <${M`Tabs`} value=${selected} onChange=${onChange} variant=scrollable scrollButtons=auto>
           ${children}
         <//>
       <//>

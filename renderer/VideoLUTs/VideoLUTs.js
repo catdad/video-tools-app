@@ -7,8 +7,9 @@ const through = require('through2');
 const { clipboard, nativeImage } = require('electron');
 
 const {
-  Card, CardContent, ObjectList, PrimaryButton,
-  html, css, useSignal, batch
+  ObjectList, PrimaryButton,
+  html, css, useSignal, batch,
+  Material: M
 } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
@@ -200,8 +201,8 @@ function VideoLUTs() {
 
   const renderedLuts = html`
     <${Panel} class="luts" title="LUTs">
-      <${Card} raised className="card" >
-        <${CardContent}>
+      <${M`Card`} raised className="card" >
+        <${M`CardContent`}>
           <${ObjectList} value=${luts.value.map} />
         <//>
       <//>

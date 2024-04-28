@@ -2,7 +2,8 @@ const path = require('path');
 const os = require('os');
 const cpus = os.cpus().length;
 
-const { FormControlLabel, Slider, Toggle, PrimaryTextField: TextField, html, css } = require('../tools/ui.js');
+const { Toggle, PrimaryTextField: TextField, html, css, Material: M } = require('../tools/ui.js');
+
 const { useConfigSignal } = require('../tools/config.js');
 const toast = require('../tools/toast.js');
 
@@ -21,7 +22,7 @@ function VideoX264() {
   const video = useConfigSignal('videox264.video', 'h264');
   const threads = useConfigSignal('videox264.threads', Math.floor(cpus / 2));
   const width = useConfigSignal('videox264.width', '');
-  const height = useConfigSignal('videox264.height', '')
+  const height = useConfigSignal('videox264.height', '');
 
   const { add: addToQueue } = useQueue();
 
@@ -74,12 +75,12 @@ function VideoX264() {
   const controlsDom = html`
     <h3>Transcode</h3>
     <div>
-      <${FormControlLabel}
+      <${M`FormControlLabel`}
         classes=${{ root: 'toggle' }}
         control=${html`<${Toggle} values=${['aac', 'mp3', 'copy']} value=${audio.value} onChange=${(v) => (audio.value = v)} />`}
         label="Audio" labelPlacement=start
       />
-      <${FormControlLabel}
+      <${M`FormControlLabel`}
         classes=${{ root: 'toggle' }}
         control=${html`<${Toggle} values=${['h264', 'copy']} value=${video.value} onChange=${(v) => (video.value = v)} />`}
         label="Video" labelPlacement=start
@@ -87,7 +88,7 @@ function VideoX264() {
     </div>
     <div style=${{ width: 'clamp(100px, 80vw, 300px)' }} >
       <p>Threads</p>
-      <${Slider}
+      <${M`Slider`}
         value=${threads.value}
         step=${1} min=${1} max=${cpus} marks
         valueLabelDisplay=on

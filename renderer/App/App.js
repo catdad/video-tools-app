@@ -1,8 +1,6 @@
 const {
-  Tab,
-  html, css, createRef,
-  useEffect, useState,
-  setVar
+  html, css, useState,
+  Material: M
 } = require('../tools/ui.js');
 const { useConfig, withConfig } = require('../tools/config.js');
 const { Queue, withQueue } = require('../Queue/Queue.js');
@@ -52,7 +50,7 @@ function App() {
   };
 
   const tabDom = Object.keys(TABS).map(name => {
-    return html`<${Tab} label=${name} />`;
+    return html`<${M`Tab`} label=${name} />`;
   });
 
   return html`
