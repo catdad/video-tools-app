@@ -11,9 +11,9 @@ require('./lib/progress.js');
 require('./lib/browser.js');
 const log = require('./lib/log.js')('main');
 const config = require('./lib/config.js');
+const menu = require('./lib/menu.js');
 const debounce = require('./lib/debounce.js');
 const icon = require('./lib/icon.js')();
-const menu = require('./lib/menu.js');
 
 log.info(`electron node version: ${process.version}`);
 
