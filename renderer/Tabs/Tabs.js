@@ -2,6 +2,7 @@ const { html, createContext, useContext, Material: M } = require('../tools/ui.js
 const { useConfigSignal } = require('../tools/config.js');
 
 const TABS = [
+  ['capture', require('../Capture/Capture.js')],
   ['transcode', require('../VideoX264/VideoX264.js')],
   ['info', require('../VideoInfo/VideoInfo.js')],
   ['LUTs', require('../VideoLUTs/VideoLUTs.js')],
