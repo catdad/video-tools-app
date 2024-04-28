@@ -10,7 +10,17 @@ function Capture() {
   const outputDirectory = useConfigSignal('capture.output', desktop);
 
   const onStart = () => {
-    console.log('start recording');
+    videoTools.exec('desktop', [{
+      offsetX: 0,
+      offsetY: 0,
+      x: 0,
+      y: 0,
+      width: 500,
+      height: 500,
+      output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
+    }])
+      .then(() => console.log('done!'))
+      .catch(err => console.log('failed:', err));
   };
 
   return html`
