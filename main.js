@@ -1,7 +1,9 @@
 const path = require('path');
 const url = require('url');
+const EventEmitter = require('events');
+const events = new EventEmitter();
 
-const { app, BrowserWindow, screen, systemPreferences } = require('electron');
+const { app, BrowserWindow, Menu, screen, systemPreferences } = require('electron');
 
 require('./lib/app-id.js')(app);
 require('./lib/video-tools.js');
@@ -11,6 +13,7 @@ const log = require('./lib/log.js')('main');
 const config = require('./lib/config.js');
 const debounce = require('./lib/debounce.js');
 const icon = require('./lib/icon.js')();
+const menu = require('./lib/menu.js');
 
 log.info(`electron node version: ${process.version}`);
 
@@ -57,6 +60,8 @@ function getLocationOnExistingScreen() {
 
   // TODO provide a toggle in the ui for this
   config.setProp('ui-mode', 'dark');
+
+  Menu.setApplicationMenu(menu.create({ events }));
 
   const windowOptions = {
     ...getLocationOnExistingScreen(),
@@ -127,6 +132,10 @@ function getLocationOnExistingScreen() {
   if (config.getProp('devToolsOpen')) {
     mainWindow.webContents.openDevTools();
   }
+
+  events.on('reload', () => {
+    mainWindow.reload();
+  });
 })().then(() => {
   log.info('application is running');
 }).catch(err => {
