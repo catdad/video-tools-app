@@ -97,6 +97,10 @@ function VideoX264() {
     </div>
   `;
 
+  const sizeStyle = {
+    opacity: video.value === 'copy' ? 0.3 : ''
+  };
+
   return html`
     <div class="tab-panel video-x264">
       <h2>Drag files to convert here</h2>
@@ -113,8 +117,8 @@ function VideoX264() {
           width: '100%',
           border: '1px dashed #ffffff22'
         }} />
-        <${TextField} label="max width" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : width.value} onInput=${onWidthInput} />
-        <${TextField} label="max height" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : height.value} onInput=${onHeightInput} />
+        <${TextField} label="max width" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : width.value} onInput=${onWidthInput} style=${sizeStyle} />
+        <${TextField} label="max height" disabled=${video.value === 'copy'} value=${video.value === 'copy' ? '' : height.value} onInput=${onHeightInput} style=${sizeStyle} />
       </div>
     </div>
   `;
