@@ -10,22 +10,33 @@ const Config = createContext({});
 const withConfig = Component => ({ children, ...props }) => {
   const state = useSignal('loading');
   const localConfig = useSignal();
+  const paths = useSignal({});
 
   const api = {
     get: (path, fallback) => get(localConfig.peek(), path, fallback),
     set: (path, value) => {
       set(localConfig.peek(), path, value);
       CONFIG.setProp(path, value).catch(noop);
-    }
+    },
+    get paths() { return paths.value }
   };
 
   useEffect(() => {
-    CONFIG.read().then(obj => {
+    (async () => {
+      const [config, desktop] = await Promise.all([
+        CONFIG.read(),
+        CONFIG.getPath('desktop')
+      ]);
+
       batch(() => {
         state.value = 'available';
-        localConfig.value = obj;
+        localConfig.value = config;
+        paths.value = {
+          ...paths.value,
+          desktop
+        };
       });
-    }).catch(err => {
+    })().catch(err => {
       toast.error([
         'failed to load configuration',
         'try restarting the application',
@@ -59,4 +70,9 @@ const useConfigSignal = (key, defaultValue) => {
   return signal;
 };
 
-module.exports = { withConfig, useConfig, useConfigSignal };
+const useConfigPaths = () => {
+  const config = useConfig();
+  return config.paths;
+};
+
+module.exports = { withConfig, useConfig, useConfigSignal, useConfigPaths };
