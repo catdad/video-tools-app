@@ -26,7 +26,7 @@ const withTabs = Component => ({ children, ...props }) => {
   });
 
   const onTabChange = (ev, newValue) => {
-    if (newValue === TABS[tab].idx) {
+    if (newValue === TABS[tab.value].idx) {
       return;
     }
 
