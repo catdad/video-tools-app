@@ -1,13 +1,17 @@
 const path = require('path');
 const url = require('url');
+const EventEmitter = require('events');
+const events = new EventEmitter();
 
-const { app, BrowserWindow, screen, systemPreferences } = require('electron');
+const { app, BrowserWindow, Menu, screen, systemPreferences } = require('electron');
 
 require('./lib/app-id.js')(app);
 require('./lib/video-tools.js');
 require('./lib/progress.js');
+require('./lib/browser.js');
 const log = require('./lib/log.js')('main');
 const config = require('./lib/config.js');
+const menu = require('./lib/menu.js');
 const debounce = require('./lib/debounce.js');
 const icon = require('./lib/icon.js')();
 
@@ -57,6 +61,8 @@ function getLocationOnExistingScreen() {
   // TODO provide a toggle in the ui for this
   config.setProp('ui-mode', 'dark');
 
+  Menu.setApplicationMenu(menu.create({ events }));
+
   const windowOptions = {
     ...getLocationOnExistingScreen(),
     backgroundColor: '#121212',
@@ -67,7 +73,10 @@ function getLocationOnExistingScreen() {
       nodeIntegrationInWorker: true,
       webviewTag: true
     },
-    frame: process.platform === 'darwin' ? true : !config.getProp('experiments.framelessWindow'),
+    frame: process.platform === 'darwin' ? true : false,
+    titleBarStyle: process.platform === 'darwin' ? 'hidden' : undefined,
+    transparent: true,
+    backgroundColor: '#000000ff',
     icon
   };
 
@@ -123,6 +132,10 @@ function getLocationOnExistingScreen() {
   if (config.getProp('devToolsOpen')) {
     mainWindow.webContents.openDevTools();
   }
+
+  events.on('reload', () => {
+    mainWindow.reload();
+  });
 })().then(() => {
   log.info('application is running');
 }).catch(err => {

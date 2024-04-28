@@ -1,14 +1,11 @@
 .video-luts {
   --spacing: 16px;
-  --max-height: calc(100vh - var(--tabs-height, 0));
-  --half-height: calc(50vh - calc(var(--tabs-height, 0) / 2));
 }
 
 /* LIST CARD */
 .video-luts .card {
   width: calc(100% - var(--spacing) - var(--spacing));
   margin-top: 0;
-  margin-bottom: var(--spacing);
   margin-left: auto;
   margin-right: auto;
   background: var(--tertiary);
@@ -20,13 +17,14 @@
 
 /* LAYOUT */
 .video-luts {
-  --panel-max-height: calc(100vh - var(--tab-height) - var(--queue-height) - var(--spacing));
+  --panel-max-height: calc(var(--app-height) - var(--spacing));
   display: flex;
   flex-direction: row-reverse;
   flex-grow: 1;
   align-items: stretch;
   height: var(--panel-max-height);
   width: 100%;
+  margin-bottom: var(--spacing);
 }
 
 .video-luts .panel {
@@ -92,7 +90,7 @@
   .video-luts .panel {
     width: 100%;
     max-width: 100%;
-    --panel-height: calc(var(--panel-max-height) / 2);
+    --panel-height: calc(calc(var(--app-height) / 2) - calc(var(--spacing) / 2));
   }
 
   .video-luts .luts {

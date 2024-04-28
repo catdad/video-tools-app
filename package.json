@@ -1,6 +1,6 @@
 {
   "name": "video-tools-app",
-  "productName": "Video Tools App",
+  "productName": "Video Tools",
   "appId": "com.catdad.video-tools-app",
   "version": "1.3.0",
   "description": "GUI application for various video editing utilities",

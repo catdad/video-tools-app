@@ -13,6 +13,7 @@ const VideoContainer = require('../VideoContainer/VideoContainer.js');
 const VideoX264 = require('../VideoX264/VideoX264.js');
 const VideoInfo = require('../VideoInfo/VideoInfo.js');
 const VideoLUTs = require('../VideoLUTs/VideoLUTs.js');
+const Frame = require('../Frame/Frame.js');
 
 css('./App.css');
 
@@ -38,13 +39,6 @@ function App() {
   const config = useConfig();
   const configTab = config.get(NAME);
   const [tab, setTab] = useState(TABS[configTab] ? configTab : TABS[0].name);
-  const app = createRef();
-  const tabBar = createRef();
-
-  useEffect(() => {
-    const { height } = tabBar.current.getBoundingClientRect();
-    setVar(app.current, 'tabs-height', `${height}px`);
-  }, []);
 
   const onTabChange = (ev, newValue) => {
     if (newValue === TABS[tab].idx) {
@@ -62,11 +56,14 @@ function App() {
   });
 
   return html`
-    <${TabBar} selected=${TABS[tab].idx} onChange=${onTabChange} ref=${tabBar}>
+    <${Frame} />
+    <${TabBar} selected=${TABS[tab].idx} onChange=${onTabChange}>
       ${tabDom}
     <//>
-    <div class=app ref=${app}>
-      <${TABS[tab].Component} />
+    <div class="wrapper">
+      <div class="app">
+        <${TABS[tab].Component} />
+      </div>
     </div>
     <${Queue} />
   `;

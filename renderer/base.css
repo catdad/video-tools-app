@@ -4,7 +4,13 @@
   --y: #FCE54D;
   --k: #0E0B01;
 
-  --tab-height: 2rem;
+  --frame-height: 30px;
+  --frame-border: 1px;
+  --frame-border-radius: 8px;
+  --tabs-height: 48px;
+  --queue-height: 2rem;
+  --app-height: calc(100vh - var(--frame-height) - var(--tabs-height, '0px') - var(--queue-height));
+
   --font-size: 16px;
 
   /* MUI theme variables */
@@ -20,11 +26,42 @@ html, body {
   margin: 0;
   padding: 0;
 
-  background-color: var(--color-background);
+  background: transparent;
   color: var(--color-text);
   font-size: var(--font-size);
   font-family: var(--font-family);
-  min-height: 100%;
+  height: 100vh;
+}
+
+#app {
+  position: relative;
+  /* makes border-radius work */
+  transform: translateZ(0);
+  border-radius: var(--frame-border-radius);
+  overflow: hidden;
+  height: 100vh;
+
+  background-color: transparent;
+}
+#app::before {
+  content: "";
+  position: absolute;
+  top: var(--frame-height);
+  bottom: var(--queue-height);
+  left: 0;
+  width: var(--frame-border);
+  background: linear-gradient(var(--m), var(--c));
+  z-index: 100;
+}
+#app::after {
+  content: "";
+  position: absolute;
+  top: var(--frame-height);
+  bottom: var(--queue-height);
+  right: 0;
+  width: var(--frame-border);
+  background: linear-gradient(var(--m), var(--c));
+  z-index: 100;
 }
 
 * {
