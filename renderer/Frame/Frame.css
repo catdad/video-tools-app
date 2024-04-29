@@ -1,7 +1,19 @@
+@media (min-resolution: 2dppx) {
+  .frame {
+    --radius: calc(var(--frame-border-radius) * 1.6);
+    --fbr: var(--radius);
+  }
+}
+
+@media (max-resolution: 1.99dppx) {
+  .frame {
+    --radius: calc(var(--frame-border-radius) * 1);
+    --fbr: var(--radius);
+  }
+}
+
 .frame {
   -webkit-app-region: drag;
-
-  --fbr: calc(var(--frame-border-radius) + var(--frame-border) + var(--frame-border));
 
   height: var(--frame-height);
   display: flex;
