@@ -7,7 +7,7 @@
   right: var(--frame-border);
   height: calc(var(--frame-height) - var(--frame-border));
 
-  --fbr: calc(var(--frame-border-radius) + var(--frame-border) + var(--frame-border));
+  --fbr: calc(var(--frame-border-radius) - var(--frame-border));
 
   display: flex;
   background-color: var(--color-background);
