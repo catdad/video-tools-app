@@ -71,7 +71,7 @@
     "pretty-ms": "^7.0.1",
     "tempy": "^0.5.0",
     "through2": "^4.0.2",
-    "video-tools": "https://github.com/catdad/video-tools/tarball/16a722c67f0ee8ec30cb97088db1ed8a50376831"
+    "video-tools": "https://github.com/catdad/video-tools/tarball/73bd5a62a4a14badb101027158e6a430b9bd72d6"
   },
   "electronmon": {
     "patterns": [

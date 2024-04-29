@@ -1,22 +1,28 @@
 const path = require('path');
 
-const { html, Material: M } = require('../tools/ui.js');
+const { html, css, Material: M } = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
 const videoTools = require('../../lib/video-tools.js');
+
+css('./Capture.css');
+
+const makeEven = val => val % 2 === 0 ? val : val - 1;
 
 function Capture() {
   const { desktop } = useConfigPaths();
   const outputDirectory = useConfigSignal('capture.output', desktop);
 
   const onStart = () => {
+    const x = window.screenX < 0 ? 0 : window.screenX;
+    const y = window.screenY < 0 ? 0 : window.screenY;
+    const width = makeEven(window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth);
+    const height = makeEven(window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight);
+
     videoTools.exec('desktop', [{
-      offsetX: 0,
-      offsetY: 0,
-      x: 0,
-      y: 0,
-      width: 500,
-      height: 500,
+      x, y, width, height,
+      offsetX: x,
+      offsetY: y,
       output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
     }])
       .then(() => console.log('done!'))
