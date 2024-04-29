@@ -17,6 +17,10 @@
   font-size: 0.9rem;
 }
 
+.frame .frame-title button {
+  -webkit-app-region: no-drag;
+}
+
 .frame .frame-buttons {
   -webkit-app-region: no-drag;
   height: 100%;

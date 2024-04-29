@@ -1,6 +1,7 @@
 const {
-  html, css,
-  MaterialIcon: MI
+  html, css, createContext, useContext,
+  MaterialIcon: MI,
+  useSignal
 } = require('../tools/ui.js');
 const browser = require('../../lib/browser.js');
 const menu = require('../../lib/menu.js');
@@ -38,12 +39,26 @@ const WindowControls = () => {
   </div>`;
 };
 
-const Frame = () => {
-  return html`<div class="frame" style="height: 30px">
-    <${MenuControls} />
-    <div class="frame-title">video tools</div>
-    <${WindowControls} />
-  </div>`;
+const FrameContext = createContext({});
+
+const withFrame = Component => ({ children, ...props }) => {
+  const frameButtons = useSignal(null);
+
+  const Frame = () => {
+    return html`<div class="frame">
+      <${MenuControls} />
+      <div class="frame-title">${frameButtons.value || 'video tools'}</div>
+      <${WindowControls} />
+    </div>`;
+  };
+
+  return html`
+    <${FrameContext.Provider} value=${{ Frame, frameButtons }}>
+      <${Component} ...${props}>${children}<//>
+    <//>
+  `;
 };
 
-module.exports = Frame;
+const useFrame = () => useContext(FrameContext);
+
+module.exports = { withFrame, useFrame };
