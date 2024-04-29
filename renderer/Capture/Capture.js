@@ -11,7 +11,7 @@ css('./Capture.css');
 
 const makeEven = val => val % 2 === 0 ? val : val - 1;
 
-function Capture() {
+function Capture({ 'class': classNames = ''} = {}) {
   const { isTransparent } = useTransparent();
   const { frameButtons } = useFrame();
   const { desktop } = useConfigPaths();
@@ -54,7 +54,7 @@ function Capture() {
   };
 
   return html`
-    <div class="tab-panel capture">
+    <div class="${classNames} capture">
       <h2>Screen recording</h2>
       <${M`Button`} onClick=${onSetup}>Setup<//>
     </div>

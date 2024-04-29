@@ -1,21 +1,14 @@
-@media (min-resolution: 2dppx) {
-  .frame {
-    --radius: calc(var(--frame-border-radius) * 1.6);
-    --fbr: var(--radius);
-  }
-}
-
-@media (max-resolution: 1.99dppx) {
-  .frame {
-    --radius: calc(var(--frame-border-radius) * 1.4);
-    --fbr: var(--radius);
-  }
-}
-
 .frame {
   -webkit-app-region: drag;
 
-  height: var(--frame-height);
+  position: absolute;
+  top: var(--frame-border);
+  left: var(--frame-border);
+  right: var(--frame-border);
+  height: calc(var(--frame-height) - var(--frame-border));
+
+  --fbr: calc(var(--frame-border-radius) + var(--frame-border) + var(--frame-border));
+
   display: flex;
   background-color: var(--color-background);
   border-radius: var(--fbr) var(--fbr) 0 0;

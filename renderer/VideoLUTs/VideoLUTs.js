@@ -20,7 +20,6 @@ const FileInput = require('../FileInput/FileInput.js');
 const { useConfigSignal } = require('../tools/config.js');
 const { useEffect } = require('react');
 
-css('../styles/tab-panel.css');
 css('./VideoLUTs.css');
 
 const findCubes = async (cwd) => {
@@ -85,7 +84,7 @@ const Panel = ({ class: className, title, children }) => html`
   </div>
 `;
 
-function VideoLUTs() {
+function VideoLUTs({ 'class': classNames = ''} = {}) {
   const lutsDir = useConfigSignal('videoluts.luts-dir');
   const lutsImg = useConfigSignal('videoluts.luts-img');
 
@@ -192,7 +191,7 @@ function VideoLUTs() {
 
   if (!luts.value) {
     return html`
-      <div class=tab-panel>
+      <div class="${classNames}">
         <h2>Drag a LUTs folder</h2>
         <${FileInput} nobutton onchange=${onLUTs} />
       </div>
@@ -231,7 +230,7 @@ function VideoLUTs() {
     `;
 
   return html`
-    <div class="tab-panel video-luts">
+    <div class="${classNames} video-luts">
       <${FileInput} nobutton onchange=${onImage}>${renderedImage}<//>
       <${FileInput} nobutton onchange=${onLUTs}>${renderedLuts}<//>
     </div>`;
