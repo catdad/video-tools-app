@@ -20,6 +20,8 @@
   --color-text: #eceff1;
   --color-background: var(--k);
   --font-family: 'Roboto', sans-serif;
+
+  --overwritable-background: var(--color-background);
 }
 
 html, body {
@@ -43,25 +45,37 @@ html, body {
 
   background-color: transparent;
 }
-#app::before {
-  content: "";
-  position: absolute;
-  top: var(--frame-height);
-  bottom: var(--queue-height);
-  left: 0;
-  width: var(--frame-border);
-  background: linear-gradient(var(--m), var(--c));
-  z-index: 100;
-}
+/**
+ * add a gradient border around the window
+ * this is not compatible with border-radius so we are adding it
+ * as an extra element on top of the window with disaled click events
+ */
 #app::after {
   content: "";
   position: absolute;
-  top: var(--frame-height);
-  bottom: var(--queue-height);
+  top: 0;
+  bottom: 0;
+  left: 0;
   right: 0;
-  width: var(--frame-border);
-  background: linear-gradient(var(--m), var(--c));
-  z-index: 100;
+  border: var(--frame-border) solid;
+  border-image-source: linear-gradient(var(--m) calc(var(--frame-height) + var(--tabs-height)), var(--m) 40%, var(--c));
+  border-image-slice: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+/**
+ * make the frame area magenta, to fill in the border
+ * set it behind everything else
+ */
+#app::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--frame-height);
+  background: var(--m);
+  z-index: -1;
 }
 
 * {

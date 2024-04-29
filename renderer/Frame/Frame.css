@@ -1,13 +1,11 @@
 .frame {
   -webkit-app-region: drag;
 
-  /* this border needs to go inside the frame border itself */
   --fbr: calc(var(--frame-border-radius) + var(--frame-border) + var(--frame-border));
 
   height: var(--frame-height);
   display: flex;
   background-color: var(--color-background);
-  border: var(--frame-border) solid var(--m);
   border-radius: var(--fbr) var(--fbr) 0 0;
 }
 

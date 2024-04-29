@@ -1,7 +1,7 @@
 .wrapper {
   height: var(--app-height);
   overflow: auto;
-  background-color: var(--color-background);
+  background-color: var(--overwritable-background);
 }
 
 .app {
