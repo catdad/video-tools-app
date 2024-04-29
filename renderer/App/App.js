@@ -3,6 +3,7 @@ const { withConfig } = require('../tools/config.js');
 const { Queue, withQueue } = require('../Queue/Queue.js');
 const { withTheme } = require('../tools/theme.js');
 const { withTabs, useTabs } = require('../Tabs/Tabs.js');
+const { withTransparent } = require('../tools/transparent.js');
 
 const Frame = require('../Frame/Frame.js');
 
@@ -23,4 +24,4 @@ function App() {
   `;
 }
 
-module.exports = withConfig(withTheme(withQueue(withTabs(App))));
+module.exports = withConfig(withTheme(withTransparent(withQueue(withTabs(App)))));

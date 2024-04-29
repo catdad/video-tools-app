@@ -1,5 +1,6 @@
 const { html, createContext, useContext, Material: M } = require('../tools/ui.js');
 const { useConfigSignal } = require('../tools/config.js');
+const { useTransparent } = require('../tools/transparent.js');
 
 const TABS = [
   ['capture', require('../Capture/Capture.js')],
@@ -21,6 +22,7 @@ const TabContext = createContext({});
 
 const withTabs = Component => ({ children, ...props }) => {
   const tab = useConfigSignal('default-tab', TABS[0].name);
+  const { isTransparent } = useTransparent();
 
   const tabDom = Object.keys(TABS).map(name => {
     return html`<${M`Tab`} label=${name} />`;
@@ -34,7 +36,7 @@ const withTabs = Component => ({ children, ...props }) => {
     tab.value = TABS[newValue].name;
   };
 
-  const TabBar = () => html`
+  const TabBar = () => isTransparent.value ? undefined : html`
     <div>
       <${M`AppBar`} position=static>
         <${M`Tabs`} value=${TABS[tab.value].idx} onChange=${onTabChange} variant=scrollable scrollButtons=auto>

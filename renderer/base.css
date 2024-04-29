@@ -21,7 +21,8 @@
   --color-background: var(--k);
   --font-family: 'Roboto', sans-serif;
 
-  --overwritable-background: var(--color-background);
+  --overwritable-background: var(--dynamic-background, var(--color-background));
+  --overwritable-corners: var(--dynamic-corners, transparent);
 }
 
 html, body {
@@ -76,6 +77,28 @@ html, body {
   height: var(--frame-height);
   background: var(--m);
   z-index: -1;
+}
+
+/**
+ * add bottom corners that will only be visible
+ * when the background is transparent
+ */
+body::before, body::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: var(--frame-border-radius);
+  height: var(--frame-border-radius);
+
+  background: var(--overwritable-corners);
+}
+body::before {
+  left: 0;
+  clip-path: path('M0 0 L0 8 L8 8 L8 7 L1 7 L1 0 Z');
+}
+body::after {
+  right: 0;
+  clip-path: path('M8 0 L8 8 L0 8 L0 7 L7 7 L7 0 Z');
 }
 
 * {

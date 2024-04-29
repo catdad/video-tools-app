@@ -7,6 +7,7 @@ const {
 const videoTools = require('../../lib/video-tools.js');
 const windowProgress = require('../../lib/progress.js');
 const toast = require('../tools/toast.js');
+const { useTransparent } = require('../tools/transparent.js');
 
 css('./Queue.css');
 
@@ -138,6 +139,7 @@ const QueueModal = () => {
 };
 
 const Queue = () => {
+  const { isTransparent } = useTransparent();
   const { items, current, completeFrames, totalFrames } = useQueue();
   const progress = useSignal(undefined);
   const showTasks = useSignal(false);
@@ -167,6 +169,10 @@ const Queue = () => {
       windowProgress.clear();
     }
   });
+
+  if (isTransparent.value) {
+    return;
+  }
 
   // don't render this component if nothing is being processed
   if (!progress.value) {
