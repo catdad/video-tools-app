@@ -21,7 +21,8 @@ const TABS = [
 const TabContext = createContext({});
 
 const withTabs = Component => ({ children, ...props }) => {
-  const tab = useConfigSignal('default-tab', TABS[0].name);
+  const defaultTab = TABS[0].name;
+  const tab = useConfigSignal('default-tab', defaultTab);
   const { isTransparent } = useTransparent();
 
   const tabDom = Object.keys(TABS).map(name => {
@@ -29,24 +30,26 @@ const withTabs = Component => ({ children, ...props }) => {
   });
 
   const onTabChange = (ev, newValue) => {
-    if (newValue === TABS[tab.value].idx) {
+    if (TABS[tab.value] && newValue === TABS[tab.value].idx) {
       return;
     }
 
     tab.value = TABS[newValue].name;
   };
 
+  const selectedTab = TABS[tab.value] || TABS[defaultTab];
+
   const TabBar = () => isTransparent.value ? undefined : html`
     <div>
       <${M`AppBar`} position=static>
-        <${M`Tabs`} value=${TABS[tab.value].idx} onChange=${onTabChange} variant=scrollable scrollButtons=auto>
+        <${M`Tabs`} value=${selectedTab.idx} onChange=${onTabChange} variant=scrollable scrollButtons=auto>
           ${tabDom}
         <//>
       <//>
     </div>
   `;
 
-  const Tab = () => html`<${TABS[tab.value].Component} />`;
+  const Tab = () => html`<${selectedTab.Component} />`;
 
   return html`
     <${TabContext.Provider} value=${{ Tab, TabBar }}>
