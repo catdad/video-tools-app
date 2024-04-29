@@ -7,7 +7,7 @@
 
 @media (max-resolution: 1.99dppx) {
   .frame {
-    --radius: calc(var(--frame-border-radius) * 1);
+    --radius: calc(var(--frame-border-radius) * 1.4);
     --fbr: var(--radius);
   }
 }
