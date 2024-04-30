@@ -11,6 +11,17 @@ css('./Capture.css');
 
 const makeEven = val => val % 2 === 0 ? val : val - 1;
 
+const getVars = () => {
+  const style = window.getComputedStyle(document.documentElement);
+  const frameHeight = style.getPropertyValue('--frame-height');
+  const frameBorder = style.getPropertyValue('--frame-border');
+
+  return {
+    frame: parseInt(frameHeight, 10),
+    border: parseInt(frameBorder, 10)
+  };
+};
+
 function Capture({ 'class': classNames = ''} = {}) {
   const { isTransparent } = useTransparent();
   const { frameButtons } = useFrame();
@@ -18,10 +29,11 @@ function Capture({ 'class': classNames = ''} = {}) {
   const outputDirectory = useConfigSignal('capture.output', desktop);
 
   const onSetup = () => {
-    const x = window.screenX < 0 ? 0 : window.screenX;
-    const y = window.screenY < 0 ? 0 : window.screenY;
-    const width = makeEven(window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth);
-    const height = makeEven(window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight);
+    const { frame, border } = getVars();
+    const x = (window.screenX < 0 ? 0 : window.screenX) + border;
+    const y = (window.screenY < 0 ? 0 : window.screenY) + frame;
+    const width = makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border);
+    const height = makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame);
 
     const exit = () => {
       batch(() => {
