@@ -42,3 +42,8 @@
 .frame .frame-buttons button:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+.frame .frame-buttons button:focus {
+  border: none;
+  outline: none;
+}
