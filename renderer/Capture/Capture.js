@@ -13,12 +13,10 @@ const makeEven = val => val % 2 === 0 ? val : val - 1;
 
 const getVars = () => {
   const style = window.getComputedStyle(document.documentElement);
-  const frameHeight = style.getPropertyValue('--frame-height');
-  const frameBorder = style.getPropertyValue('--frame-border');
 
   return {
-    frame: parseInt(frameHeight, 10),
-    border: parseInt(frameBorder, 10)
+    frame: parseInt(style.getPropertyValue('--frame-height'), 10),
+    border: parseInt(style.getPropertyValue('--frame-border'), 10)
   };
 };
 
@@ -32,7 +30,7 @@ function Capture({ 'class': classNames = ''} = {}) {
     const { frame, border } = getVars();
     const x = (window.screenX < 0 ? 0 : window.screenX) + border;
     const y = (window.screenY < 0 ? 0 : window.screenY) + frame;
-    const width = makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border);
+    const width = makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border);
     const height = makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame);
 
     const exit = () => {
