@@ -66,7 +66,7 @@ function Capture({ 'class': classNames = ''} = {}) {
   };
 
   return html`
-    <div class="${classNames} capture">
+    <div class="${classNames} capture ${isTransparent.value ? 'capture-transparent' : ''}">
       <h2>Screen recording</h2>
       <${M`Button`} onClick=${onSetup}>Setup<//>
     </div>
