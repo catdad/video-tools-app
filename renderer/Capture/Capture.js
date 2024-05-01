@@ -1,9 +1,10 @@
 const path = require('path');
 
-const { html, css, Material: M, batch } = require('../tools/ui.js');
+const { html, css, Material: M, batch, createRef } = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
 const videoTools = require('../../lib/video-tools.js');
+const browser = require('../../lib/browser.js');
 const { useTransparent } = require('../tools/transparent.js');
 const { useFrame } = require('../Frame/Frame.js');
 
@@ -32,25 +33,51 @@ function Capture({ 'class': classNames = ''} = {}) {
     const y = (window.screenY < 0 ? 0 : window.screenY) + frame;
     const width = makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border);
     const height = makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame);
+    const eventHandlers = createRef([]);
 
     const exit = () => {
       batch(() => {
         isTransparent.value = false;
         frameButtons.value = null;
       });
+
+      browser.exitClickthrough();
+
+      for (const { name, handler} of eventHandlers.current || []) {
+        window.removeEventListener(name, handler);
+      }
+
+      eventHandlers.current = [];
     };
 
     const buttons = html`
       <button onClick=${() => {
-        videoTools.exec('desktop', [{
-          x, y, width, height,
-          offsetX: x,
-          offsetY: y,
-          output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
-        }])
-          .then(() => console.log('done!'))
-          .catch(err => console.log('failed:', err))
-          .finally(() => exit());
+        const onClick = (ev) => {
+          console.log(ev);
+          exit();
+        };
+
+        window.addEventListener('focus', onClick);
+
+        eventHandlers.current = eventHandlers.current || [];
+        eventHandlers.current.push({ name: 'focus', handler: onClick });
+
+        Promise.resolve().then(async () => {
+          await browser.enterClickthrough();
+
+          try {
+            await videoTools.exec('desktop', [{
+              x, y, width, height,
+              offsetX: x,
+              offsetY: y,
+              output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
+            }]);
+          } catch (e) {
+            console.log('capture failed:', err);
+          } finally {
+            exit();
+          }
+        });
       }}>Start</button>
       <button onClick=${() => {
         exit();
