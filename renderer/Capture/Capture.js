@@ -11,6 +11,10 @@ const { useFrame } = require('../Frame/Frame.js');
 
 css('./Capture.css');
 
+const SHORTCUTS = {
+  stop: 'Alt+4'
+};
+
 const makeEven = val => val % 2 === 0 ? val : val - 1;
 
 const getVars = () => {
@@ -55,6 +59,7 @@ function Capture({ 'class': classNames = ''} = {}) {
       <button onClick=${() => {
         const onFocus = (ev) => {
           videoTools.stopCurrent();
+          keyboard.remove(SHORTCUTS.stop);
           exit();
         };
 
@@ -64,11 +69,11 @@ function Capture({ 'class': classNames = ''} = {}) {
         eventHandlers.current.push({ name: 'focus', handler: onFocus });
 
         Promise.resolve().then(async () => {
-          frameButtons.value = html`<span>Stop: Alt+4 or click the app in taskbar</span>`
-          await keyboard.add('capture:stop', 'Alt+4');
+          frameButtons.value = html`<span>Stop: ${SHORTCUTS.stop} or click the app in taskbar</span>`
+          await keyboard.add(SHORTCUTS.stop);
           await browser.enterClickthrough();
 
-          keyboard.events.once('capture:stop', () => onFocus());
+          keyboard.events.once(SHORTCUTS.stop, () => onFocus());
 
           try {
             await videoTools.exec('desktop', [{
