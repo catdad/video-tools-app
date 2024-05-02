@@ -52,17 +52,18 @@ function Capture({ 'class': classNames = ''} = {}) {
 
     const buttons = html`
       <button onClick=${() => {
-        const onClick = (ev) => {
-          console.log(ev);
+        const onFocus = (ev) => {
+          videoTools.stopCurrent();
           exit();
         };
 
-        window.addEventListener('focus', onClick);
+        window.addEventListener('focus', onFocus);
 
         eventHandlers.current = eventHandlers.current || [];
-        eventHandlers.current.push({ name: 'focus', handler: onClick });
+        eventHandlers.current.push({ name: 'focus', handler: onFocus });
 
         Promise.resolve().then(async () => {
+          frameButtons.value = html`<span>click the app in taskbar to stop</span>`
           await browser.enterClickthrough();
 
           try {
