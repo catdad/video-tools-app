@@ -5,6 +5,7 @@ const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
 const videoTools = require('../../lib/video-tools.js');
 const browser = require('../../lib/browser.js');
+const keyboard = require('../../lib/keyboard.js');
 const { useTransparent } = require('../tools/transparent.js');
 const { useFrame } = require('../Frame/Frame.js');
 
@@ -63,8 +64,11 @@ function Capture({ 'class': classNames = ''} = {}) {
         eventHandlers.current.push({ name: 'focus', handler: onFocus });
 
         Promise.resolve().then(async () => {
-          frameButtons.value = html`<span>click the app in taskbar to stop</span>`
+          frameButtons.value = html`<span>Stop: Alt+4 or click the app in taskbar</span>`
+          await keyboard.add('capture:stop', 'Alt+4');
           await browser.enterClickthrough();
+
+          keyboard.events.once('capture:stop', () => onFocus());
 
           try {
             await videoTools.exec('desktop', [{
