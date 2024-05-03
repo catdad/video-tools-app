@@ -2,7 +2,10 @@ const path = require('path');
 
 const {
   html, css, Material: M, batch, createRef,
-  PrimaryButton, SecondaryButton, PrimaryTextField: TextField
+  PrimaryButton, SecondaryButton, PrimaryTextField: TextField,
+  useSignalEffect,
+  useSignal,
+  useComputed
 } = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
@@ -11,12 +14,9 @@ const browser = require('../../lib/browser.js');
 const keyboard = require('../../lib/keyboard.js');
 const { useTransparent } = require('../tools/transparent.js');
 const { useFrame } = require('../Frame/Frame.js');
+const { useShortcuts } = require('../tools/shortcuts.js');
 
 css('./Capture.css');
-
-const SHORTCUTS = {
-  stop: 'Alt+4'
-};
 
 const makeEven = val => val % 2 === 0 ? val : val - 1;
 
@@ -30,77 +30,105 @@ const getVars = () => {
 };
 
 function Capture({ 'class': classNames = ''} = {}) {
+  const { captureStop } = useShortcuts();
   const { isTransparent } = useTransparent();
   const { frameButtons } = useFrame();
   const { desktop } = useConfigPaths();
   const outputDirectory = useConfigSignal('capture.output', desktop);
+  const localEvents = createRef([]);
 
-  const onSetup = () => {
+  const view = useSignal('main');
+
+  console.log(view.value, isTransparent.value);
+
+  useSignalEffect(() => {
+    const transparent = isTransparent.value;
+    const v = view.value;
+
+    const onMain = () => void batch(() => {
+      isTransparent.value = false;
+      frameButtons.value = null;
+    });
+
+    const onCapture = () => void  batch(() => {
+      isTransparent.value = true;
+      frameButtons.value = html`
+        <${PrimaryButton} style=${{
+          height: 'calc(var(--frame-height) - 4px)'
+        }} onClick=${() => {
+          startCapture();
+        }}>Start<//>
+        <${SecondaryButton} onClick=${() => {
+          exitCapture();
+        }}>Cancel<//>
+      `
+    });
+
+    switch(true) {
+      case v === 'main' && transparent:
+      case v === 'capture':
+        return onCapture();
+      case v === 'main':
+        return onMain();
+    }
+  });
+
+  const startCapture = () => {
     const { frame, border } = getVars();
     const x = (window.screenX < 0 ? 0 : window.screenX) + border;
     const y = (window.screenY < 0 ? 0 : window.screenY) + frame;
     const width = makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border);
     const height = makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame);
-    const eventHandlers = createRef([]);
 
-    const exitCapture = () => {
-      batch(() => {
-        isTransparent.value = false;
-        frameButtons.value = null;
-      });
-
-      browser.exitClickthrough();
-
-      for (const { name, handler} of eventHandlers.current || []) {
-        window.removeEventListener(name, handler);
-      }
-
-      eventHandlers.current = [];
+    const onFocus = () => {
+      videoTools.stopCurrent();
+      keyboard.remove(captureStop.value);
+      exitCapture();
     };
 
-    const buttons = html`
-      <${PrimaryButton} style=${{ height: 'calc(var(--frame-height) - 4px)' }} onClick=${() => {
-        const onFocus = (ev) => {
-          videoTools.stopCurrent();
-          keyboard.remove(SHORTCUTS.stop);
-          exitCapture();
-        };
+    window.addEventListener('focus', onFocus);
 
-        window.addEventListener('focus', onFocus);
+    localEvents.current = localEvents.current || [];
+    localEvents.current.push({ name: 'focus', handler: onFocus });
 
-        eventHandlers.current = eventHandlers.current || [];
-        eventHandlers.current.push({ name: 'focus', handler: onFocus });
+    Promise.resolve().then(async () => {
+      frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in taskbar</span>`
+      await keyboard.add(captureStop.value);
+      await browser.enterClickthrough();
 
-        Promise.resolve().then(async () => {
-          frameButtons.value = html`<span>Stop: ${SHORTCUTS.stop} or click the app in taskbar</span>`
-          await keyboard.add(SHORTCUTS.stop);
-          await browser.enterClickthrough();
+      keyboard.events.once(captureStop.value, () => onFocus());
 
-          keyboard.events.once(SHORTCUTS.stop, () => onFocus());
-
-          try {
-            await videoTools.exec('desktop', [{
-              x, y, width, height,
-              offsetX: x,
-              offsetY: y,
-              output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
-            }]);
-          } catch (e) {
-            console.log('capture failed:', err);
-          } finally {
-            exitCapture();
-          }
-        });
-      }}>Start<//>
-      <${SecondaryButton} onClick=${() => {
+      try {
+        await videoTools.exec('desktop', [{
+          x, y, width, height,
+          offsetX: x,
+          offsetY: y,
+          output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
+        }]);
+      } catch (e) {
+        console.log('capture failed:', e);
+      } finally {
         exitCapture();
-      }}>Cancel<//>
-    `;
-
-    batch(() => {
-      isTransparent.value = true;
-      frameButtons.value = buttons;
+      }
     });
+  };
+
+  const exitCapture = () => {
+    browser.exitClickthrough();
+
+    for (const { name, handler} of localEvents.current || []) {
+      window.removeEventListener(name, handler);
+    }
+
+    localEvents.current = [];
+    batch(() => {
+      view.value = 'main';
+      isTransparent.value = false;
+    });
+  };
+
+  const onSetup = () => {
+    view.value = 'capture';
   };
 
   const onDirectoryFocus = (ev) => {

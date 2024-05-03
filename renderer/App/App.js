@@ -4,8 +4,8 @@ const { Queue, withQueue } = require('../Queue/Queue.js');
 const { withTheme } = require('../tools/theme.js');
 const { withTabs, useTabs } = require('../Tabs/Tabs.js');
 const { withTransparent } = require('../tools/transparent.js');
-
 const { withFrame, useFrame } = require('../Frame/Frame.js');
+const { withShortcuts } = require('../tools/shortcuts.js');
 
 css('./App.css');
 
@@ -25,4 +25,4 @@ function App() {
   `;
 }
 
-module.exports = withConfig(withTheme(withTransparent(withFrame(withQueue(withTabs(App))))));
+module.exports = withConfig(withTheme(withShortcuts(withTransparent(withFrame(withQueue(withTabs(App)))))));

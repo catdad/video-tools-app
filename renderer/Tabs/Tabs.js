@@ -1,6 +1,7 @@
-const { html, css, createContext, useContext, Material: M } = require('../tools/ui.js');
+const { html, css, createContext, useContext, Material: M, useSignalEffect, batch } = require('../tools/ui.js');
 const { useConfigSignal } = require('../tools/config.js');
 const { useTransparent } = require('../tools/transparent.js');
+const { useShortcuts } = require('../tools/shortcuts.js');
 
 css('./Tabs.css');
 
@@ -26,6 +27,7 @@ const withTabs = Component => ({ children, ...props }) => {
   const defaultTab = TABS[0].name;
   const tab = useConfigSignal('default-tab', defaultTab);
   const { isTransparent } = useTransparent();
+  const { captureVideo, events: shortcutEvents } = useShortcuts();
 
   const tabDom = Object.keys(TABS).map(name => {
     return html`<${M`Tab`} label=${name} />`;
@@ -52,6 +54,26 @@ const withTabs = Component => ({ children, ...props }) => {
   `;
 
   const Tab = () => html`<${selectedTab.Component} class="tab-panel" />`;
+
+  useSignalEffect(() => {
+    const name = captureVideo.value;
+    const e = shortcutEvents.value;
+
+    const onCaptureVideo = () => {
+      batch(() => {
+        tab.value = TABS.capture.name;
+        // this signals to the Capture tab to be in recording mode
+        // and skip setup screen
+        isTransparent.value = true;
+      });
+    };
+
+    e.on(name, onCaptureVideo);
+
+    return () => {
+      e.off(name, onCaptureVideo);
+    };
+  });
 
   return html`
     <${TabContext.Provider} value=${{ Tab, TabBar }}>
