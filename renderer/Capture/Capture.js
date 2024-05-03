@@ -16,6 +16,8 @@ const { useShortcuts } = require('../tools/shortcuts.js');
 
 css('./Capture.css');
 
+const focusArea = process.platform === 'darwin' ? 'dock' : 'taskbar';
+
 const makeEven = val => val % 2 === 0 ? val : val - 1;
 
 const getVars = () => {
@@ -90,7 +92,7 @@ function Capture({ 'class': classNames = ''} = {}) {
     localEvents.current.push({ name: 'focus', handler: onFocus });
 
     Promise.resolve().then(async () => {
-      frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in taskbar</span>`
+      frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in the ${focusArea}</span>`
       await keyboard.add(captureStop.value);
       await browser.enterClickthrough();
 
@@ -167,6 +169,10 @@ function Capture({ 'class': classNames = ''} = {}) {
             <td><b>${captureStop.value}</b></td>
           </tr>
         </table>
+        <p><i>
+          When recording, you can also stop the video by clicking on
+          the app in your ${focusArea}
+        </i></p>
         <hr style=${{
           width: '100%',
           border: '1px dashed #ffffff22'
