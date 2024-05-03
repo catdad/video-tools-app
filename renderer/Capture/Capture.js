@@ -3,9 +3,7 @@ const path = require('path');
 const {
   html, css, Material: M, batch, createRef,
   PrimaryButton, SecondaryButton, PrimaryTextField: TextField,
-  useSignalEffect,
-  useSignal,
-  useComputed
+  useSignalEffect, useSignal
 } = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
@@ -30,7 +28,7 @@ const getVars = () => {
 };
 
 function Capture({ 'class': classNames = ''} = {}) {
-  const { captureStop } = useShortcuts();
+  const { captureStop, captureVideo } = useShortcuts();
   const { isTransparent } = useTransparent();
   const { frameButtons } = useFrame();
   const { desktop } = useConfigPaths();
@@ -157,6 +155,18 @@ function Capture({ 'class': classNames = ''} = {}) {
           onClick=${onDirectoryFocus}
           webkitdirectory=true
         />
+
+        <h3>Keyboard Shortcuts</h3>
+        <table>
+          <tr>
+            <td>Jump to screen recording:</td>
+            <td><b>${captureVideo.value}</b></td>
+          </tr>
+          <tr>
+            <td>Stop screen recording:</td>
+            <td><b>${captureStop.value}</b></td>
+          </tr>
+        </table>
         <hr style=${{
           width: '100%',
           border: '1px dashed #ffffff22'
