@@ -1,6 +1,9 @@
 const path = require('path');
 
-const { html, css, Material: M, batch, createRef } = require('../tools/ui.js');
+const {
+  html, css, Material: M, batch, createRef,
+  PrimaryButton, SecondaryButton
+} = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
 const videoTools = require('../../lib/video-tools.js');
@@ -56,7 +59,7 @@ function Capture({ 'class': classNames = ''} = {}) {
     };
 
     const buttons = html`
-      <button onClick=${() => {
+      <${PrimaryButton} style=${{ height: 'calc(var(--frame-height) - 4px)' }} onClick=${() => {
         const onFocus = (ev) => {
           videoTools.stopCurrent();
           keyboard.remove(SHORTCUTS.stop);
@@ -88,10 +91,10 @@ function Capture({ 'class': classNames = ''} = {}) {
             exitCapture();
           }
         });
-      }}>Start</button>
-      <button onClick=${() => {
+      }}>Start<//>
+      <${SecondaryButton} onClick=${() => {
         exitCapture();
-      }}>Cancel</button>
+      }}>Cancel<//>
     `;
 
     batch(() => {

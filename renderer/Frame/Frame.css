@@ -23,7 +23,12 @@
 }
 
 .frame .frame-title button {
+  --spacing: 4px;
   -webkit-app-region: no-drag;
+  height: calc(var(--frame-height) - var(--spacing) - var(--spacing));
+  margin: calc(var(--spacing) / 2);
+  text-transform: lowercase;
+  font-weight: normal !important;
 }
 
 .frame .frame-buttons {
