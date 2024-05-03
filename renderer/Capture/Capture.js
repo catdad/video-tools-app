@@ -1,7 +1,7 @@
 const path = require('path');
 
 const {
-  html, css, Material: M, batch, createRef,
+  html, css, Material: M, MaterialIcon: MI, batch, createRef,
   PrimaryButton, SecondaryButton, PrimaryTextField: TextField,
   useSignalEffect, useSignal
 } = require('../tools/ui.js');
@@ -38,8 +38,6 @@ function Capture({ 'class': classNames = ''} = {}) {
   const localEvents = createRef([]);
 
   const view = useSignal('main');
-
-  console.log(view.value, isTransparent.value);
 
   useSignalEffect(() => {
     const transparent = isTransparent.value;
@@ -169,10 +167,12 @@ function Capture({ 'class': classNames = ''} = {}) {
             <td><b>${captureStop.value}</b></td>
           </tr>
         </table>
-        <p><i>
-          When recording, you can also stop the video by clicking on
-          the app in your ${focusArea}
-        </i></p>
+        <p class="capture-alert">
+          <${MI`Help`} fontSize=small />
+          <span>
+          To stop recording, you can also click on the app in your ${focusArea}
+          </span>
+        </p>
         <hr style=${{
           width: '100%',
           border: '1px dashed #ffffff22'
