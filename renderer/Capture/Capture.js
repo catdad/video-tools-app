@@ -2,7 +2,7 @@ const path = require('path');
 
 const {
   html, css, Material: M, batch, createRef,
-  PrimaryButton, SecondaryButton
+  PrimaryButton, SecondaryButton, PrimaryTextField: TextField
 } = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
@@ -103,10 +103,38 @@ function Capture({ 'class': classNames = ''} = {}) {
     });
   };
 
+  const onDirectoryFocus = (ev) => {
+    ev.target.blur();
+
+    browser.directoryDialog(outputDirectory.value).then(({ destination }) => {
+      if (destination) {
+        outputDirectory.value = destination;
+      }
+    }).catch(e => {
+      console.log('failed to select directory:', e);
+    });
+  };
+
   return html`
     <div class="${classNames} capture ${isTransparent.value ? 'capture-transparent' : ''}">
       <h2>Screen recording</h2>
-      <${M`Button`} onClick=${onSetup}>Setup<//>
+      <div style=${{
+        width: 'clamp(100px, 80vw, 300px)',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <${TextField}
+          label="destination folder"
+          value=${outputDirectory.value}
+          onClick=${onDirectoryFocus}
+          webkitdirectory=true
+        />
+        <hr style=${{
+          width: '100%',
+          border: '1px dashed #ffffff22'
+        }} />
+        <${PrimaryButton} onClick=${onSetup}>Select capture area<//>
+      </div>
     </div>
   `;
 }
