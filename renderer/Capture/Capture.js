@@ -40,7 +40,7 @@ function Capture({ 'class': classNames = ''} = {}) {
     const height = makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame);
     const eventHandlers = createRef([]);
 
-    const exit = () => {
+    const exitCapture = () => {
       batch(() => {
         isTransparent.value = false;
         frameButtons.value = null;
@@ -60,7 +60,7 @@ function Capture({ 'class': classNames = ''} = {}) {
         const onFocus = (ev) => {
           videoTools.stopCurrent();
           keyboard.remove(SHORTCUTS.stop);
-          exit();
+          exitCapture();
         };
 
         window.addEventListener('focus', onFocus);
@@ -85,13 +85,13 @@ function Capture({ 'class': classNames = ''} = {}) {
           } catch (e) {
             console.log('capture failed:', err);
           } finally {
-            exit();
+            exitCapture();
           }
         });
       }}>Start</button>
       <button onClick=${() => {
-        exit();
-      }}>Stop</button>
+        exitCapture();
+      }}>Cancel</button>
     `;
 
     batch(() => {
