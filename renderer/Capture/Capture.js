@@ -182,7 +182,7 @@ function Capture({ 'class': classNames = ''} = {}) {
         <p class="capture-alert">
           <${MI`Help`} fontSize=small />
           <span>
-          To stop recording, you can also click on the app in your ${focusArea}
+          To stop recording, you can also click the app in your ${focusArea}
           </span>
         </p>
         <hr style=${{
