@@ -3,7 +3,8 @@ const path = require('path');
 const {
   html, css, Material: M, MaterialIcon: MI, batch, createRef,
   PrimaryButton, SecondaryButton, PrimaryTextField: TextField,
-  useSignalEffect, useSignal
+  useSignalEffect, useSignal,
+  useContext, createContext
 } = require('../tools/ui.js');
 const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 
@@ -29,6 +30,24 @@ const getVars = () => {
   };
 };
 
+const CaptureContext = createContext({});
+
+const withCapture = Component => ({ children, ...props }) => {
+  const VIEWS = {
+    main: 'main',
+    capture: 'capture'
+  };
+  const view = useSignal('main');
+
+  return html`
+    <${CaptureContext.Provider} value=${{ VIEWS, view }}>
+      <${Component} ...${props}>${children}<//>
+    <//>
+  `;
+};
+
+const useCapture = () => useContext(CaptureContext);
+
 function Capture({ 'class': classNames = ''} = {}) {
   const { captureStop, captureVideo } = useShortcuts();
   const { isTransparent } = useTransparent();
@@ -37,37 +56,30 @@ function Capture({ 'class': classNames = ''} = {}) {
   const outputDirectory = useConfigSignal('capture.output', desktop);
   const localEvents = createRef([]);
 
-  const view = useSignal('main');
+  const { view } = useCapture();
 
   useSignalEffect(() => {
-    const transparent = isTransparent.value;
-    const v = view.value;
+    switch(view.value) {
+      case 'capture':
 
-    const onMain = () => void batch(() => {
-      isTransparent.value = false;
-      frameButtons.value = null;
-    });
-
-    const onCapture = () => void  batch(() => {
-      isTransparent.value = true;
-      frameButtons.value = html`
-        <${PrimaryButton} style=${{
-          height: 'calc(var(--frame-height) - 4px)'
-        }} onClick=${() => {
-          startCapture();
-        }}>Start<//>
-        <${SecondaryButton} onClick=${() => {
-          exitCapture();
-        }}>Cancel<//>
-      `
-    });
-
-    switch(true) {
-      case v === 'main' && transparent:
-      case v === 'capture':
-        return onCapture();
-      case v === 'main':
-        return onMain();
+        return void batch(() => {
+          isTransparent.value = true;
+          frameButtons.value = html`
+            <${PrimaryButton} style=${{
+              height: 'calc(var(--frame-height) - 4px)'
+            }} onClick=${() => {
+              startCapture();
+            }}>Start<//>
+            <${SecondaryButton} onClick=${() => {
+              exitCapture();
+            }}>Cancel<//>
+          `;
+        });
+      case 'main':
+        return void batch(() => {
+          isTransparent.value = false;
+          frameButtons.value = null;
+        });
     }
   });
 
@@ -183,4 +195,4 @@ function Capture({ 'class': classNames = ''} = {}) {
   `;
 }
 
-module.exports = Capture;
+module.exports = { Capture, withCapture, useCapture };
