@@ -61,7 +61,7 @@ function Capture({ 'class': classNames = ''} = {}) {
   useSignalEffect(() => {
     switch(view.value) {
       case 'capture':
-
+        browser.focus();
         return void batch(() => {
           isTransparent.value = true;
           frameButtons.value = html`
