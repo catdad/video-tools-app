@@ -48,7 +48,7 @@ const withTabs = Component => ({ children, ...props }) => {
   const TabBar = () => isTransparent.value ? undefined : html`
     <div class="tab-bar">
       <${M`AppBar`} position=static>
-        <${M`Tabs`} value=${selectedTab.idx} onChange=${onTabChange} variant=scrollable scrollButtons=auto>
+        <${M`Tabs`} value=${selectedTab.idx} onChange=${onTabChange} scrollButtons=auto>
           ${tabDom}
         <//>
       <//>
