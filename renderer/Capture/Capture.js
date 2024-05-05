@@ -21,6 +21,7 @@ css('./Capture.css');
 const focusArea = process.platform === 'darwin' ? 'dock' : 'taskbar';
 
 const makeEven = val => val % 2 === 0 ? val : val - 1;
+const dpr = val => val * (window.devicePixelRatio || 1);
 
 const getVars = () => {
   const style = window.getComputedStyle(document.documentElement);
@@ -88,12 +89,14 @@ function Capture({ 'class': classNames = ''} = {}) {
   });
 
   const startCapture = () => {
-    const dpr = window.devicePixelRatio;
     const { frame, border } = getVars();
-    const x = (window.screenX < 0 ? 0 : window.screenX) + border;
-    const y = (window.screenY < 0 ? 0 : window.screenY) + frame;
-    const width = makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border);
-    const height = makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame);
+
+    // since these values are calculated from the browser,
+    // we need to multiply by dpr to get the real desktop values
+    const x = dpr((window.screenX < 0 ? 0 : window.screenX) + border);
+    const y = dpr((window.screenY < 0 ? 0 : window.screenY) + frame);
+    const width = dpr(makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border));
+    const height = dpr(makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame));
 
     const onFocus = () => {
       videoTools.stopCurrent();
@@ -117,14 +120,9 @@ function Capture({ 'class': classNames = ''} = {}) {
 
       try {
         await videoTools.exec('desktop', [{
-          // TODO since we get browser size from the browser itself,
-          // we need to multiply by dpr to get the real desktop values
-          x: x * dpr,
-          y: y * dpr,
-          width: width * dpr,
-          height: height * dpr,
-          offsetX: x * dpr,
-          offsetY: y * dpr,
+          x, y, width, height,
+          offsetX: x,
+          offsetY: y,
           output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
         }]);
       } catch (e) {
