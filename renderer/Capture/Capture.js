@@ -88,6 +88,7 @@ function Capture({ 'class': classNames = ''} = {}) {
   });
 
   const startCapture = () => {
+    const dpr = window.devicePixelRatio;
     const { frame, border } = getVars();
     const x = (window.screenX < 0 ? 0 : window.screenX) + border;
     const y = (window.screenY < 0 ? 0 : window.screenY) + frame;
@@ -100,6 +101,8 @@ function Capture({ 'class': classNames = ''} = {}) {
       exitCapture();
     };
 
+    // TODO the app on a mac focuses immediately
+    // so this doesn't work 😔
     window.addEventListener('focus', onFocus);
 
     localEvents.current = localEvents.current || [];
@@ -114,9 +117,14 @@ function Capture({ 'class': classNames = ''} = {}) {
 
       try {
         await videoTools.exec('desktop', [{
-          x, y, width, height,
-          offsetX: x,
-          offsetY: y,
+          // TODO since we get browser size from the browser itself,
+          // we need to multiply by dpr to get the real desktop values
+          x: x * dpr,
+          y: y * dpr,
+          width: width * dpr,
+          height: height * dpr,
+          offsetX: x * dpr,
+          offsetY: y * dpr,
           output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
         }]);
       } catch (e) {
