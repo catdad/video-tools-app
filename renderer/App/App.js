@@ -26,4 +26,13 @@ function App() {
   `;
 }
 
-module.exports = withConfig(withTheme(withShortcuts(withTransparent(withFrame(withCapture(withQueue(withTabs(App))))))));
+module.exports = [
+  withConfig,
+  withTheme,
+  withShortcuts,
+  withTransparent,
+  withFrame,
+  withCapture,
+  withQueue,
+  withTabs
+].reverse().reduce((app, context) => context(app), App);
