@@ -11,6 +11,7 @@ const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
 const videoTools = require('../../lib/video-tools.js');
 const browser = require('../../lib/browser.js');
 const keyboard = require('../../lib/keyboard.js');
+const log = require('../../lib/log.js')('capture');
 const { useTransparent } = require('../tools/transparent.js');
 const { useFrame } = require('../Frame/Frame.js');
 const { useShortcuts } = require('../tools/shortcuts.js');
@@ -116,7 +117,7 @@ function Capture({ 'class': classNames = ''} = {}) {
           output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
         }]);
       } catch (e) {
-        console.log('capture failed:', e);
+        log.error('capture failed:', e);
       } finally {
         exitCapture();
       }
