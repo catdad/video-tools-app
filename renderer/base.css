@@ -6,7 +6,7 @@
 
   --frame-height: 30px;
   --frame-border: 1px;
-  --frame-border-radius: 8px;
+  --frame-border-radius: 10px;
   --tabs-height: 48px;
   --queue-height: 2rem;
   --app-height: calc(100vh - var(--frame-height) - var(--tabs-height, '0px') - var(--queue-height));
