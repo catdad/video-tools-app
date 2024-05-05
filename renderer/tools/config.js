@@ -2,6 +2,7 @@ const { get, set } = require('lodash');
 const { html, createContext, useEffect, useContext, useSignal, effect, batch } = require('../tools/ui.js');
 const toast = require('../tools/toast.js');
 const CONFIG = require('../../lib/config.js');
+const browser = require('../../lib/browser.js');
 
 const noop = () => {};
 
@@ -11,6 +12,7 @@ const withConfig = Component => ({ children, ...props }) => {
   const state = useSignal('loading');
   const localConfig = useSignal();
   const paths = useSignal({});
+  const capturePermission = useSignal(false);
 
   const api = {
     get: (path, fallback) => get(localConfig.peek(), path, fallback),
@@ -18,14 +20,20 @@ const withConfig = Component => ({ children, ...props }) => {
       set(localConfig.peek(), path, value);
       CONFIG.setProp(path, value).catch(noop);
     },
-    get paths() { return paths.value }
+    get paths() {
+      return paths.value;
+    },
+    get capturePermission() {
+      return capturePermission.value;
+    }
   };
 
   useEffect(() => {
     (async () => {
-      const [config, desktop] = await Promise.all([
+      const [config, desktop, screenPermission] = await Promise.all([
         CONFIG.read(),
-        CONFIG.getPath('desktop')
+        CONFIG.getPath('desktop'),
+        browser.getCapturePermissionStatus()
       ]);
 
       batch(() => {
@@ -35,6 +43,7 @@ const withConfig = Component => ({ children, ...props }) => {
           ...paths.value,
           desktop
         };
+        capturePermission.value = screenPermission;
       });
     })().catch(err => {
       toast.error([

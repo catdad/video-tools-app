@@ -6,7 +6,7 @@ const {
   useSignalEffect, useSignal,
   useContext, createContext
 } = require('../tools/ui.js');
-const { useConfigSignal, useConfigPaths } = require('../tools/config.js');
+const { useConfigSignal, useConfigPaths, useConfig } = require('../tools/config.js');
 
 const videoTools = require('../../lib/video-tools.js');
 const browser = require('../../lib/browser.js');
@@ -54,8 +54,11 @@ function Capture({ 'class': classNames = ''} = {}) {
   const { isTransparent } = useTransparent();
   const { frameButtons } = useFrame();
   const { desktop } = useConfigPaths();
+  const { capturePermission } = useConfig();
   const outputDirectory = useConfigSignal('capture.output', desktop);
   const localEvents = createRef([]);
+
+  log.info({ capturePermission });
 
   const { view } = useCapture();
 
