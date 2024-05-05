@@ -57,6 +57,7 @@ function Capture({ 'class': classNames = ''} = {}) {
   const { desktop } = useConfigPaths();
   const { capturePermission } = useConfig();
   const outputDirectory = useConfigSignal('capture.output', desktop);
+  const framerate = useConfigSignal('capture.framerate', 30);
   const localEvents = createRef([]);
 
   log.info({ capturePermission });
@@ -123,7 +124,8 @@ function Capture({ 'class': classNames = ''} = {}) {
           x, y, width, height,
           offsetX: x,
           offsetY: y,
-          output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`)
+          output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`),
+          framerate: framerate.value
         }]);
       } catch (e) {
         log.error('capture failed:', e);
@@ -163,6 +165,14 @@ function Capture({ 'class': classNames = ''} = {}) {
     });
   };
 
+  const onFramerate = (ev) => {
+    const value = ev.target.value;
+
+    if (value.length) {
+      framerate.value = Number(value) || 30;
+    }
+  };
+
   return html`
     <div class="${classNames} capture ${isTransparent.value ? 'capture-transparent' : ''}">
       <h2>Screen recording</h2>
@@ -176,6 +186,12 @@ function Capture({ 'class': classNames = ''} = {}) {
           value=${outputDirectory.value}
           onClick=${onDirectoryFocus}
           webkitdirectory=true
+        />
+        <${TextField}
+          type="number"
+          label="framerate"
+          value=${framerate.value}
+          onInput=${onFramerate}
         />
 
         <h3>Keyboard Shortcuts</h3>
