@@ -60,7 +60,7 @@ const withCapturePermission = Component => ({ children, 'class': classNames = ''
   switch (true) {
     case !!errorMessage.value:
       bodyChildren.push(html`
-      <p class="capture-alert">
+      <p class="capture-error">
         <${MI`Warning`} fontSize=small />
         <span>${errorMessage.value}</span>
       </p>
