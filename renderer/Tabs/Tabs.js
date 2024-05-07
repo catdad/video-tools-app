@@ -59,7 +59,7 @@ const withTabs = Component => ({ children, ...props }) => {
 
   useSignalEffect(() => {
     const name = captureVideo.value;
-    const e = shortcutEvents.value;
+    const events = shortcutEvents.value;
 
     const onCaptureVideo = () => {
       batch(() => {
@@ -70,10 +70,10 @@ const withTabs = Component => ({ children, ...props }) => {
       });
     };
 
-    e.on(name, onCaptureVideo);
+    events.on(name, onCaptureVideo);
 
     return () => {
-      e.off(name, onCaptureVideo);
+      events.off(name, onCaptureVideo);
     };
   });
 
