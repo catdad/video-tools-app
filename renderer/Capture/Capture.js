@@ -52,6 +52,7 @@ const useCapture = () => useContext(CaptureContext);
 
 const withCapturePermission = Component => ({ children, 'class': classNames = '', ...props }) => {
   const { capturePermission, setCapturePermission } = useConfig();
+  const { isTransparent } = useTransparent();
   const errorMessage = useSignal();
   log.info('permission allowed by the OS:', capturePermission);
 
@@ -96,7 +97,7 @@ const withCapturePermission = Component => ({ children, 'class': classNames = ''
   }
 
   return html`
-    <div class="${classNames} capture">
+    <div class="${classNames} capture ${isTransparent.value && capturePermission ? 'capture-transparent' : ''}">
       <div style=${{
         width: 'clamp(100px, 80vw, 300px)',
         display: 'flex',
