@@ -25,6 +25,9 @@ const withConfig = Component => ({ children, ...props }) => {
     },
     get capturePermission() {
       return capturePermission.value;
+    },
+    setCapturePermission(value) {
+      capturePermission.value = value;
     }
   };
 

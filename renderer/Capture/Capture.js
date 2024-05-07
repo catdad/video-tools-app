@@ -50,17 +50,73 @@ const withCapture = Component => ({ children, ...props }) => {
 
 const useCapture = () => useContext(CaptureContext);
 
-function Capture({ 'class': classNames = ''} = {}) {
+const withCapturePermission = Component => ({ children, 'class': classNames = '', ...props }) => {
+  const { capturePermission, setCapturePermission } = useConfig();
+  const errorMessage = useSignal();
+  log.info('permission allowed by the OS:', capturePermission);
+
+  const bodyChildren = [];
+
+  switch (true) {
+    case !!errorMessage.value:
+      bodyChildren.push(html`
+      <p class="capture-alert">
+        <${MI`Warning`} fontSize=small />
+        <span>${errorMessage.value}</span>
+      </p>
+      `);
+      // allow to fall through
+    case capturePermission === false:
+      const onPermission = () => {
+        browser.requestCapturePermission().then(result => {
+          if (result === true) {
+            console.log('we got permission');
+            return setCapturePermission(true);
+          }
+
+          errorMessage.value = 'Permission was not granted. You may need to restart the app or go into your OS settings to allow permission.';
+        }).catch(err => {
+          errorMessage.value = `An unexpected error occured: "${err.message}". You may need to restart the app or go into your OS settings to allow permission.`;
+        });
+      };
+
+      bodyChildren.push(html`
+        <p class="capture-alert">
+          <${MI`Help`} fontSize=small />
+          <span>
+          To capture desktop video, you first need to request permission
+          from the Operating System
+          </span>
+        </p>
+        <${PrimaryButton} onClick=${onPermission}>Request permission<//>
+      `);
+      break;
+    default:
+      bodyChildren.push(html`<${Component} ...${props}>${children}<//>`);
+  }
+
+  return html`
+    <div class="${classNames} capture">
+      <div style=${{
+        width: 'clamp(100px, 80vw, 300px)',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <h2>Screen recording</h2>
+        ${bodyChildren}
+      </div>
+    </div>
+  `;
+};
+
+function Capture() {
   const { captureStop, captureVideo } = useShortcuts();
   const { isTransparent } = useTransparent();
   const { frameButtons } = useFrame();
   const { desktop } = useConfigPaths();
-  const { capturePermission } = useConfig();
   const outputDirectory = useConfigSignal('capture.output', desktop);
   const framerate = useConfigSignal('capture.framerate', 30);
   const localEvents = createRef([]);
-
-  log.info({ capturePermission });
 
   const { view } = useCapture();
 
@@ -174,51 +230,42 @@ function Capture({ 'class': classNames = ''} = {}) {
   };
 
   return html`
-    <div class="${classNames} capture ${isTransparent.value ? 'capture-transparent' : ''}">
-      <h2>Screen recording</h2>
-      <div style=${{
-        width: 'clamp(100px, 80vw, 300px)',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <${TextField}
-          label="destination folder"
-          value=${outputDirectory.value}
-          onClick=${onDirectoryFocus}
-          webkitdirectory=true
-        />
-        <${TextField}
-          type="number"
-          label="framerate"
-          value=${framerate.value}
-          onInput=${onFramerate}
-        />
+    <${TextField}
+      label="destination folder"
+      value=${outputDirectory.value}
+      onClick=${onDirectoryFocus}
+      webkitdirectory=true
+    />
+    <${TextField}
+      type="number"
+      label="framerate"
+      value=${framerate.value}
+      onInput=${onFramerate}
+    />
 
-        <h3>Keyboard Shortcuts</h3>
-        <table>
-          <tr>
-            <td>Jump to screen recording:</td>
-            <td><b>${captureVideo.value}</b></td>
-          </tr>
-          <tr>
-            <td>Stop screen recording:</td>
-            <td><b>${captureStop.value}</b></td>
-          </tr>
-        </table>
-        <p class="capture-alert">
-          <${MI`Help`} fontSize=small />
-          <span>
-          To stop recording, you can also click the app in your ${focusArea}
-          </span>
-        </p>
-        <hr style=${{
-          width: '100%',
-          border: '1px dashed #ffffff22'
-        }} />
-        <${PrimaryButton} onClick=${onSetup}>Select capture area<//>
-      </div>
-    </div>
+    <h3>Keyboard Shortcuts</h3>
+    <table>
+      <tr>
+        <td>Jump to screen recording:</td>
+        <td><b>${captureVideo.value}</b></td>
+      </tr>
+      <tr>
+        <td>Stop screen recording:</td>
+        <td><b>${captureStop.value}</b></td>
+      </tr>
+    </table>
+    <p class="capture-alert">
+      <${MI`Help`} fontSize=small />
+      <span>
+      To stop recording, you can also click the app in your ${focusArea}
+      </span>
+    </p>
+    <hr style=${{
+      width: '100%',
+      border: '1px dashed #ffffff22'
+    }} />
+    <${PrimaryButton} onClick=${onSetup}>Select capture area<//>
   `;
 }
 
-module.exports = { Capture, withCapture, useCapture };
+module.exports = { Capture: withCapturePermission(Capture), withCapture, useCapture };
