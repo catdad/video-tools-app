@@ -266,6 +266,14 @@ function Capture() {
       border: '1px dashed #ffffff22'
     }} />
     <${PrimaryButton} onClick=${onSetup}>Select capture area<//>
+
+    <${M`Button`} onClick=${() => {
+      videoTools.getCaptureDeviceList().then(result => {
+        console.log(result);
+      }).catch(err => {
+        console.error(err);
+      });
+    }}>get device list<//>
   `;
 }
 
