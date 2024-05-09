@@ -1,5 +1,7 @@
 .capture.capture-transparent {
   opacity: 0;
+  overflow: hidden;
+  height: 0;
 }
 
 .capture .capture-alert,
