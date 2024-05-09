@@ -89,16 +89,15 @@ body::before, body::after {
   bottom: 0;
   width: var(--frame-border-radius);
   height: var(--frame-border-radius);
-
-  background: var(--overwritable-corners);
+  border-bottom: var(--frame-border) solid var(--overwritable-corners);
 }
 body::before {
   left: 0;
-  clip-path: path('M0 0 L0 8 L8 8 L8 7 L1 7 L1 0 Z');
+  border-left: var(--frame-border) solid var(--overwritable-corners);
 }
 body::after {
   right: 0;
-  clip-path: path('M8 0 L8 8 L0 8 L0 7 L7 7 L7 0 Z');
+  border-right: var(--frame-border) solid var(--overwritable-corners);
 }
 
 * {
