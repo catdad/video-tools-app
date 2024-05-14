@@ -14,6 +14,12 @@ const FileInput = require('../FileInput/FileInput.js');
 
 css('./VideoInfo.css');
 
+const fps = value => {
+  return /^[0-9]{1,}\/[0-9]{1,}$/.test(value) ?
+    +eval(value).toFixed(2) :
+    'unknown';
+};
+
 function VideoInfo({ 'class': classNames = ''} = {}) {
   const metadata = useSignal([]);
 
@@ -57,8 +63,8 @@ function VideoInfo({ 'class': classNames = ''} = {}) {
 
     const seconds = get(file, 'video.duration', 0);
     const duration = prettyMs(Number(seconds) * 1000);
-    const videoSummary = `${video.codec_name} (${video.width}x${video.height})`;
-    const audioSummary = `${audio.codec_name} (${audio.channels} channels)`;
+    const videoSummary = video ? `${video.codec_name} (${video.width}x${video.height}) (${fps(video.r_frame_rate)} fps)` : 'N/A';
+    const audioSummary = audio ? `${audio.codec_name} (${audio.channels} channels)` : 'N/A';
 
     // this object sets the order of the UI
     // yes, I know order is technically not guaranteed, but it works
