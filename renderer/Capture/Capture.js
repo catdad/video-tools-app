@@ -200,9 +200,9 @@ function Capture() {
     }
 
     localEvents.current = [];
+
     batch(() => {
       view.value = 'main';
-      isTransparent.value = false;
     });
   };
 
