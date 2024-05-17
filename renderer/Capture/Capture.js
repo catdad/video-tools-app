@@ -156,25 +156,24 @@ function Capture() {
     const width = dpr(makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border));
     const height = dpr(makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame));
 
-    const onFocus = () => {
+    const onStopTrigger = () => {
       videoTools.stopCurrent();
       keyboard.remove(captureStop.value);
       exitCapture();
     };
-
-    // TODO the app on a mac focuses immediately
-    // so this doesn't work 😔
-    window.addEventListener('focus', onFocus);
-
-    localEvents.current = localEvents.current || [];
-    localEvents.current.push({ name: 'focus', handler: onFocus });
 
     Promise.resolve().then(async () => {
       frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in the ${focusArea}</span>`
       await keyboard.add(captureStop.value);
       await browser.enterClickthrough();
 
-      keyboard.events.once(captureStop.value, () => onFocus());
+      // TODO the app on a mac focuses immediately
+      // so this doesn't work 😔
+      window.addEventListener('focus', onStopTrigger, { once: true });
+      keyboard.events.once(captureStop.value, onStopTrigger);
+
+      localEvents.current = localEvents.current || [];
+      localEvents.current.push({ name: 'focus', handler: onStopTrigger });
 
       try {
         await videoTools.exec('desktop', [{
@@ -197,6 +196,7 @@ function Capture() {
 
     for (const { name, handler} of localEvents.current || []) {
       window.removeEventListener(name, handler);
+      keyboard.events.off(captureStop.value, handler);
     }
 
     localEvents.current = [];
