@@ -23,6 +23,19 @@ const focusArea = process.platform === 'darwin' ? 'dock' : 'taskbar';
 const makeEven = val => val % 2 === 0 ? val : val - 1;
 const toScreen = val => val * (window.devicePixelRatio || 1);
 
+const applyScale = (type, { width, height }) => {
+  switch (type) {
+    case 'dpr':
+      const DPR = window.devicePixelRatio || 1;
+      return {
+        width: Math.round(width / DPR),
+        height: Math.round(height / DPR)
+      };
+    default:
+      return { width, height };
+  }
+};
+
 const getVars = () => {
   const style = window.getComputedStyle(document.documentElement);
 
@@ -117,7 +130,7 @@ function Capture() {
   const { desktop } = useConfigPaths();
   const outputDirectory = useConfigSignal('capture.output', desktop);
   const framerate = useConfigSignal('capture.framerate', 30);
-  const reverseDPRScale = useConfigSignal('capture.reverseDpr', true);
+  const scaleType = useConfigSignal('capture.scaleType', 'dpr');
   const localEvents = createRef([]);
 
   const { view } = useCapture();
@@ -157,6 +170,10 @@ function Capture() {
     const width = toScreen(makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border));
     const height = toScreen(makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame));
 
+    const scale = scaleType.peek() === 'dpr' ? {
+      maxWidth: makeEven(applyScale('dpr', { width, height }).width)
+    } : {};
+
     const onStopTrigger = () => {
       videoTools.stopCurrent();
       keyboard.remove(captureStop.value);
@@ -181,6 +198,7 @@ function Capture() {
           x, y, width, height,
           offsetX: x,
           offsetY: y,
+          ...scale,
           output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`),
           framerate: framerate.value
         }]);
@@ -232,7 +250,7 @@ function Capture() {
   };
 
   const onReverseDPRScale = (ev) => {
-    reverseDPRScale.value = !!ev.target.checked;
+    scaleType.value = !!ev.target.checked ? 'dpr' : null;
   };
 
   return html`
@@ -253,7 +271,7 @@ function Capture() {
         html`<${M`Switch`}
           color="primary" />`
       }
-      checked=${reverseDPRScale.value}
+      checked=${scaleType.value === 'dpr'}
       onChange=${onReverseDPRScale}
       label=${
         html`
