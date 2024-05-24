@@ -1,3 +1,5 @@
+const { withStyles } = require('@material-ui/core/styles');
+
 const M = ((cache) => {
   return name => {
     if (cache[name]) {
@@ -94,8 +96,19 @@ module.exports = ({ html, hooks: { useState } }) => {
     <//>`;
   };
 
+  const Tooltip = withStyles(theme => ({
+    tooltip: {
+      backgroundColor: 'var(--secondary)',
+      color: 'var(--color-background)',
+      fontSize: '0.9rem'
+    },
+    arrow: {
+      color: 'var(--secondary)'
+    }
+  }))(M`Tooltip`);
+
   return {
-    PrimaryButton, SecondaryButton, PrimaryTextField, ObjectList, Toggle,
+    PrimaryButton, SecondaryButton, PrimaryTextField, ObjectList, Toggle, Tooltip,
     Material: M, MaterialIcon: MI
   };
 };
