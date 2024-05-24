@@ -21,7 +21,7 @@ css('./Capture.css');
 const focusArea = process.platform === 'darwin' ? 'dock' : 'taskbar';
 
 const makeEven = val => val % 2 === 0 ? val : val - 1;
-const dpr = val => val * (window.devicePixelRatio || 1);
+const toScreen = val => val * (window.devicePixelRatio || 1);
 
 const getVars = () => {
   const style = window.getComputedStyle(document.documentElement);
@@ -152,10 +152,10 @@ function Capture() {
 
     // since these values are calculated from the browser,
     // we need to multiply by dpr to get the real desktop values
-    const x = dpr((window.screenX < 0 ? 0 : window.screenX) + border);
-    const y = dpr((window.screenY < 0 ? 0 : window.screenY) + frame);
-    const width = dpr(makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border));
-    const height = dpr(makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame));
+    const x = toScreen((window.screenX < 0 ? 0 : window.screenX) + border);
+    const y = toScreen((window.screenY < 0 ? 0 : window.screenY) + frame);
+    const width = toScreen(makeEven((window.screenX < 0 ? window.outerWidth + window.screenX : window.outerWidth) - border - border));
+    const height = toScreen(makeEven((window.screenY < 0 ? window.outerHeight + window.screenY : window.outerHeight) - border - frame));
 
     const onStopTrigger = () => {
       videoTools.stopCurrent();
