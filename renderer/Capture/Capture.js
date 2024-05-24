@@ -2,7 +2,7 @@ const path = require('path');
 
 const {
   html, css, Material: M, MaterialIcon: MI, batch, createRef,
-  PrimaryButton, SecondaryButton, PrimaryTextField: TextField,
+  PrimaryButton, SecondaryButton, PrimaryTextField: TextField, Tooltip,
   useSignalEffect, useSignal,
   useContext, createContext
 } = require('../tools/ui.js');
@@ -117,6 +117,7 @@ function Capture() {
   const { desktop } = useConfigPaths();
   const outputDirectory = useConfigSignal('capture.output', desktop);
   const framerate = useConfigSignal('capture.framerate', 30);
+  const reverseDPRScale = useConfigSignal('capture.reverseDpr', true);
   const localEvents = createRef([]);
 
   const { view } = useCapture();
@@ -230,6 +231,10 @@ function Capture() {
     }
   };
 
+  const onReverseDPRScale = (ev) => {
+    reverseDPRScale.value = !!ev.target.checked;
+  };
+
   return html`
     <${TextField}
       label="destination folder"
@@ -242,6 +247,35 @@ function Capture() {
       label="framerate"
       value=${framerate.value}
       onInput=${onFramerate}
+    />
+    <${M`FormControlLabel`}
+      control=${
+        html`<${M`Switch`}
+          color="primary" />`
+      }
+      checked=${reverseDPRScale.value}
+      onChange=${onReverseDPRScale}
+      label=${
+        html`
+          <span style=${{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span>Reverse DPR scaling<//>
+            <${Tooltip}
+              title=${`On high-density screens, the video is very large by default. This setting scales it down so it looks "normal sized"`}
+              placement="top"
+              arrow
+            >
+              <${MI`Help`} style=${{ color: 'var(--secondary)', fontSize: '1rem' }} />
+            <//>
+          <//>
+        `
+      }
+      style=${{
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        justifyContent: 'space-between',
+        width: '100%',
+        margin: '0'
+      }}
     />
 
     <h3>Keyboard Shortcuts</h3>
