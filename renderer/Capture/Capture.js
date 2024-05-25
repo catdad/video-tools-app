@@ -175,9 +175,12 @@ function Capture() {
     } : {};
 
     const onStopTrigger = () => {
-      videoTools.stopCurrent();
-      keyboard.remove(captureStop.value);
-      exitCapture();
+      Promise.all([
+        videoTools.stopCurrent(),
+        keyboard.remove(captureStop.value)
+      ]).catch(e => {}).finally(() => {
+        exitCapture();
+      });
     };
 
     Promise.resolve().then(async () => {
