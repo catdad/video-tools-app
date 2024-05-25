@@ -225,10 +225,6 @@ function Capture() {
     });
   };
 
-  const onSetup = () => {
-    view.value = 'capture';
-  };
-
   const onDirectoryFocus = (ev) => {
     ev.target.blur();
 
@@ -317,7 +313,9 @@ function Capture() {
       width: '100%',
       border: '1px dashed #ffffff22'
     }} />
-    <${PrimaryButton} onClick=${onSetup}>Select capture area<//>
+    <${PrimaryButton} onClick=${() => {
+      view.value = 'capture';
+    }}>Select capture area<//>
 
     <${M`Button`} onClick=${() => {
       videoTools.getCaptureDeviceList().then(result => {
