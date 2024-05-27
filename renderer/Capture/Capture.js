@@ -178,7 +178,9 @@ function Capture() {
       Promise.all([
         videoTools.stopCurrent(),
         keyboard.remove(captureStop.value)
-      ]).catch(e => {}).finally(() => {
+      ]).catch(e => {
+        console.log('failed to stop capture correctly:', e);
+      }).finally(() => {
         exitCapture();
       });
     };
