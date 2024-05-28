@@ -322,6 +322,8 @@ function Capture() {
       view.value = 'capture';
     }}>Select capture area<//>
 
+    ${null /*
+
     <${M`Button`} onClick=${() => {
       videoTools.getCaptureDeviceList().then(result => {
         console.log(result);
@@ -329,6 +331,8 @@ function Capture() {
         console.error(err);
       });
     }}>get device list<//>
+
+    */}
   `;
 }
 
