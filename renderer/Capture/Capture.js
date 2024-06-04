@@ -204,6 +204,7 @@ function Capture() {
           offsetX: x,
           offsetY: y,
           ...scale,
+          device: 1,
           output: path.resolve(outputDirectory.value, `Screen Recording - ${new Date().toISOString().replace(/:/g, '-')}.mp4`),
           framerate: framerate.value
         }]);
