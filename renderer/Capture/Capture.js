@@ -189,9 +189,12 @@ function Capture() {
       frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in the ${focusArea}</span>`
       await keyboard.add(captureStop.value);
       await browser.enterClickthrough();
+      
+      // on a mac, for some reason, we can't start listening
+      // for focus immediately, because the app window
+      // still has focus for a little while
+      await new Promise(r => setTimeout(r, 50));
 
-      // TODO the app on a mac focuses immediately
-      // so this doesn't work 😔
       window.addEventListener('focus', onStopTrigger, { once: true });
       keyboard.events.once(captureStop.value, onStopTrigger);
 
