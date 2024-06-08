@@ -187,19 +187,25 @@ function Capture() {
 
     Promise.resolve().then(async () => {
       frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in the ${focusArea}</span>`
-      await keyboard.add(captureStop.value);
-      await browser.enterClickthrough();
-      
+
       // on a mac, for some reason, we can't start listening
       // for focus immediately, because the app window
       // still has focus for a little while
-      await new Promise(r => setTimeout(r, 50));
+      // await new Promise(r => setTimeout(r, 50));
 
-      window.addEventListener('focus', onStopTrigger, { once: true });
+      const onBlur = () => {
+        window.addEventListener('focus', onStopTrigger, { once: true });
+      };
+
+      window.addEventListener('blur', onBlur, { once: true });
       keyboard.events.once(captureStop.value, onStopTrigger);
 
       localEvents.current = localEvents.current || [];
+      localEvents.current.push({ name: 'blur', handler: onBlur });
       localEvents.current.push({ name: 'focus', handler: onStopTrigger });
+
+      await keyboard.add(captureStop.value);
+      await browser.enterClickthrough();
 
       try {
         await videoTools.exec('desktop', [{
