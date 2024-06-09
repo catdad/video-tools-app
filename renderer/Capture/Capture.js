@@ -189,12 +189,13 @@ function Capture() {
       frameButtons.value = html`<span>Stop: ${captureStop.value} or click the app in the ${focusArea}</span>`
 
       // on a mac, for some reason, we can't start listening
-      // for focus immediately, because the app window
-      // still has focus for a little while
-      // await new Promise(r => setTimeout(r, 50));
-
+      // for focus immediately, or even immediately after blur,
+      // so... just hack it
       const onBlur = () => {
-        window.addEventListener('focus', onStopTrigger, { once: true });
+        Promise.resolve().then(async () => {
+          await new Promise(r => setTimeout(r, 100));
+          window.addEventListener('focus', onStopTrigger, { once: true });
+        });
       };
 
       window.addEventListener('blur', onBlur, { once: true });
