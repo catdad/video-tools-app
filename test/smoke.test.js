@@ -37,7 +37,7 @@ describe('[smoke tests]', () => {
     await app.utils.waitForVisible('#app');
   });
 
-  it('is on the transcode tab by default', async () => {
+  it('is on the capture tab by default', async () => {
     const configPath = await config.create({});
     const app = await start(configPath);
 
@@ -46,8 +46,23 @@ describe('[smoke tests]', () => {
     const $document = await getDocument(app.page);
 
     await findByText($document, 'transcode');
-    const title = await findByText($document, 'Drag files to convert here');
+    const title = await findByText($document, 'Screen recording');
 
+    expect(await title.evaluate(e => e.tagName)).to.equal('H2');
+  });
+
+  it('can switch to the transcode tab', async () => {
+    const configPath = await config.create({});
+    const app = await start(configPath);
+
+    await app.utils.waitForVisible('#app');
+
+    const $document = await getDocument(app.page);
+
+    const tab = await findByText($document, 'transcode');
+    await tab.click();
+
+    const title = await findByText($document, 'Drag files to convert here');
     expect(await title.evaluate(e => e.tagName)).to.equal('H2');
   });
 

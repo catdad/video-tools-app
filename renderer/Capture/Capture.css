@@ -1,0 +1,23 @@
+.capture.capture-transparent {
+  opacity: 0;
+  overflow: hidden;
+  height: 0;
+}
+
+.capture .capture-alert,
+.capture .capture-error {
+  --spacing: 0.8rem;
+  display: flex;
+  gap: var(--spacing);
+  padding: var(--spacing);
+  margin: var(--spacing) 0;
+  background-color: var(--c);
+  color: var(--color-background);
+  border-radius: calc(var(--frame-border-radius) / 2);
+  font-style: italic;
+}
+
+.capture .capture-error {
+  background-color: var(--m);
+  color: var(--color-foreground);
+}

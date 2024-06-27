@@ -1,13 +1,16 @@
 .frame {
   -webkit-app-region: drag;
 
-  /* this border needs to go inside the frame border itself */
-  --fbr: calc(var(--frame-border-radius) + var(--frame-border) + var(--frame-border));
+  position: absolute;
+  top: var(--frame-border);
+  left: var(--frame-border);
+  right: var(--frame-border);
+  height: calc(var(--frame-height) - var(--frame-border));
 
-  height: var(--frame-height);
+  --fbr: calc(var(--frame-border-radius) - var(--frame-border));
+
   display: flex;
   background-color: var(--color-background);
-  border: var(--frame-border) solid var(--m);
   border-radius: var(--fbr) var(--fbr) 0 0;
 }
 
@@ -17,6 +20,15 @@
   align-items: center;
   justify-content: center;
   font-size: 0.9rem;
+}
+
+.frame .frame-title button {
+  --spacing: 4px;
+  -webkit-app-region: no-drag;
+  height: calc(var(--frame-height) - var(--spacing) - var(--spacing));
+  margin: calc(var(--spacing) / 2);
+  text-transform: lowercase;
+  font-weight: normal !important;
 }
 
 .frame .frame-buttons {
@@ -34,4 +46,9 @@
 
 .frame .frame-buttons button:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.frame .frame-buttons button:focus {
+  border: none;
+  outline: none;
 }

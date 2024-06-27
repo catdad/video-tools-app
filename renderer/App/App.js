@@ -3,12 +3,15 @@ const { withConfig } = require('../tools/config.js');
 const { Queue, withQueue } = require('../Queue/Queue.js');
 const { withTheme } = require('../tools/theme.js');
 const { withTabs, useTabs } = require('../Tabs/Tabs.js');
-
-const Frame = require('../Frame/Frame.js');
+const { withTransparent } = require('../tools/transparent.js');
+const { withFrame, useFrame } = require('../Frame/Frame.js');
+const { withShortcuts } = require('../tools/shortcuts.js');
+const { withCapture } = require('../Capture/Capture.js');
 
 css('./App.css');
 
 function App() {
+  const { Frame } = useFrame();
   const { Tab, TabBar } = useTabs();
 
   return html`
@@ -23,4 +26,13 @@ function App() {
   `;
 }
 
-module.exports = withConfig(withTheme(withQueue(withTabs(App))));
+module.exports = [
+  withConfig,
+  withTheme,
+  withShortcuts,
+  withTransparent,
+  withFrame,
+  withCapture,
+  withQueue,
+  withTabs
+].reverse().reduce((app, context) => context(app), App);

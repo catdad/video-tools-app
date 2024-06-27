@@ -11,10 +11,9 @@ const FileInput = require('../FileInput/FileInput.js');
 const NamingFields = require('../NamingFields/NamingFields.js');
 const { useQueue } = require('../Queue/Queue.js');
 
-css('../styles/tab-panel.css');
 css('./VideoX264.css');
 
-function VideoX264() {
+function VideoX264({ 'class': classNames = ''} = {}) {
   const prefix = useConfigSignal('videox264.prefix', '');
   const suffix = useConfigSignal('videox264.suffix', '');
   const format = useConfigSignal('videox264.format', 'mp4');
@@ -102,7 +101,7 @@ function VideoX264() {
   };
 
   return html`
-    <div class="tab-panel video-x264">
+    <div class="${classNames} video-x264">
       <h2>Drag files to convert here</h2>
       <${FileInput} nobutton onchange=${onQueue} />
       ${controlsDom}

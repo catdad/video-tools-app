@@ -12,7 +12,6 @@ const toast = require('../tools/toast.js');
 const videoTools = require('../../lib/video-tools.js');
 const FileInput = require('../FileInput/FileInput.js');
 
-css('../styles/tab-panel.css');
 css('./VideoInfo.css');
 
 const fps = value => {
@@ -21,7 +20,7 @@ const fps = value => {
     'unknown';
 };
 
-function VideoInfo() {
+function VideoInfo({ 'class': classNames = ''} = {}) {
   const metadata = useSignal([]);
 
   const updateMetadata = async (files) => {
@@ -83,7 +82,7 @@ function VideoInfo() {
   });
 
   return html`
-    <div class="tab-panel video-info">
+    <div class="${classNames} video-info">
       <h2>Drag files here to see metadata</h2>
       <${FileInput} nobutton onchange=${onFiles} />
       ${elems}

@@ -9,6 +9,7 @@ require('./lib/app-id.js')(app);
 require('./lib/video-tools.js');
 require('./lib/progress.js');
 require('./lib/browser.js');
+require('./lib/keyboard.js');
 const log = require('./lib/log.js')('main');
 const config = require('./lib/config.js');
 const menu = require('./lib/menu.js');

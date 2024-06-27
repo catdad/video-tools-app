@@ -1,3 +1,7 @@
+.tab-bar {
+  margin-top: var(--frame-height);
+}
+
 .tab-panel {
   display: flex;
   flex-direction: column;
