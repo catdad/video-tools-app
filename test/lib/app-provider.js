@@ -50,7 +50,7 @@ let _browser;
 
 module.exports = {
   start: async (configPath = '') => {
-    _browser = await launch(['.'], {
+    _browser = await launch(['--no-sandbox', '.'], {
       cwd: path.resolve(__dirname, '../..'),
       env: {
         [configVar]: configPath
