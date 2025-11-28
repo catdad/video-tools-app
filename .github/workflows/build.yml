@@ -52,7 +52,7 @@ jobs:
       - run: sudo apt-get install xvfb
       - run: npm install
       - name: Validate electron
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" electron https://kirilvatev.com
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" npx electron https://kirilvatev.com
         continue-on-error: true
         timeout-minutes: 1
       - name: Run npm test
