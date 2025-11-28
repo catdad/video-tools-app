@@ -54,6 +54,9 @@ module.exports = {
     // [2328:1128/060006.361552:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now.
     // You need to make sure that /home/runner/work/video-tools-app/video-tools-app/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.
     // /home/runner/work/video-tools-app/video-tools-app/node_modules/electron/dist/electron exited with signal SIGTRAP
+    // note - could also try
+    // sudo chown root:root node_modules/electron/dist/chrome-sandbox
+    // sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
     const noSandbox = process.env.CI && process.platform === 'linux';
 
     const args = [];
