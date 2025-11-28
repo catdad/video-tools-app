@@ -50,7 +50,21 @@ let _browser;
 
 module.exports = {
   start: async (configPath = '') => {
-    _browser = await launch(['.'], {
+    // we get this error in github actions:
+    // [2328:1128/060006.361552:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now.
+    // You need to make sure that /home/runner/work/video-tools-app/video-tools-app/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.
+    // /home/runner/work/video-tools-app/video-tools-app/node_modules/electron/dist/electron exited with signal SIGTRAP
+    const noSandbox = process.env.CI && process.platform === 'linux';
+
+    const args = [];
+
+    if (noSandbox) {
+      args.push('--no-sandbox');
+    }
+
+    args.push('.');
+
+    _browser = await launch(args, {
       cwd: path.resolve(__dirname, '../..'),
       env: {
         [configVar]: configPath
