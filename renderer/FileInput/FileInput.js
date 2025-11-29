@@ -1,4 +1,6 @@
 const { PrimaryButton, html, useEffect, useRef } = require('../tools/ui.js');
+// note: this only works because we run with `contextIsolation: false`
+const { webUtils } = require('electron');
 
 function FileInput({
   onchange = () => {},
@@ -25,7 +27,13 @@ function FileInput({
       ev.preventDefault();
 
       const { files } = ev.dataTransfer;
-      onchange([...files]);
+
+      onchange([...files].map(file => ({
+        type: file.type,
+        name: file.name,
+        size: file.size,
+        path: webUtils.getPathForFile(file)
+      })));
     };
 
     const onDrag = (ev) => {
