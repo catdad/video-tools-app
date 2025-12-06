@@ -44,7 +44,8 @@ function VideoX264({ 'class': classNames = ''} = {}) {
         format: format.value,
         prefix: prefix.value,
         suffix: _suffix,
-        threads: threads.value
+        threads: threads.value,
+        crf: 23
       };
 
       if (video.value !== 'copy' && !!width.value) {
