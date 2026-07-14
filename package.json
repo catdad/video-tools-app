@@ -46,7 +46,7 @@
     "mocha": "^10.8.2",
     "npm-run-all": "^4.1.5",
     "pptr-testing-library": "^0.7.0",
-    "puptron": "^0.0.7",
+    "puptron": "^0.0.8",
     "run-script-os": "^1.1.6",
     "svg-app-icon": "^2.0.0",
     "svg-render": "^2.0.0",
